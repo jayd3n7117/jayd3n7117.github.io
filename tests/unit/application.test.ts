@@ -47,6 +47,27 @@ describe("application validation", () => {
     });
   });
 
+  it("rejects missing or forged enum and Malaysian location values", () => {
+    const result = validateApplication({
+      ...valid,
+      ageRange: "",
+      salesExperience: "unknown",
+      state: "London",
+    });
+
+    expect(result.errors).toMatchObject({
+      ageRange: "INVALID_OPTION",
+      salesExperience: "INVALID_OPTION",
+      state: "INVALID_OPTION",
+    });
+  });
+
+  it("rejects an overlong name", () => {
+    expect(validateApplication({ ...valid, name: "x".repeat(121) }).errors).toMatchObject({
+      name: "TOO_LONG",
+    });
+  });
+
   it("limits all free text fields to 120 characters", () => {
     const result = validateApplication({
       ...valid,
@@ -60,6 +81,20 @@ describe("application validation", () => {
       city: "TOO_LONG",
       experienceDetail: "TOO_LONG",
     });
+  });
+
+  it("trims optional text and omits blank optional values", () => {
+    const result = validateApplication({
+      ...valid,
+      city: "  Shah Alam  ",
+      experienceDetail: "   ",
+    });
+
+    expect(result.valid).toBe(true);
+    if (result.valid) {
+      expect(result.data.city).toBe("Shah Alam");
+      expect(result.data).not.toHaveProperty("experienceDetail");
+    }
   });
 
   it("never transmits and reports that submission is not configured", async () => {

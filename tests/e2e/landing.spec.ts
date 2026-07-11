@@ -201,15 +201,27 @@ test("does not POST or claim receipt and blocks repeat submission while checking
   await expect(form.locator('[name="name"]')).toHaveValue("Aina Rahman");
 });
 
-for (const { locale, label } of [
-  { locale: "en", label: "Current job" },
-  { locale: "bm", label: "Pekerjaan semasa" },
-  { locale: "zh", label: "\u76ee\u524d\u804c\u4e1a" },
+for (const { locale, labels, error, status } of [
+  { locale: "en", labels: ["Name", "Age range", "Current job", "Malaysian state / location", "City", "Sales experience", "Experience detail", "I consent"], error: "This field is required.", status: "not been sent or stored" },
+  { locale: "bm", labels: ["Nama", "Julat umur", "Pekerjaan semasa", "Negeri / lokasi di Malaysia", "Bandar", "Pengalaman jualan", "Butiran pengalaman", "Saya bersetuju"], error: "Medan ini wajib diisi.", status: "tidak dihantar atau disimpan" },
+  { locale: "zh", labels: ["\u59d3\u540d", "\u5e74\u9f84\u8303\u56f4", "\u76ee\u524d\u804c\u4e1a", "\u9a6c\u6765\u897f\u4e9a\u5dde\u5c5e\uff0f\u5730\u70b9", "\u57ce\u5e02", "\u9500\u552e\u7ecf\u9a8c", "\u7ecf\u9a8c\u8be6\u60c5", "\u6211\u540c\u610f"], error: "\u6b64\u680f\u4e3a\u5fc5\u586b\u3002", status: "\u672a\u88ab\u53d1\u9001\u6216\u50a8\u5b58" },
 ] as const) {
-  test(`shows localized application labels in ${locale}`, async ({ page }) => {
+  test(`shows localized application labels, errors, and disabled status in ${locale}`, async ({ page }) => {
     await page.goto(`/${locale}/`);
-    await expect(page.getByLabel(new RegExp(label))).toBeVisible();
+    for (const label of labels) await expect(page.getByLabel(new RegExp(label))).toBeVisible();
     await expect(page.locator("#apply form label")).toHaveCount(8);
+    const form = page.locator("[data-application-form]");
+    await form.locator('button[type="submit"]').click();
+    await expect(form.locator("#name-error")).toHaveText(error);
+    await form.locator('[name="name"]').fill("Aina Rahman");
+    await form.locator('[name="ageRange"]').selectOption("25-34");
+    await form.locator('[name="currentJob"]').fill("Designer");
+    await form.locator('[name="state"]').selectOption("Selangor");
+    await form.locator('[name="salesExperience"]').selectOption("1-3");
+    await form.locator('[name="consent"]').check();
+    await form.locator('button[type="submit"]').click();
+    await expect(form.locator('button[type="submit"]')).toBeDisabled();
+    await expect(form.locator("[data-form-status]")).toContainText(status);
   });
 }
 

@@ -1,11 +1,13 @@
 export const AGE_RANGES = ["18-24", "25-34", "35-44", "45+"] as const;
 export const SALES_EXPERIENCE = ["none", "<1", "1-3", "4-6", "7+"] as const;
+export const MALAYSIAN_LOCATIONS = ["Johor", "Kedah", "Kelantan", "Melaka", "Negeri Sembilan", "Pahang", "Penang", "Perak", "Perlis", "Sabah", "Sarawak", "Selangor", "Terengganu", "Kuala Lumpur", "Labuan", "Putrajaya"] as const;
+export type State = (typeof MALAYSIAN_LOCATIONS)[number];
 
 export interface ApplicationData {
   name: string;
   ageRange: (typeof AGE_RANGES)[number];
   currentJob: string;
-  state: string;
+  state: State;
   city?: string;
   salesExperience: (typeof SALES_EXPERIENCE)[number];
   experienceDetail?: string;
@@ -42,12 +44,16 @@ export function validateApplication(input: Record<string, unknown>): ValidationR
     if ((field === "currentJob" || field === "state") && !text) errors[field] = "REQUIRED";
     else if (text.length > 120) errors[field] = "TOO_LONG";
   }
+  if (typeof value.state === "string" && value.state && !MALAYSIAN_LOCATIONS.includes(value.state as never)) errors.state = "INVALID_OPTION";
   if (!AGE_RANGES.includes(value.ageRange as never)) errors.ageRange = "INVALID_OPTION";
   if (!SALES_EXPERIENCE.includes(value.salesExperience as never)) errors.salesExperience = "INVALID_OPTION";
   if (value.consent !== true) errors.consent = "CONSENT_REQUIRED";
 
   if (Object.keys(errors).length) return { valid: false, errors };
-  return { valid: true, data: value as unknown as ApplicationData, errors: {} };
+  const data = value as unknown as ApplicationData;
+  if (!data.city) delete data.city;
+  if (!data.experienceDetail) delete data.experienceDetail;
+  return { valid: true, data, errors: {} };
 }
 
 export async function submitApplication(_data: ApplicationData | Record<string, unknown>) {

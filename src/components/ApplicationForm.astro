@@ -1,11 +1,10 @@
 ---
 import { applicationContent } from "../application/content";
-import { AGE_RANGES, SALES_EXPERIENCE } from "../application/schema";
+import { AGE_RANGES, MALAYSIAN_LOCATIONS, SALES_EXPERIENCE } from "../application/schema";
 import type { Locale } from "../content/locales";
 
 const { locale } = Astro.props as { locale: Locale };
 const copy = applicationContent[locale];
-const states = ["Johor", "Kedah", "Kelantan", "Melaka", "Negeri Sembilan", "Pahang", "Penang", "Perak", "Perlis", "Sabah", "Sarawak", "Selangor", "Terengganu", "Kuala Lumpur", "Labuan", "Putrajaya"];
 const required = (label: string) => `${label} (${copy.required})`;
 ---
 
@@ -34,7 +33,7 @@ const required = (label: string) => `${label} (${copy.required})`;
     </div>
     <div class="form-field">
       <label for="application-state">{required(copy.labels.state)} <span aria-hidden="true">*</span></label>
-      <select id="application-state" name="state" required aria-describedby="state-error"><option value="">{copy.placeholders.select}</option>{states.map((state) => <option value={state}>{state}</option>)}</select>
+      <select id="application-state" name="state" required aria-describedby="state-error"><option value="">{copy.placeholders.select}</option>{MALAYSIAN_LOCATIONS.map((state) => <option value={state}>{state}</option>)}</select>
       <p id="state-error" class="field-error" data-error-for="state"></p>
     </div>
     <div class="form-field">
