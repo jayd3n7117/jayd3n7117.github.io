@@ -1,3 +1,5 @@
+import { generatedVideo } from './video.generated';
+
 export type LocalizedAlt = Readonly<{ en: string; bm: string; zh: string }>;
 
 export type ImageSource = Readonly<{ src: string; width: number }>;
@@ -89,10 +91,8 @@ export const media = {
     }),
   ],
   video: {
+    ...generatedVideo,
     available: true,
-    poster: '/media/team-video-poster.webp',
-    mp4: '/media/team-video-720.mp4',
-    webm: '/media/team-video-720.webm',
     width: 1280,
     height: 720,
     alt: {
