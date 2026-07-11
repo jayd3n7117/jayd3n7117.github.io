@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { getContent, locales } from '../../src/content/locales';
+import { applicationInterim, getContent, locales } from '../../src/content/locales';
 
 const requiredSections = [
   'meta',
@@ -53,6 +53,13 @@ describe('localized recruitment content', () => {
 
     expect(shape(locales.bm)).toEqual(shape(locales.en));
     expect(shape(locales.zh)).toEqual(shape(locales.en));
+  });
+
+  it('provides an honest localized interim application message', () => {
+    expect(Object.keys(applicationInterim)).toEqual(['en', 'bm', 'zh']);
+    for (const message of Object.values(applicationInterim)) {
+      expect(message.trim()).not.toBe('');
+    }
   });
 
   it('preserves the required opportunity facts in all languages', () => {

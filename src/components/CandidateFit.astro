@@ -1,4 +1,8 @@
 ---
 import type { LandingContent } from '../content/locales'; const {content}=Astro.props as {content:LandingContent};
 ---
-<section class="section fit"><header><p class="eyebrow">Your fit</p><h2>{content.candidateFit.title}</h2><p>{content.candidateFit.intro}</p></header><ol>{content.candidateFit.priorities.map((item,i)=><li><span>{i+1}</span><div><h3>{item.title}</h3><p>{item.description}</p></div></li>)}</ol><aside><h3>{content.candidateFit.notForYouTitle}</h3><p>{content.candidateFit.notForYou}</p></aside></section>
+<section class="section fit">
+  <header><h2>{content.candidateFit.title}</h2><p>{content.candidateFit.intro}</p></header>
+  <ol>{content.candidateFit.priorities.map((item, i) => <li><span>{i + 1}</span><div><h3>{item.title}</h3><p>{item.description}</p></div></li>)}</ol>
+  <aside><h3>{content.candidateFit.notForYouTitle}</h3><p>{content.candidateFit.notForYou}</p></aside>
+</section>

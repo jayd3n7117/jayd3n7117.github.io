@@ -1,4 +1,7 @@
 ---
 import type { LandingContent } from '../content/locales'; const { content }=Astro.props as {content:LandingContent};
 ---
-<section id="support" class="section"><header class="section-heading"><p class="eyebrow">Support</p><h2>{content.support.title}</h2><p>{content.support.intro}</p></header><div class="support-grid">{content.support.items.map((item,i)=><article><span aria-hidden="true">{String(i+1).padStart(2,'0')}</span><svg viewBox="0 0 48 12" aria-hidden="true"><path d="M1 6h38m-6-5 6 5-6 5" /></svg><h3>{item.title}</h3><p>{item.description}</p></article>)}</div></section>
+<section id="support" class="section">
+  <header class="section-heading"><p class="eyebrow">{content.nav.support}</p><h2>{content.support.title}</h2><p>{content.support.intro}</p></header>
+  <div class="support-grid">{content.support.items.map((item, i) => <article><span aria-hidden="true">{String(i + 1).padStart(2, '0')}</span><svg viewBox="0 0 48 12" aria-hidden="true"><path d="M1 6h38m-6-5 6 5-6 5"></path></svg><h3>{item.title}</h3><p>{item.description}</p></article>)}</div>
+</section>

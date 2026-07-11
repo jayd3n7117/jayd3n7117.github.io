@@ -1,5 +1,5 @@
 ---
-import { getContent, type Locale } from '../../content/locales';
+import { applicationInterim, getContent, type Locale } from '../../content/locales';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Hero from '../../components/Hero.astro';
 import MomentumStrip from '../../components/MomentumStrip.astro';
@@ -38,7 +38,6 @@ const content = getContent(locale);
   <section id="apply" class="section apply-placeholder">
     <p class="eyebrow">{content.nav.apply}</p>
     <h2>{content.form.title}</h2>
-    <p>{content.form.intro}</p>
-    <p>{content.form.consent}</p>
+    <p>{applicationInterim[locale]}</p>
   </section>
 </BaseLayout>
