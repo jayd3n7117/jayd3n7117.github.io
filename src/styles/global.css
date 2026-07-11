@@ -191,13 +191,8 @@ summary:focus-visible {
 
 main {
   min-height: 40vh;
-  padding-block: var(--space-12);
 }
 
-main > * {
-  width: min(72rem, calc(100% - 2 * var(--space-4)));
-  margin-inline: auto;
-}
 
 .site-footer {
   padding-block: var(--space-12) var(--space-8);

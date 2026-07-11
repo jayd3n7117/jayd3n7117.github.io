@@ -1,0 +1,11 @@
+---
+import type { MediaImage } from '../content/media';
+interface Props { image: MediaImage; locale: 'en'|'bm'|'zh'; eager?: boolean; class?: string; }
+const { image, locale, eager = false, class: className } = Astro.props;
+const srcset = (items: readonly {src:string;width:number}[]) => items.map(i => `${i.src} ${i.width}w`).join(', ');
+---
+<picture class={className}>
+  <source type="image/avif" srcset={srcset(image.sources.avif)} sizes="(min-width: 64rem) 50vw, 100vw" />
+  <source type="image/webp" srcset={srcset(image.sources.webp)} sizes="(min-width: 64rem) 50vw, 100vw" />
+  <img src={image.src} width={image.width} height={image.height} alt={image.alt[locale]} loading={eager ? 'eager' : 'lazy'} fetchpriority={eager ? 'high' : 'auto'} />
+</picture>

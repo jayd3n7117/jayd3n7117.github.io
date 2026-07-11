@@ -1,0 +1,4 @@
+---
+import type { LandingContent,Locale } from '../content/locales'; import type { MediaImage } from '../content/media'; import ResponsivePicture from './ResponsivePicture.astro'; const {content,locale,images}=Astro.props as {content:LandingContent;locale:Locale;images:readonly MediaImage[]};
+---
+<section id="growth" class="section growth"><header class="section-heading"><p class="eyebrow">Growth</p><h2>{content.progression.title}</h2><p>{content.progression.body}</p></header><ol>{content.progression.steps.map((step,i)=><li><span>{i+1}</span>{step}</li>)}</ol><div class="proof-grid">{images.map(image=><ResponsivePicture {image} {locale} />)}</div></section>

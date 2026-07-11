@@ -1,6 +1,17 @@
 ---
 import { getContent, type Locale } from '../../content/locales';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import Hero from '../../components/Hero.astro';
+import MomentumStrip from '../../components/MomentumStrip.astro';
+import Opportunity from '../../components/Opportunity.astro';
+import SupportGrid from '../../components/SupportGrid.astro';
+import Culture from '../../components/Culture.astro';
+import Progression from '../../components/Progression.astro';
+import TeamVideo from '../../components/TeamVideo.astro';
+import CandidateFit from '../../components/CandidateFit.astro';
+import Faq from '../../components/Faq.astro';
+import { media } from '../../content/media';
+import '../../styles/landing.css';
 
 export function getStaticPaths() {
   const locales: Locale[] = ['en', 'bm', 'zh'];
@@ -15,5 +26,19 @@ const content = getContent(locale);
 ---
 
 <BaseLayout {locale} {content}>
-  <h1>{content.meta.title}</h1>
+  <Hero {content} {locale} image={media.hero} />
+  <MomentumStrip {content} />
+  <Opportunity {content} />
+  <SupportGrid {content} />
+  <Culture {content} {locale} images={media.culture} />
+  <Progression {content} {locale} images={media.achievements} />
+  <TeamVideo {content} />
+  <CandidateFit {content} />
+  <Faq {content} />
+  <section id="apply" class="section apply-placeholder">
+    <p class="eyebrow">{content.nav.apply}</p>
+    <h2>{content.form.title}</h2>
+    <p>{content.form.intro}</p>
+    <p>{content.form.consent}</p>
+  </section>
 </BaseLayout>

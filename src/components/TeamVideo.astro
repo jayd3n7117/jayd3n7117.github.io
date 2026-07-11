@@ -1,0 +1,4 @@
+---
+import type { LandingContent } from '../content/locales'; import { media } from '../content/media'; const {content}=Astro.props as {content:LandingContent};
+---
+<section class="section video-section"><div><p class="eyebrow">Team</p><h2>{content.video.title}</h2><p>{content.video.description}</p></div><video controls preload="metadata" poster={media.video.poster} width={media.video.width} height={media.video.height} aria-label={content.video.playLabel}>{media.video.webm && <source src={media.video.webm} type="video/webm" />}<source src={media.video.mp4} type="video/mp4" /></video></section>

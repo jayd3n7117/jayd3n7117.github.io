@@ -1,0 +1,5 @@
+---
+import type { LandingContent, Locale } from '../content/locales'; import type { MediaImage } from '../content/media'; import ResponsivePicture from './ResponsivePicture.astro';
+const { content, locale, image } = Astro.props as {content:LandingContent;locale:Locale;image:MediaImage};
+---
+<section class="hero"><div class="hero-copy"><p class="eyebrow">{content.hero.eyebrow}</p><h1>{content.hero.title}</h1><p class="lede">{content.hero.subtitle}</p><div class="hero-actions"><a class="button button-primary" href="#apply">{content.hero.primaryCta}</a><a class="button button-secondary" href="#support">{content.hero.secondaryCta}</a></div></div><ResponsivePicture image={image} {locale} eager class="hero-picture" /></section>

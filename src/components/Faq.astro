@@ -1,0 +1,4 @@
+---
+import type { LandingContent } from '../content/locales'; const {content}=Astro.props as {content:LandingContent};
+---
+<section id="faq" class="section faq"><h2>{content.faq.title}</h2>{content.faq.items.map(item=><details><summary>{item.question}</summary><p>{item.answer}</p></details>)}</section>
