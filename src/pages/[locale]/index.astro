@@ -1,11 +1,6 @@
 ---
-export type Locale = 'en' | 'bm' | 'zh';
-
-const localeLanguages: Record<Locale, string> = {
-  en: 'en-MY',
-  bm: 'ms-MY',
-  zh: 'zh-CN',
-};
+import { getContent, type Locale } from '../../content/locales';
+import BaseLayout from '../../layouts/BaseLayout.astro';
 
 export function getStaticPaths() {
   const locales: Locale[] = ['en', 'bm', 'zh'];
@@ -16,18 +11,9 @@ export function getStaticPaths() {
 }
 
 const locale = Astro.params.locale as Locale;
+const content = getContent(locale);
 ---
 
-<!doctype html>
-<html lang={localeLanguages[locale]}>
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
-    <title>Coway Sales Recruitment Malaysia</title>
-  </head>
-  <body>
-    <main>
-      <h1>Coway Sales Recruitment Malaysia</h1>
-    </main>
-  </body>
-</html>
+<BaseLayout {locale} {content}>
+  <h1>{content.meta.title}</h1>
+</BaseLayout>

@@ -1,0 +1,56 @@
+---
+import type { LandingContent, Locale } from '../content/locales';
+
+interface Props {
+  locale: Locale;
+  content: LandingContent;
+}
+
+const { locale, content } = Astro.props;
+
+const languageLinks = [
+  { locale: 'en', label: 'English' },
+  { locale: 'bm', label: 'Bahasa Malaysia' },
+  { locale: 'zh', label: '中文' },
+] as const;
+---
+
+<header class="site-header">
+  <div class="shell header-inner">
+    <a class="wordmark" href={`/${locale}/`} aria-label={`${content.footer.copyright} home`}>
+      <span aria-hidden="true">COWAY</span>
+    </a>
+
+    <nav aria-label="Primary navigation">
+      <ul class="primary-navigation">
+        <li><a href="#opportunity">{content.nav.opportunity}</a></li>
+        <li><a href="#support">{content.nav.support}</a></li>
+        <li><a href="#growth">{content.nav.culture}</a></li>
+        <li><a href="#faq">{content.nav.faq}</a></li>
+        <li><a href="#apply">{content.nav.apply}</a></li>
+      </ul>
+    </nav>
+
+    <div class="header-actions">
+      <details class="language-menu">
+        <summary>Language</summary>
+        <ul>
+          {
+            languageLinks.map((language) => (
+              <li>
+                <a
+                  href={`/${language.locale}/`}
+                  data-locale-link
+                  aria-current={language.locale === locale ? 'page' : undefined}
+                >
+                  {language.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </details>
+      <a class="button button-accent" href="#apply">{content.nav.apply}</a>
+    </div>
+  </div>
+</header>

@@ -1,0 +1,43 @@
+---
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import type { LandingContent, Locale } from '../content/locales';
+import { getSeo } from '../content/seo';
+import '../styles/global.css';
+
+interface Props {
+  locale: Locale;
+  content: LandingContent;
+}
+
+const { locale, content } = Astro.props;
+const seo = getSeo(locale, Astro.site ?? new URL(Astro.url.origin));
+---
+
+<!doctype html>
+<html lang={seo.lang}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{content.meta.title}</title>
+    <meta name="description" content={content.meta.description} />
+    <link rel="canonical" href={seo.canonical} />
+    {
+      Object.entries(seo.alternates).map(([lang, href]) => (
+        <link rel="alternate" hreflang={lang} href={href} />
+      ))
+    }
+    <meta property="og:title" content={content.meta.title} />
+    <meta property="og:description" content={content.meta.description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={seo.canonical} />
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+    <Header {locale} {content} />
+    <main id="main-content" tabindex="-1">
+      <slot />
+    </main>
+    <Footer {locale} {content} />
+  </body>
+</html>

@@ -1,0 +1,54 @@
+---
+import type { LandingContent, Locale } from '../content/locales';
+
+interface Props {
+  locale: Locale;
+  content: LandingContent;
+}
+
+const { locale, content } = Astro.props;
+
+const languageLinks = [
+  { locale: 'en', label: 'English' },
+  { locale: 'bm', label: 'Bahasa Malaysia' },
+  { locale: 'zh', label: '中文' },
+] as const;
+---
+
+<footer class="site-footer">
+  <div class="shell footer-grid">
+    <div>
+      <p class="footer-wordmark" aria-label="Coway">COWAY</p>
+      <p>{content.footer.copyright}</p>
+    </div>
+
+    <nav aria-label="Language">
+      <p class="footer-heading">Language</p>
+      <ul class="footer-links language-links">
+        {
+          languageLinks.map((language) => (
+            <li>
+              <a
+                href={`/${language.locale}/`}
+                data-locale-link
+                aria-current={language.locale === locale ? 'page' : undefined}
+              >
+                {language.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div>
+      <p class="footer-heading">Coway</p>
+      <a href="https://www.coway.com.my/">Coway Malaysia official website</a>
+    </div>
+  </div>
+
+  <div class="shell footer-legal">
+    <p class="site-disclosure">{content.footer.disclaimer}</p>
+    <p>{content.footer.privacy}</p>
+  </div>
+</footer>
