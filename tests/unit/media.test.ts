@@ -4,6 +4,7 @@ import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
 import { media } from '../../src/content/media';
+import { requireVideoCapabilities } from '../../scripts/optimize-media.mjs';
 
 const publicRoot = join(process.cwd(), 'public');
 const webSafePath = /^\/media\/[a-z0-9]+(?:-[a-z0-9]+)*\.(?:avif|webm|webp|mp4|png)$/;
@@ -11,6 +12,14 @@ const webSafePath = /^\/media\/[a-z0-9]+(?:-[a-z0-9]+)*\.(?:avif|webm|webp|mp4|p
 const imageEntries = [media.logo, media.hero, ...media.culture, ...media.achievements];
 
 describe('media manifest', () => {
+  it('fails clearly instead of leaving stale video when required codecs are unavailable', () => {
+    expect(() => requireVideoCapabilities({
+      supportsMov: true,
+      supportsMp4: true,
+      supportsWebm: false,
+    })).toThrow(/WebM.*libvpx-vp9/i);
+  });
+
   it('provides authentic culture and achievement media', () => {
     expect(media.culture.length).toBeGreaterThan(0);
     expect(media.achievements.length).toBeGreaterThan(0);
