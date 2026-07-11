@@ -1,9 +1,9 @@
 import { expect, test } from "@playwright/test";
 
 const localizedRoutes = [
-  { locale: "en", lang: "en-MY", title: "Coway Sales Recruitment Malaysia" },
-  { locale: "bm", lang: "ms-MY", title: "Pengambilan Jualan Coway Malaysia" },
-  { locale: "zh", lang: "zh-CN", title: "Coway 马来西亚销售招募" },
+  { locale: "en", lang: "en-MY" },
+  { locale: "bm", lang: "ms-MY" },
+  { locale: "zh", lang: "zh-CN" },
 ] as const;
 
 for (const { locale, lang } of localizedRoutes) {

@@ -1,7 +1,22 @@
 ---
-import type { LandingContent } from '../content/locales'; const { content }=Astro.props as {content:LandingContent};
+import type { LandingContent } from '../content/locales';
+
+interface Props {
+  content: LandingContent;
+}
+
+const { content } = Astro.props;
 ---
 <section id="opportunity" class="section opportunity">
-  <div><p class="eyebrow">{content.nav.opportunity}</p><h2>{content.opportunity.title}</h2><p>{content.opportunity.body}</p></div>
-  <aside class="income-card"><p>{content.opportunity.incomeLabel}</p><strong>{content.opportunity.incomeRange}</strong><h3>{content.opportunity.commissionLabel}</h3><p>{content.opportunity.disclaimer}</p></aside>
+  <div>
+    <p class="eyebrow">{content.nav.opportunity}</p>
+    <h2>{content.opportunity.title}</h2>
+    <p>{content.opportunity.body}</p>
+  </div>
+  <aside class="income-card">
+    <p>{content.opportunity.incomeLabel}</p>
+    <strong>{content.opportunity.incomeRange}</strong>
+    <h3>{content.opportunity.commissionLabel}</h3>
+    <p>{content.opportunity.disclaimer}</p>
+  </aside>
 </section>

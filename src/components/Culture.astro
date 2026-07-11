@@ -1,7 +1,26 @@
 ---
-import type { LandingContent,Locale } from '../content/locales'; import type { MediaImage } from '../content/media'; import ResponsivePicture from './ResponsivePicture.astro'; const {content,locale,images}=Astro.props as {content:LandingContent;locale:Locale;images:readonly MediaImage[]};
+import type { LandingContent, Locale } from '../content/locales';
+import type { MediaImage } from '../content/media';
+import ResponsivePicture from './ResponsivePicture.astro';
+
+interface Props {
+  content: LandingContent;
+  locale: Locale;
+  images: readonly MediaImage[];
+}
+
+const { content, locale, images } = Astro.props;
 ---
 <section class="section culture">
-  <header><p class="eyebrow">{content.nav.culture}</p><h2>{content.culture.title}</h2><blockquote class="culture-statement">{content.culture.statement}</blockquote><p>{content.culture.body}</p></header>
-  <div class="culture-grid">{images.slice(1).map((image) => <ResponsivePicture {image} {locale} sizes="(min-width: 48rem) 25vw, 100vw" />)}</div>
+  <header>
+    <p class="eyebrow">{content.nav.culture}</p>
+    <h2>{content.culture.title}</h2>
+    <blockquote class="culture-statement">{content.culture.statement}</blockquote>
+    <p>{content.culture.body}</p>
+  </header>
+  <div class="culture-grid">
+    {images.slice(1).map((image) => (
+      <ResponsivePicture {image} {locale} sizes="(min-width: 48rem) 25vw, 100vw" />
+    ))}
+  </div>
 </section>

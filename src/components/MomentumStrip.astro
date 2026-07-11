@@ -1,7 +1,18 @@
 ---
-import type { LandingContent } from '../content/locales'; const { content }=Astro.props as {content:LandingContent};
+import type { LandingContent } from '../content/locales';
+
+interface Props {
+  content: LandingContent;
+}
+
+const { content } = Astro.props;
 ---
 <section class="momentum">
-  <div><h2>{content.momentum.title}</h2><p>{content.momentum.body}</p></div>
-  <ul>{content.support.items.slice(0, 5).map((item) => <li>{item.title}</li>)}</ul>
+  <div>
+    <h2>{content.momentum.title}</h2>
+    <p>{content.momentum.body}</p>
+  </div>
+  <ul>
+    {content.support.items.slice(0, 5).map((item) => <li>{item.title}</li>)}
+  </ul>
 </section>

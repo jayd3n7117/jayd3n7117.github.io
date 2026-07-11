@@ -1,6 +1,15 @@
 ---
-import type { LandingContent, Locale } from '../content/locales'; import type { MediaImage } from '../content/media'; import ResponsivePicture from './ResponsivePicture.astro';
-const { content, locale, image } = Astro.props as {content:LandingContent;locale:Locale;image:MediaImage};
+import type { LandingContent, Locale } from '../content/locales';
+import type { MediaImage } from '../content/media';
+import ResponsivePicture from './ResponsivePicture.astro';
+
+interface Props {
+  content: LandingContent;
+  locale: Locale;
+  image: MediaImage;
+}
+
+const { content, locale, image } = Astro.props;
 ---
 <section class="hero">
   <div class="hero-copy">
