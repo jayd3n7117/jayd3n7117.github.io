@@ -9,11 +9,13 @@
     "test": "vitest run",
     "build": "astro build",
     "preview": "astro preview",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "media": "node scripts/optimize-media.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "latest",
-    "astro": "latest"
+    "astro": "latest",
+    "sharp": "^0.35.3"
   },
   "devDependencies": {
     "@astrojs/check": "latest",
