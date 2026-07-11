@@ -1,5 +1,5 @@
 ---
-import { applicationInterim, getContent, type Locale } from '../../content/locales';
+import { getContent, type Locale } from '../../content/locales';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Hero from '../../components/Hero.astro';
 import MomentumStrip from '../../components/MomentumStrip.astro';
@@ -10,6 +10,7 @@ import Progression from '../../components/Progression.astro';
 import TeamVideo from '../../components/TeamVideo.astro';
 import CandidateFit from '../../components/CandidateFit.astro';
 import Faq from '../../components/Faq.astro';
+import ApplicationForm from '../../components/ApplicationForm.astro';
 import { media } from '../../content/media';
 import '../../styles/landing.css';
 
@@ -35,9 +36,5 @@ const content = getContent(locale);
   <TeamVideo {content} />
   <CandidateFit {content} />
   <Faq {content} />
-  <section id="apply" class="section apply-placeholder" data-reveal>
-    <p class="eyebrow">{content.nav.apply}</p>
-    <h2>{content.form.title}</h2>
-    <p>{applicationInterim[locale]}</p>
-  </section>
+  <ApplicationForm {locale} />
 </BaseLayout>

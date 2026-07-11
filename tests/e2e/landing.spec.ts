@@ -165,7 +165,51 @@ for (const locale of ["bm", "zh"] as const) {
     await expect(support).toContainText(locale === "bm" ? "Sokongan praktikal" : "\u52a9\u4f60\u524d\u8fdb\u7684\u5b9e\u7528\u652f\u6301");
     await expect(opportunity).toContainText("RM2,500-RM10,000+");
     await expect(opportunity).toContainText(locale === "bm" ? "Tiada pendapatan yang dijamin" : "\u4e0d\u4fdd\u8bc1\u4efb\u4f55\u6536\u5165");
-    await expect(page.locator("#apply")).toContainText(locale === "bm" ? "Borang permohonan sedang disediakan" : "\u7533\u8bf7\u8868\u683c\u6b63\u5728\u51c6\u5907\u4e2d");
+    await expect(page.locator("#apply")).toContainText(locale === "bm" ? "Mulakan perbualan" : "\u5f00\u59cb\u6c9f\u901a");
+  });
+}
+
+test("validates inline, focuses the first error, and preserves values", async ({ page }) => {
+  await page.goto("/en/");
+  const form = page.locator("[data-application-form]");
+  await form.locator('[name="currentJob"]').fill("Designer");
+  await form.locator('button[type="submit"]').click();
+  await expect(form.locator('[name="name"]')).toBeFocused();
+  await expect(form.locator("#name-error")).toContainText("required");
+  await expect(form.locator('[name="currentJob"]')).toHaveValue("Designer");
+});
+
+test("does not POST or claim receipt and blocks repeat submission while checking", async ({ page }) => {
+  const requests: string[] = [];
+  page.on("request", (request) => { if (request.method() === "POST") requests.push(request.url()); });
+  await page.goto("/en/");
+  const form = page.locator("[data-application-form]");
+  await form.locator('[name="name"]').fill("Aina Rahman");
+  await form.locator('[name="ageRange"]').selectOption("25-34");
+  await form.locator('[name="currentJob"]').fill("Designer");
+  await form.locator('[name="state"]').selectOption("Selangor");
+  await form.locator('[name="salesExperience"]').selectOption("1-3");
+  await form.locator('[name="consent"]').check();
+  const submit = form.locator('button[type="submit"]');
+  await submit.evaluate((button) => {
+    button.dispatchEvent(new SubmitEvent("submit", { bubbles: true, cancelable: true }));
+    button.dispatchEvent(new SubmitEvent("submit", { bubbles: true, cancelable: true }));
+  });
+  await expect(submit).toBeDisabled();
+  await expect(form.locator("[data-form-status]")).toContainText("not been sent or stored");
+  expect(requests).toEqual([]);
+  await expect(form.locator('[name="name"]')).toHaveValue("Aina Rahman");
+});
+
+for (const { locale, label } of [
+  { locale: "en", label: "Current job" },
+  { locale: "bm", label: "Pekerjaan semasa" },
+  { locale: "zh", label: "\u76ee\u524d\u804c\u4e1a" },
+] as const) {
+  test(`shows localized application labels in ${locale}`, async ({ page }) => {
+    await page.goto(`/${locale}/`);
+    await expect(page.getByLabel(new RegExp(label))).toBeVisible();
+    await expect(page.locator("#apply form label")).toHaveCount(8);
   });
 }
 

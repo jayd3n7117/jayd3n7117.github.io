@@ -1,0 +1,64 @@
+---
+import { applicationContent } from "../application/content";
+import { AGE_RANGES, SALES_EXPERIENCE } from "../application/schema";
+import type { Locale } from "../content/locales";
+
+const { locale } = Astro.props as { locale: Locale };
+const copy = applicationContent[locale];
+const states = ["Johor", "Kedah", "Kelantan", "Melaka", "Negeri Sembilan", "Pahang", "Penang", "Perak", "Perlis", "Sabah", "Sarawak", "Selangor", "Terengganu", "Kuala Lumpur", "Labuan", "Putrajaya"];
+const required = (label: string) => `${label} (${copy.required})`;
+---
+
+<section id="apply" class="section application-section" data-reveal>
+  <div class="application-intro">
+    <p class="eyebrow">{copy.required}</p>
+    <h2>{copy.title}</h2>
+    <p class="lede">{copy.intro}</p>
+    <p class="privacy-note" id="application-privacy">{copy.privacy}</p>
+  </div>
+  <form class="application-form" data-application-form novalidate aria-describedby="application-privacy" data-copy={JSON.stringify({ errors: copy.errors, invalid: copy.invalid, notConfigured: copy.notConfigured, submitting: copy.submitting, submit: copy.submit })}>
+    <div class="form-field">
+      <label for="application-name">{required(copy.labels.name)} <span aria-hidden="true">*</span></label>
+      <input id="application-name" name="name" type="text" required maxlength="120" autocomplete="name" aria-describedby="name-error" />
+      <p id="name-error" class="field-error" data-error-for="name"></p>
+    </div>
+    <div class="form-field">
+      <label for="application-age">{required(copy.labels.ageRange)} <span aria-hidden="true">*</span></label>
+      <select id="application-age" name="ageRange" required aria-describedby="ageRange-error"><option value="">{copy.placeholders.select}</option>{AGE_RANGES.map((value) => <option value={value}>{copy.ageOptions[value]}</option>)}</select>
+      <p id="ageRange-error" class="field-error" data-error-for="ageRange"></p>
+    </div>
+    <div class="form-field">
+      <label for="application-job">{required(copy.labels.currentJob)} <span aria-hidden="true">*</span></label>
+      <input id="application-job" name="currentJob" type="text" required maxlength="120" aria-describedby="currentJob-error" />
+      <p id="currentJob-error" class="field-error" data-error-for="currentJob"></p>
+    </div>
+    <div class="form-field">
+      <label for="application-state">{required(copy.labels.state)} <span aria-hidden="true">*</span></label>
+      <select id="application-state" name="state" required aria-describedby="state-error"><option value="">{copy.placeholders.select}</option>{states.map((state) => <option value={state}>{state}</option>)}</select>
+      <p id="state-error" class="field-error" data-error-for="state"></p>
+    </div>
+    <div class="form-field">
+      <label for="application-city">{copy.labels.city} ({copy.optional})</label>
+      <input id="application-city" name="city" type="text" maxlength="120" aria-describedby="city-error" />
+      <p id="city-error" class="field-error" data-error-for="city"></p>
+    </div>
+    <div class="form-field">
+      <label for="application-experience">{required(copy.labels.salesExperience)} <span aria-hidden="true">*</span></label>
+      <select id="application-experience" name="salesExperience" required aria-describedby="salesExperience-error"><option value="">{copy.placeholders.select}</option>{SALES_EXPERIENCE.map((value) => <option value={value}>{copy.experienceOptions[value]}</option>)}</select>
+      <p id="salesExperience-error" class="field-error" data-error-for="salesExperience"></p>
+    </div>
+    <div class="form-field form-field-wide">
+      <label for="application-detail">{copy.labels.experienceDetail} ({copy.optional})</label>
+      <textarea id="application-detail" name="experienceDetail" maxlength="120" rows="3" aria-describedby="experienceDetail-error"></textarea>
+      <p id="experienceDetail-error" class="field-error" data-error-for="experienceDetail"></p>
+    </div>
+    <div class="consent-field form-field-wide">
+      <input id="application-consent" name="consent" type="checkbox" required aria-describedby="consent-error" />
+      <label for="application-consent">{copy.labels.consent} <span class="required-marker">({copy.required}) *</span></label>
+      <p id="consent-error" class="field-error" data-error-for="consent"></p>
+    </div>
+    <button class="button application-submit form-field-wide" type="submit">{copy.submit}</button>
+    <p class="form-status form-field-wide" data-form-status role="status" aria-live="polite"></p>
+  </form>
+</section>
+<script src="../scripts/application.ts"></script>

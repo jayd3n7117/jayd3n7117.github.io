@@ -275,15 +275,101 @@ picture img {
 .faq details p {
   padding-bottom: 1rem;
 }
-.apply-placeholder {
+.application-section {
+  display: grid;
+  gap: 2rem;
   margin-bottom: 5rem;
+  padding: clamp(1.5rem, 5vw, 4rem);
   border-radius: 1.5rem;
+  background: var(--color-surface);
+}
+.application-intro h2 {
+  margin-top: 0;
+}
+.privacy-note {
+  padding: 1rem;
+  border-left: 0.3rem solid var(--color-coway-blue);
+  background: #fff;
+}
+.application-form {
+  display: grid;
+  gap: 1rem;
+}
+.form-field {
+  min-width: 0;
+}
+.form-field label,
+.consent-field label {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-weight: 750;
+}
+.form-field input,
+.form-field select,
+.form-field textarea {
+  width: 100%;
+  min-height: 3rem;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid #7f9caf;
+  border-radius: 0.5rem;
+  background: #fff;
+  color: var(--color-text);
+  font: inherit;
+}
+.form-field textarea {
+  min-height: 6rem;
+  resize: vertical;
+}
+.form-field input:focus-visible,
+.form-field select:focus-visible,
+.form-field textarea:focus-visible,
+.application-submit:focus-visible,
+.consent-field input:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 6px var(--focus-ring-contrast);
+}
+.field-error {
+  min-height: 1.5rem;
+  margin: 0.25rem 0 0;
+  color: var(--color-coral-dark);
+  font-weight: 700;
+}
+[aria-invalid="true"] {
+  border-color: var(--color-coral-dark) !important;
+}
+.consent-field {
+  display: grid;
+  grid-template-columns: 2rem 1fr;
+  gap: 0.5rem;
+  align-items: start;
+}
+.consent-field input {
+  width: 1.5rem;
+  height: 1.5rem;
+  margin: 0.25rem;
+}
+.consent-field .field-error {
+  grid-column: 2;
+}
+.required-marker {
+  color: var(--color-coral-dark);
+}
+.application-submit {
+  min-height: 3rem;
+  border: 0;
   background: var(--color-coway-blue);
   color: #fff;
+  cursor: pointer;
 }
-.apply-placeholder h2,
-.apply-placeholder .eyebrow {
-  color: #fff;
+.application-submit:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+.form-status {
+  min-height: 1.6rem;
+  margin: 0;
+  font-weight: 750;
 }
 @media (min-width: 48rem) {
   .support-grid {
@@ -295,6 +381,19 @@ picture img {
   .fit {
     grid-template-columns: repeat(2, 1fr);
     align-items: center;
+  }
+  .application-section,
+  .application-form {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .application-form {
+    grid-column: 1 / -1;
+  }
+  .application-intro {
+    grid-column: 1 / -1;
+  }
+  .form-field-wide {
+    grid-column: 1 / -1;
   }
   .growth ol {
     grid-template-columns: repeat(3, 1fr);
