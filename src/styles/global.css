@@ -6,7 +6,8 @@
   --color-coral-dark: #b93427;
   --color-surface: #f4f8fb;
   --color-text: #17324d;
-  --focus-ring: #ffbf47;
+  --focus-ring: #ffffff;
+  --focus-ring-contrast: #082f49;
   --space-1: 0.25rem;
   --space-2: 0.5rem;
   --space-3: 0.75rem;
@@ -50,6 +51,7 @@ summary:focus-visible {
   border-radius: var(--radius-sm);
   outline: 3px solid var(--focus-ring);
   outline-offset: 3px;
+  box-shadow: 0 0 0 6px var(--focus-ring-contrast);
 }
 
 .shell {
@@ -247,8 +249,29 @@ main > * {
 }
 
 @media (max-width: 40rem) {
+  .header-inner {
+    gap: var(--space-2);
+  }
+
+  .wordmark {
+    font-size: 1rem;
+  }
+
+  .header-actions {
+    gap: var(--space-1);
+    margin-left: auto;
+  }
+
+  .language-menu summary {
+    padding-inline: var(--space-1);
+    font-size: 0.8rem;
+  }
+
   .button-accent {
-    display: none;
+    min-height: 2.25rem;
+    padding-inline: var(--space-2);
+    font-size: 0.8rem;
+    white-space: nowrap;
   }
 
   .footer-grid {

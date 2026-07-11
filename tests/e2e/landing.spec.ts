@@ -56,6 +56,42 @@ test('uses native language navigation and stable locale links', async ({ page })
   await expect(page.locator('html')).toHaveAttribute('lang', 'ms-MY');
 });
 
+test('keeps the prominent Apply action visible within a narrow viewport', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 568 });
+  await page.goto('/en/');
+
+  const applyAction = page.locator('header .button-accent');
+  await expect(applyAction).toBeVisible();
+
+  const bounds = await applyAction.boundingBox();
+  expect(bounds).not.toBeNull();
+  expect(bounds!.x).toBeGreaterThanOrEqual(0);
+  expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(320);
+});
+
+test('uses a two-color focus indicator visible across page surfaces', async ({ page }) => {
+  await page.goto('/en/');
+
+  const applyAction = page.locator('header .button-accent');
+  await applyAction.focus();
+
+  await expect(applyAction).toBeFocused();
+  expect(
+    await applyAction.evaluate((element) => {
+      const style = getComputedStyle(element);
+      return {
+        outlineColor: style.outlineColor,
+        outlineWidth: style.outlineWidth,
+        boxShadow: style.boxShadow,
+      };
+    }),
+  ).toEqual({
+    outlineColor: 'rgb(255, 255, 255)',
+    outlineWidth: '3px',
+    boxShadow: 'rgb(8, 47, 73) 0px 0px 0px 6px',
+  });
+});
+
 test('opens the prefixed English locale from the root route', async ({ page }) => {
   await page.goto('/');
 
