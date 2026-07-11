@@ -39,5 +39,9 @@ const seo = getSeo(locale, Astro.site ?? new URL(Astro.url.origin));
       <slot />
     </main>
     <Footer {locale} {content} />
+    <script>
+      import '../scripts/navigation';
+      import '../scripts/motion';
+    </script>
   </body>
 </html>

@@ -16,7 +16,7 @@ const {
 } = Astro.props;
 const srcset = (items: readonly {src:string;width:number}[]) => items.map(i => `${i.src} ${i.width}w`).join(', ');
 ---
-<picture class={className}>
+<picture class={className} data-image-motion>
   <source type="image/avif" srcset={srcset(image.sources.avif)} {sizes} />
   <source type="image/webp" srcset={srcset(image.sources.webp)} {sizes} />
   <img src={image.src} width={image.width} height={image.height} alt={image.alt[locale]} loading={eager ? 'eager' : 'lazy'} fetchpriority={eager ? 'high' : 'auto'} />

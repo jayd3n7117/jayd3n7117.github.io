@@ -72,6 +72,14 @@ picture img {
   height: 100%;
   object-fit: cover;
 }
+[data-image-motion] img {
+  transition: transform 250ms ease-out;
+}
+@media (hover: hover) {
+  [data-image-motion]:hover img {
+    transform: scale(1.015);
+  }
+}
 .hero-picture {
   overflow: hidden;
   border-radius: 48% 48% 1.5rem 1.5rem;
@@ -100,6 +108,30 @@ picture img {
   padding-block: 0.65rem;
   border-bottom: 1px solid rgb(255 255 255/25%);
   font-weight: 700;
+}
+[data-ticker] {
+  animation: ticker-enter 250ms ease-out both;
+}
+.motion-ready [data-reveal] {
+  opacity: 0;
+  transform: translateY(1rem);
+  transition:
+    opacity 240ms ease-out,
+    transform 240ms ease-out;
+}
+.motion-ready [data-reveal].is-revealed {
+  opacity: 1;
+  transform: none;
+}
+@keyframes ticker-enter {
+  from {
+    opacity: 0;
+    transform: translateX(0.75rem);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 .section-heading {
   max-width: 48rem;
@@ -305,5 +337,19 @@ picture img {
   }
   .button:hover {
     transform: none;
+  }
+  [data-reveal],
+  .motion-ready [data-reveal],
+  .motion-ready [data-reveal].is-revealed {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  [data-ticker] {
+    animation: none;
+  }
+  [data-image-motion] img {
+    transform: none;
+    transition: none;
   }
 }

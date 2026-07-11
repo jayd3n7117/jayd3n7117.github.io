@@ -168,3 +168,39 @@ for (const locale of ["bm", "zh"] as const) {
     await expect(page.locator("#apply")).toContainText(locale === "bm" ? "Borang permohonan sedang disediakan" : "\u7533\u8bf7\u8868\u683c\u6b63\u5728\u51c6\u5907\u4e2d");
   });
 }
+
+test("preserves a recognized section anchor when changing language", async ({ page }) => {
+  await page.goto("/en/#support");
+
+  await page.locator("footer [data-locale-link][href='/bm/']").click();
+
+  await expect(page).toHaveURL(/\/bm\/#support$/);
+});
+
+test("removes an unknown anchor when changing language", async ({ page }) => {
+  await page.goto("/en/#unknown");
+
+  await page.locator("footer [data-locale-link][href='/bm/']").click();
+
+  await expect(page).toHaveURL(/\/bm\/$/);
+});
+
+test("keeps reduced-motion content visible and ticker static", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/en/");
+
+  await expect(page.locator("[data-reveal]").first()).toBeVisible();
+  await expect(page.locator("[data-ticker]")).toHaveCSS("animation-name", "none");
+  await expect(page.locator("[data-reveal]").first()).toHaveCSS("transform", "none");
+});
+
+test("keeps reveal content readable without JavaScript", async ({ browser }) => {
+  const context = await browser.newContext({ javaScriptEnabled: false });
+  const page = await context.newPage();
+
+  await page.goto("/en/");
+
+  await expect(page.locator("[data-reveal]").first()).toBeVisible();
+  await expect(page.locator("#support article").first()).toBeVisible();
+  await context.close();
+});
