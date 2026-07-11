@@ -1,0 +1,33 @@
+---
+export type Locale = 'en' | 'bm' | 'zh';
+
+const localeLanguages: Record<Locale, string> = {
+  en: 'en-MY',
+  bm: 'ms-MY',
+  zh: 'zh-CN',
+};
+
+export function getStaticPaths() {
+  const locales: Locale[] = ['en', 'bm', 'zh'];
+
+  return locales.map((locale) => ({
+    params: { locale },
+  }));
+}
+
+const locale = Astro.params.locale as Locale;
+---
+
+<!doctype html>
+<html lang={localeLanguages[locale]}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Coway Sales Recruitment Malaysia</title>
+  </head>
+  <body>
+    <main>
+      <h1>Coway Sales Recruitment Malaysia</h1>
+    </main>
+  </body>
+</html>

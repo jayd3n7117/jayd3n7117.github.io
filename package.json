@@ -1,0 +1,24 @@
+{
+  "name": "coway-sales-recruitment-malaysia",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "check": "astro check",
+    "test": "vitest run",
+    "build": "astro build",
+    "preview": "astro preview",
+    "test:e2e": "playwright test"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "latest",
+    "astro": "latest"
+  },
+  "devDependencies": {
+    "@astrojs/check": "latest",
+    "@playwright/test": "latest",
+    "typescript": "^5.9.3",
+    "vitest": "latest"
+  }
+}
