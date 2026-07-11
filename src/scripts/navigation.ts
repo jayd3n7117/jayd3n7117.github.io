@@ -22,7 +22,7 @@ document.addEventListener('click', (event) => {
   if (!(target instanceof Element)) return;
 
   const link = target.closest<HTMLAnchorElement>('a[data-locale-link]');
-  if (!link || link.download || link.target) return;
+  if (!link || link.hasAttribute('download') || link.target) return;
 
   const destination = new URL(link.href, window.location.href);
   if (destination.origin !== window.location.origin) return;

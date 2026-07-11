@@ -185,6 +185,63 @@ test("removes an unknown anchor when changing language", async ({ page }) => {
   await expect(page).toHaveURL(/\/bm\/$/);
 });
 
+test("does not intercept a locale link with a bare download attribute", async ({ page }) => {
+  await page.goto("/en/");
+
+  const wasPrevented = await page.evaluate(() => {
+    const link = document.createElement("a");
+    link.href = "/bm/";
+    link.dataset.localeLink = "";
+    link.setAttribute("download", "");
+    document.body.append(link);
+
+    let prevented = false;
+    document.addEventListener("click", (event) => {
+      prevented = event.defaultPrevented;
+      event.preventDefault();
+    }, { once: true });
+    link.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true, button: 0 }));
+    link.remove();
+    return prevented;
+  });
+
+  expect(wasPrevented).toBe(false);
+  await expect(page).toHaveURL(/\/en\/$/);
+});
+
+test("leaves modified, non-primary, targeted, and external locale clicks alone", async ({ page }) => {
+  await page.goto("/en/");
+
+  const results = await page.evaluate(() => {
+    const cases = [
+      { href: "/bm/", init: { ctrlKey: true, button: 0 } },
+      { href: "/bm/", init: { button: 1 } },
+      { href: "/bm/", target: "_blank", init: { button: 0 } },
+      { href: "https://example.org/bm/", init: { button: 0 } },
+    ];
+
+    return cases.map(({ href, target, init }) => {
+      const link = document.createElement("a");
+      link.href = href;
+      link.dataset.localeLink = "";
+      if (target) link.target = target;
+      document.body.append(link);
+
+      let prevented = false;
+      document.addEventListener("click", (event) => {
+        prevented = event.defaultPrevented;
+        event.preventDefault();
+      }, { once: true });
+      link.dispatchEvent(new MouseEvent("click", { ...init, bubbles: true, cancelable: true }));
+      link.remove();
+      return prevented;
+    });
+  });
+
+  expect(results).toEqual([false, false, false, false]);
+  await expect(page).toHaveURL(/\/en\/$/);
+});
+
 test("keeps reduced-motion content visible and ticker static", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/en/");
