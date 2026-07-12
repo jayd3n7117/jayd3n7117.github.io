@@ -149,6 +149,13 @@ picture img {
 [data-ticker] {
   animation: ticker-enter 250ms ease-out both;
 }
+[data-motion="hero-title"],
+[data-motion="hero-image"],
+[data-motion-card],
+[data-ticker-track],
+[data-media-tile] {
+  will-change: transform;
+}
 .motion-ready [data-reveal] {
   opacity: 0;
   transform: translateY(1rem);
@@ -489,6 +496,14 @@ picture img {
   }
   [data-ticker] {
     animation: none;
+  }
+  [data-motion="hero-title"],
+  [data-motion="hero-image"],
+  [data-motion-card],
+  [data-ticker-track],
+  [data-media-tile] {
+    opacity: 1;
+    transform: none;
   }
   [data-image-motion] img {
     transform: none;

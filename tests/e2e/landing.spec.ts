@@ -400,6 +400,19 @@ test("keeps reduced-motion content visible and ticker static", async ({ page }) 
   await expect(page.locator("[data-reveal]").first()).toBeVisible();
   await expect(page.locator("[data-ticker]")).toHaveCSS("animation-name", "none");
   await expect(page.locator("[data-reveal]").first()).toHaveCSS("transform", "none");
+  await expect(page.locator('[data-motion="hero-title"]')).toHaveCSS("transform", "none");
+  await expect(page.locator("[data-ticker-track]")).toHaveCSS("transform", "none");
+});
+
+test("updates scroll progress without changing layout bounds", async ({ page }) => {
+  await page.goto("/en/");
+  await page.evaluate(() => scrollTo(0, 900));
+  await expect.poll(() => page.locator("html").evaluate((el) =>
+    getComputedStyle(el).getPropertyValue("--page-progress").trim()
+  )).not.toBe("0");
+  expect(await page.evaluate(() =>
+    document.body.scrollWidth <= document.documentElement.clientWidth
+  )).toBe(true);
 });
 
 test("keeps reveal content readable without JavaScript", async ({ browser }) => {
