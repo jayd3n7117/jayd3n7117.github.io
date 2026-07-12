@@ -7,12 +7,14 @@ interface Props {
 
 const { content } = Astro.props;
 ---
-<section class="momentum" data-reveal>
+<section class="momentum full-bleed" data-reveal>
   <div>
     <h2>{content.momentum.title}</h2>
     <p>{content.momentum.body}</p>
   </div>
-  <ul data-ticker>
-    {content.support.items.slice(0, 5).map((item) => <li>{item.title}</li>)}
-  </ul>
+  <div class="ticker-viewport">
+    <ul data-ticker data-ticker-track>
+      {content.support.items.slice(0, 5).map((item) => <li>{item.title}</li>)}
+    </ul>
+  </div>
 </section>

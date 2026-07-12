@@ -172,6 +172,14 @@ test("renders the complete landing story with honest opportunity details", async
   expect(await page.locator("main h2").count()).toBeGreaterThanOrEqual(8);
 });
 
+test("renders the Performance Sport hero and opportunity composition", async ({ page }) => {
+  await page.goto("/en/");
+  await expect(page.locator("[data-performance-hero]")).toHaveCount(1);
+  await expect(page.locator("[data-motion-card]")).toHaveCount(3);
+  await expect(page.locator("[data-ticker-track]")).toContainText(/online sales training/i);
+  await expect(page.locator("#opportunity")).toHaveCSS("background-color", "rgb(234, 245, 244)");
+});
+
 test("uses an accessible user-controlled team video", async ({ page }) => {
   await page.goto("/en/");
   const video = page.locator("video");

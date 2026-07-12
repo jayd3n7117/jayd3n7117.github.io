@@ -37,6 +37,19 @@ h2 {
   gap: 2rem;
   align-items: center;
   min-height: calc(100vh - 5rem);
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding-inline: var(--page-gutter);
+  background: var(--color-primary);
+  color: var(--color-on-dark);
+}
+.performance-hero h1,
+.performance-hero .eyebrow {
+  color: var(--color-on-dark);
+}
+.performance-hero .eyebrow {
+  color: var(--color-accent);
 }
 .hero-actions {
   display: flex;
@@ -45,12 +58,12 @@ h2 {
   margin-top: 2rem;
 }
 .button-primary {
-  background: var(--color-coway-blue);
-  color: #fff;
+  background: var(--color-accent);
+  color: var(--color-primary);
 }
 .button-secondary {
-  border: 2px solid var(--color-navy);
-  color: var(--color-navy);
+  border: 2px solid var(--color-on-dark);
+  color: var(--color-on-dark);
 }
 .button {
   transition:
@@ -86,13 +99,37 @@ picture img {
   aspect-ratio: 4/5;
   background: var(--color-surface);
 }
+.hero-visual {
+  position: relative;
+  min-width: 0;
+  padding: 0 0.5rem 2.5rem;
+}
+.hero-fact {
+  position: absolute;
+  max-width: 15rem;
+  padding: 0.8rem 1rem;
+  border: 1px solid rgb(7 31 43 / 12%);
+  border-radius: 0.6rem;
+  background: var(--color-on-dark);
+  box-shadow: 0 1rem 2.5rem rgb(0 0 0 / 22%);
+  color: var(--color-primary);
+  font-weight: 800;
+  line-height: 1.2;
+}
+.hero-fact-income { top: 8%; left: -0.5rem; background: var(--color-accent); }
+.hero-fact-culture { right: -0.5rem; bottom: 12%; }
+.hero-fact-growth { bottom: 0; left: 12%; background: var(--color-secondary-accent); }
 .momentum {
   display: grid;
   gap: 2rem;
   padding: clamp(2rem, 5vw, 4rem);
-  background: var(--color-navy);
+  background: var(--color-primary-raised);
   color: #fff;
-  border-radius: 1.5rem;
+  border-radius: 0;
+  overflow: hidden;
+  width: 100%;
+  max-width: none;
+  margin-inline: 0;
 }
 .momentum h2 {
   color: #fff;
@@ -104,6 +141,7 @@ picture img {
   padding: 0;
   list-style: none;
 }
+.ticker-viewport { overflow: hidden; }
 .momentum li {
   padding-block: 0.65rem;
   border-bottom: 1px solid rgb(255 255 255/25%);
@@ -140,11 +178,16 @@ picture img {
 .opportunity {
   display: grid;
   gap: 2rem;
+  max-width: none;
+  width: 100%;
+  margin-inline: 0;
+  padding-inline: var(--page-gutter);
+  background: var(--color-surface-cool);
 }
 .income-card {
   padding: clamp(1.5rem, 4vw, 3rem);
   border-radius: 1.5rem;
-  background: var(--color-coway-blue);
+  background: var(--color-primary);
   color: #fff;
 }
 .income-card strong {
@@ -407,8 +450,9 @@ picture img {
     grid-column: 1/8;
   }
   .hero-picture {
-    grid-column: 8/13;
+    width: 100%;
   }
+  .hero-visual { grid-column: 8/13; }
   .momentum {
     grid-template-columns: 5fr 7fr;
   }

@@ -1,4 +1,12 @@
 :root {
+  --color-primary: #071f2b;
+  --color-primary-raised: #0b2e3d;
+  --color-accent: #bdf23a;
+  --color-secondary-accent: #35d5d0;
+  --color-surface-cool: #eaf5f4;
+  --color-on-dark: #ffffff;
+  --page-gutter: clamp(1.25rem, 4vw, 5rem);
+  --content-measure: 72rem;
   --color-white: #ffffff;
   --color-coway-blue: #0067b9;
   --color-navy: #082f49;
@@ -56,8 +64,16 @@ summary:focus-visible {
 }
 
 .shell {
-  width: min(72rem, calc(100% - 2 * var(--space-4)));
+  width: min(var(--content-measure), 100%);
   margin-inline: auto;
+}
+
+.full-bleed {
+  width: 100%;
+}
+
+.section-inner {
+  padding-inline: var(--page-gutter);
 }
 
 .screen-reader-only {
@@ -89,8 +105,9 @@ summary:focus-visible {
 }
 
 .site-header {
-  border-bottom: 1px solid #dbe6ee;
-  background: var(--color-white);
+  border-bottom: 1px solid rgb(255 255 255 / 18%);
+  background: var(--color-primary);
+  color: var(--color-on-dark);
 }
 
 .header-inner,
@@ -108,7 +125,7 @@ summary:focus-visible {
 
 .wordmark,
 .footer-wordmark {
-  color: var(--color-coway-blue);
+  color: var(--color-on-dark);
   font-size: 1.35rem;
   font-weight: 800;
   letter-spacing: 0.12em;
@@ -156,6 +173,7 @@ summary:focus-visible {
   border: 1px solid #c8d8e5;
   border-radius: var(--radius-md);
   background: var(--color-white);
+  color: var(--color-primary);
   box-shadow: 0 1rem 2rem rgb(8 47 73 / 14%);
   list-style: none;
 }
@@ -183,12 +201,12 @@ summary:focus-visible {
 }
 
 .button-accent {
-  background: var(--color-coral);
-  color: var(--color-navy);
+  background: var(--color-accent);
+  color: var(--color-primary);
 }
 
 .button-accent:hover {
-  background: #ff887a;
+  background: #d0ff5e;
 }
 
 main {
@@ -263,6 +281,7 @@ main {
     border: 1px solid var(--color-border);
     border-radius: var(--radius-md);
     background: var(--color-white);
+    color: var(--color-primary);
     box-shadow: 0 1rem 2rem rgb(12 31 51 / 16%);
   }
 
