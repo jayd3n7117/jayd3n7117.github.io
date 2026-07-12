@@ -20,17 +20,18 @@ const responsive = (
   width: number,
   height: number,
   alt: LocalizedAlt,
+  candidates = [640, 960, 1440, 1920].filter((candidate) => candidate <= width),
 ): MediaImage => ({
-  src: `/media/${name}-960.webp`,
-  width: 960,
-  height: Math.round((height / width) * 960),
+  src: `/media/${name}-${candidates.includes(960) ? 960 : candidates.at(-1)}.webp`,
+  width: candidates.includes(960) ? 960 : candidates.at(-1)!,
+  height: Math.round((height / width) * (candidates.includes(960) ? 960 : candidates.at(-1)!)),
   alt,
   sources: {
-    webp: [640, 960, 1440].map((candidate) => ({
+    webp: candidates.map((candidate) => ({
       src: `/media/${name}-${candidate}.webp`,
       width: candidate,
     })),
-    avif: [640, 960, 1440].map((candidate) => ({
+    avif: candidates.map((candidate) => ({
       src: `/media/${name}-${candidate}.avif`,
       width: candidate,
     })),

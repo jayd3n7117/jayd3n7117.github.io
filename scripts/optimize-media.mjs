@@ -8,7 +8,7 @@ import sharp from 'sharp';
 const root = resolve(import.meta.dirname, '..');
 const sourceRoot = join(root, 'assets-source', 'Team Assets');
 const outputRoot = join(root, 'public', 'media');
-const widths = [640, 960, 1440];
+export const IMAGE_WIDTHS = [640, 960, 1440, 1920];
 const videoOutputs = [
   'team-video-720.mp4',
   'team-video-720.webm',
@@ -28,11 +28,18 @@ const images = [
 
 async function writeResponsiveImage(sourceName, outputName) {
   const input = join(sourceRoot, sourceName);
+  const metadata = await sharp(input).rotate().metadata();
+  const candidates = IMAGE_WIDTHS.filter((width) => width <= (metadata.width ?? width));
 
-  for (const width of widths) {
-    const resized = sharp(input).rotate().resize({ width, withoutEnlargement: false });
-    await resized.clone().webp({ quality: 78, effort: 6 }).toFile(join(outputRoot, `${outputName}-${width}.webp`));
-    await resized.clone().avif({ quality: 52, effort: 6 }).toFile(join(outputRoot, `${outputName}-${width}.avif`));
+  await Promise.all(IMAGE_WIDTHS.flatMap((width) => [
+    rm(join(outputRoot, `${outputName}-${width}.webp`), { force: true }),
+    rm(join(outputRoot, `${outputName}-${width}.avif`), { force: true }),
+  ]));
+
+  for (const width of candidates) {
+    const resized = sharp(input).rotate().resize({ width, withoutEnlargement: true });
+    await resized.clone().webp({ quality: 86, effort: 6 }).toFile(join(outputRoot, `${outputName}-${width}.webp`));
+    await resized.clone().avif({ quality: 62, effort: 6 }).toFile(join(outputRoot, `${outputName}-${width}.avif`));
   }
 }
 
@@ -92,6 +99,9 @@ async function validateVideoOutputs(ffmpeg, sourceBytes, descriptor) {
   if (posterBytes <= 0 || posterBytes >= sourceBytes || !posterMetadata.width || !posterMetadata.height) {
     throw new Error('team-video-poster.webp must be a valid, nonempty image smaller than its source video.');
   }
+  if (posterMetadata.width < 1280 || posterMetadata.height < 720) {
+    throw new Error(`team-video-poster.webp must be at least 1280 x 720; got ${posterMetadata.width} x ${posterMetadata.height}.`);
+  }
 }
 
 async function writeVideoDescriptor(descriptor) {
@@ -122,14 +132,15 @@ async function optimizeVideo() {
 
   const input = join(sourceRoot, 'Team Video.MOV');
   execFileSync(ffmpeg, [
-    '-y', '-i', input, '-vf', 'scale=-2:720', '-an', '-c:v', 'libx264', '-preset', 'medium',
-    '-crf', '24', '-movflags', '+faststart', join(outputRoot, 'team-video-720.mp4'),
+    '-y', '-i', input, '-vf', 'scale=-2:720', '-c:v', 'libx264', '-preset', 'slow',
+    '-crf', '19', '-c:a', 'aac', '-b:a', '128k', '-movflags', '+faststart',
+    join(outputRoot, 'team-video-720.mp4'),
   ], { stdio: 'inherit' });
 
   if (supportsWebm) {
     execFileSync(ffmpeg, [
-      '-y', '-i', input, '-vf', 'scale=-2:720', '-an', '-c:v', 'libvpx-vp9', '-crf', '34',
-      '-b:v', '0', join(outputRoot, 'team-video-720.webm'),
+      '-y', '-i', input, '-vf', 'scale=-2:720', '-c:v', 'libvpx-vp9', '-crf', '28',
+      '-b:v', '0', '-c:a', 'libopus', '-b:a', '128k', join(outputRoot, 'team-video-720.webm'),
     ], { stdio: 'inherit' });
   } else {
     console.warn('WebM skipped: selected FFmpeg has no libvpx-vp9 WebM output support.');
@@ -140,7 +151,7 @@ async function optimizeVideo() {
     execFileSync(ffmpeg, [
       '-y', '-ss', '1', '-i', input, '-frames:v', '1', '-vf', 'scale=-2:720', temporaryPoster,
     ], { stdio: 'inherit' });
-    await sharp(temporaryPoster).webp({ quality: 80, effort: 6 }).toFile(join(outputRoot, 'team-video-poster.webp'));
+    await sharp(temporaryPoster).webp({ quality: 86, effort: 6 }).toFile(join(outputRoot, 'team-video-poster.webp'));
   } finally {
     await rm(temporaryPoster, { force: true });
   }

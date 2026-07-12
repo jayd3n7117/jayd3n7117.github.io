@@ -5,6 +5,7 @@ import { describe, expect, it } from 'vitest';
 
 import { media } from '../../src/content/media';
 import {
+  IMAGE_WIDTHS,
   createVideoDescriptor,
   requireVideoCapabilities,
 } from '../../scripts/optimize-media.mjs';
@@ -64,10 +65,34 @@ describe('media manifest', () => {
     }
   });
 
-  it('provides responsive 640, 960, and 1440 image candidates where useful', () => {
-    for (const entry of [...media.culture, ...media.achievements]) {
-      expect(entry.sources.webp.map(({ width }) => width)).toEqual([640, 960, 1440]);
-      expect(entry.sources.avif.map(({ width }) => width)).toEqual([640, 960, 1440]);
-    }
+  it('advertises only candidates that do not enlarge the original image', () => {
+    const expectedWidths = [
+      [640, 960, 1440, 1920],
+      [640, 960, 1440, 1920],
+      [640, 960, 1440, 1920],
+      [640, 960],
+      [640, 960],
+      [640, 960, 1440, 1920],
+      [640],
+    ];
+
+    [...media.culture, ...media.achievements].forEach((entry, index) => {
+      expect(entry.sources.webp.map(({ width }) => width)).toEqual(expectedWidths[index]);
+      expect(entry.sources.avif.map(({ width }) => width)).toEqual(expectedWidths[index]);
+    });
+  });
+});
+
+describe('high-quality media policy', () => {
+  it('offers a 1920px candidate for edge-to-edge desktop photography', () => {
+    expect(IMAGE_WIDTHS).toEqual([640, 960, 1440, 1920]);
+  });
+
+  it('keeps MP4 mandatory and WebM optional', () => {
+    expect(createVideoDescriptor({ supportsWebm: false })).toEqual({
+      poster: '/media/team-video-poster.webp',
+      mp4: '/media/team-video-720.mp4',
+      webm: null,
+    });
   });
 });
