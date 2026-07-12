@@ -178,6 +178,55 @@ test("renders the Performance Sport hero and opportunity composition", async ({ 
   await expect(page.locator("[data-motion-card]")).toHaveCount(3);
   await expect(page.locator("[data-ticker-track]")).toContainText(/online sales training/i);
   await expect(page.locator("#opportunity")).toHaveCSS("background-color", "rgb(234, 245, 244)");
+  await expect(page.locator("#opportunity .income-card")).toHaveCSS(
+    "background-color",
+    "rgb(53, 213, 208)",
+  );
+  await expect(page.locator("#opportunity .income-card")).toHaveCSS(
+    "color",
+    "rgb(7, 31, 43)",
+  );
+});
+
+for (const width of [320, 768, 1440]) {
+  test(`keeps responsive footer gutters at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto("/en/");
+
+    const expectedGutter = Math.min(80, Math.max(20, width * 0.04));
+    for (const shell of await page.locator("footer .shell").all()) {
+      const bounds = await shell.boundingBox();
+      expect(bounds).not.toBeNull();
+      expect(bounds!.x).toBeGreaterThanOrEqual(expectedGutter - 1);
+      expect(width - (bounds!.x + bounds!.width)).toBeGreaterThanOrEqual(
+        expectedGutter - 1,
+      );
+    }
+  });
+}
+
+test("keeps Performance Sport controls touch-sized with readable contrast", async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 900 });
+  await page.goto("/en/");
+
+  for (const selector of [
+    ".hero-actions .button-primary",
+    ".hero-actions .button-secondary",
+    "header .button-accent",
+  ]) {
+    const bounds = await page.locator(selector).boundingBox();
+    expect(bounds).not.toBeNull();
+    expect(bounds!.height).toBeGreaterThanOrEqual(44);
+  }
+
+  await expect(page.locator(".performance-hero")).toHaveCSS(
+    "color",
+    "rgb(255, 255, 255)",
+  );
+  await expect(page.locator(".button-primary")).toHaveCSS(
+    "color",
+    "rgb(7, 31, 43)",
+  );
 });
 
 test("uses an accessible user-controlled team video", async ({ page }) => {

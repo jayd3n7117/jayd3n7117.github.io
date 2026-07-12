@@ -64,8 +64,12 @@ summary:focus-visible {
 }
 
 .shell {
-  width: min(var(--content-measure), 100%);
+  width: min(var(--content-measure), calc(100% - 2 * var(--page-gutter)));
   margin-inline: auto;
+}
+
+.shell.section-inner {
+  width: min(var(--content-measure), 100%);
 }
 
 .full-bleed {

@@ -44,8 +44,7 @@ h2 {
   background: var(--color-primary);
   color: var(--color-on-dark);
 }
-.performance-hero h1,
-.performance-hero .eyebrow {
+.performance-hero h1 {
   color: var(--color-on-dark);
 }
 .performance-hero .eyebrow {
@@ -187,8 +186,8 @@ picture img {
 .income-card {
   padding: clamp(1.5rem, 4vw, 3rem);
   border-radius: 1.5rem;
-  background: var(--color-primary);
-  color: #fff;
+  background: var(--color-secondary-accent);
+  color: var(--color-primary);
 }
 .income-card strong {
   display: block;
@@ -196,7 +195,7 @@ picture img {
   line-height: 1;
 }
 .income-card h3 {
-  color: #fff;
+  color: var(--color-primary);
 }
 .support-grid {
   display: grid;
