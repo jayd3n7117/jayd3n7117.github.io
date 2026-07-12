@@ -9,11 +9,11 @@ const { content } = Astro.props;
 ---
 <section id="candidate-fit" class="section fit">
   <header><h2>{content.candidateFit.title}</h2><p>{content.candidateFit.intro}</p></header>
-  <div class="candidate-cards">
+  <ol class="candidate-cards">
     {content.candidateFit.priorities.map((item, i) => (
-      <article><span>{i + 1}</span><div><h3>{item.title}</h3><p>{item.description}</p></div></article>
+      <li><article data-reveal><span>{i + 1}</span><div><h3>{item.title}</h3><p>{item.description}</p></div></article></li>
     ))}
-  </div>
+  </ol>
   <aside>
     <h3>{content.candidateFit.notForYouTitle}</h3>
     <p>{content.candidateFit.notForYou}</p>

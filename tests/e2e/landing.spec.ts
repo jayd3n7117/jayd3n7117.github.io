@@ -315,6 +315,9 @@ test("does not POST or claim receipt and blocks repeat submission while checking
 
 test("ends with prioritized candidates and the safe application form", async ({ page }) => {
   await page.goto("/en/");
+  const priorities = page.locator("#candidate-fit > ol");
+  await expect(priorities.locator(":scope > li")).toHaveCount(3);
+  await expect(priorities.locator(":scope > li > article")).toHaveCount(3);
   const cards = page.locator("#candidate-fit article");
   await expect(cards).toHaveCount(3);
   await expect(cards.nth(0)).toContainText("Experienced");

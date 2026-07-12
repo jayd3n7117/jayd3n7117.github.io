@@ -310,15 +310,13 @@ picture img {
 .culture-grid picture:nth-child(3) {
   grid-column: 1/-1;
 }
-.journey-flow,
-.fit ol {
+.journey-flow {
   display: grid;
   gap: 1rem;
   padding: 0;
   list-style: none;
 }
-.journey-flow li,
-.fit li {
+.journey-flow li {
   display: flex;
   gap: 1rem;
   align-items: flex-start;
@@ -326,8 +324,7 @@ picture img {
   border-top: 2px solid var(--color-coway-blue);
   font-weight: 750;
 }
-.journey-flow li span,
-.fit li > span {
+.journey-flow li span {
   display: grid;
   min-width: 2.75rem;
   min-height: 2.75rem;
@@ -389,6 +386,12 @@ picture img {
 .candidate-cards {
   display: grid;
   gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.candidate-cards li {
+  min-width: 0;
 }
 .candidate-cards article {
   display: flex;
@@ -398,11 +401,11 @@ picture img {
   border-radius: 1rem;
   background: var(--color-surface);
 }
-.candidate-cards article:first-child {
+.candidate-cards li:first-child article {
   background: var(--color-navy);
   color: #fff;
 }
-.candidate-cards article:first-child h3 {
+.candidate-cards li:first-child article h3 {
   color: #fff;
 }
 .candidate-cards article > span {
