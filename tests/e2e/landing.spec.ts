@@ -355,3 +355,26 @@ test("keeps reveal content readable without JavaScript", async ({ browser }) => 
   await expect(page.locator("#support article").first()).toBeVisible();
   await context.close();
 });
+
+test("identifies and persists the selected language without overriding direct URLs", async ({ page }) => {
+  await page.goto("/bm/");
+  await expect(page.locator(".language-menu summary")).toContainText("Bahasa Malaysia");
+  await page.locator(".language-menu summary").click();
+  await page.locator('.language-menu a[href="/zh/"]').click();
+  await expect(page).toHaveURL(/\/zh\/$/);
+  expect(await page.evaluate(() => localStorage.getItem("preferredLocale"))).toBe("zh");
+  await page.goto("/en/");
+  await expect(page).toHaveURL(/\/en\/$/);
+});
+
+test("provides a keyboard-operable mobile menu and privacy-information link", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/en/");
+  const menu = page.locator(".mobile-navigation");
+  await menu.locator("summary").focus();
+  await page.keyboard.press("Enter");
+  await expect(menu).toHaveAttribute("open", "");
+  await expect(menu.getByRole("link", { name: "Support" })).toBeVisible();
+  const privacy = page.getByRole("link", { name: "Privacy information" });
+  await expect(privacy).toHaveAttribute("href", "#privacy-note");
+});

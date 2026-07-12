@@ -7,6 +7,8 @@ export interface LandingContent {
     language: string;
   };
   nav: {
+    menu: string;
+    language: string;
     opportunity: string;
     support: string;
     culture: string;
@@ -94,6 +96,7 @@ export interface LandingContent {
   footer: {
     disclaimer: string;
     privacy: string;
+    privacyLink: string;
     copyright: string;
   };
 }
@@ -106,6 +109,8 @@ const en: LandingContent = {
     language: "English",
   },
   nav: {
+    menu: "Menu",
+    language: "Language",
     opportunity: "Opportunity",
     support: "Support",
     culture: "Culture",
@@ -308,6 +313,7 @@ const en: LandingContent = {
       "Independent sales recruitment information. This is not an official Coway corporate careers website. This opportunity is fully commission-based; actual income depends on individual sales performance and no income is guaranteed.",
     privacy:
       "Your information is used only to respond to your expression of interest.",
+    privacyLink: "Privacy information",
     copyright: "Coway sales recruitment Malaysia",
   },
 };
@@ -320,6 +326,8 @@ const bm: LandingContent = {
     language: "Bahasa Malaysia",
   },
   nav: {
+    menu: "Menu",
+    language: "Bahasa",
     opportunity: "Peluang",
     support: "Sokongan",
     culture: "Budaya",
@@ -523,6 +531,7 @@ const bm: LandingContent = {
       "Maklumat pengambilan jualan bebas. Ini bukan laman kerjaya korporat rasmi Coway. Peluang ini berasaskan komisen sepenuhnya; pendapatan sebenar bergantung pada prestasi jualan individu dan tiada pendapatan yang dijamin.",
     privacy:
       "Maklumat anda hanya digunakan untuk membalas pernyataan minat anda.",
+    privacyLink: "Maklumat privasi",
     copyright: "Pengambilan jualan Coway Malaysia",
   },
 };
@@ -535,6 +544,8 @@ const zh: LandingContent = {
     language: "简体中文",
   },
   nav: {
+    menu: "菜单",
+    language: "语言",
     opportunity: "机会",
     support: "支持",
     culture: "文化",
@@ -714,6 +725,7 @@ const zh: LandingContent = {
     disclaimer:
       "独立销售招募信息。本网站并非 Coway 官方企业招聘网站。此机会完全以佣金为基础；实际收入取决于个人销售业绩，并且不保证任何收入。",
     privacy: "你的资料只会用于回复你的应征意向。",
+    privacyLink: "隐私信息",
     copyright: "Coway 马来西亚销售招募",
   },
 };

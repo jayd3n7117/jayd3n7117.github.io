@@ -22,8 +22,8 @@ const languageLinks = [
       <p>{content.footer.copyright}</p>
     </div>
 
-    <nav aria-label="Language">
-      <p class="footer-heading">Language</p>
+    <nav aria-label={content.nav.language}>
+      <p class="footer-heading">{content.nav.language}</p>
       <ul class="footer-links language-links">
         {
           languageLinks.map((language) => (
@@ -49,6 +49,7 @@ const languageLinks = [
 
   <div class="shell footer-legal">
     <p class="site-disclosure">{content.footer.disclaimer}</p>
-    <p>{content.footer.privacy}</p>
+    <a href="#privacy-note">{content.footer.privacyLink}</a>
+    <p id="privacy-note" tabindex="-1">{content.footer.privacy}</p>
   </div>
 </footer>

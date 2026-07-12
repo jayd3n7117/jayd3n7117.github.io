@@ -194,6 +194,10 @@ main {
   min-height: 40vh;
 }
 
+.mobile-navigation {
+  display: none;
+}
+
 
 .site-footer {
   padding-block: var(--space-12) var(--space-8);
@@ -232,15 +236,47 @@ main {
     padding-block: var(--space-3);
   }
 
-  .header-inner nav {
-    order: 3;
-    width: 100%;
-    overflow-x: auto;
+  .desktop-navigation {
+    display: none;
   }
 
-  .primary-navigation {
-    width: max-content;
-    padding-bottom: var(--space-2);
+  .mobile-navigation {
+    position: relative;
+    display: block;
+    order: 3;
+  }
+
+  .mobile-navigation summary {
+    min-height: 2.75rem;
+    padding: var(--space-2) var(--space-3);
+    cursor: pointer;
+  }
+
+  .mobile-navigation nav {
+    position: absolute;
+    z-index: 20;
+    top: calc(100% + var(--space-2));
+    left: 0;
+    min-width: 13rem;
+    padding: var(--space-3);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-white);
+    box-shadow: 0 1rem 2rem rgb(12 31 51 / 16%);
+  }
+
+  .mobile-navigation ul {
+    display: grid;
+    gap: var(--space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .mobile-navigation a {
+    display: flex;
+    min-height: 2.75rem;
+    align-items: center;
   }
 }
 

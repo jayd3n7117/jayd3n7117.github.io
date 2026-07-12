@@ -21,7 +21,7 @@ const languageLinks = [
       <span aria-hidden="true">COWAY</span>
     </a>
 
-    <nav aria-label="Primary navigation">
+    <nav class="desktop-navigation" aria-label="Primary navigation">
       <ul class="primary-navigation">
         <li><a href="#opportunity">{content.nav.opportunity}</a></li>
         <li><a href="#support">{content.nav.support}</a></li>
@@ -31,9 +31,24 @@ const languageLinks = [
       </ul>
     </nav>
 
+    <details class="mobile-navigation">
+      <summary>{content.nav.menu}</summary>
+      <nav aria-label={content.nav.menu}>
+        <ul>
+          <li><a href="#opportunity">{content.nav.opportunity}</a></li>
+          <li><a href="#support">{content.nav.support}</a></li>
+          <li><a href="#growth">{content.nav.culture}</a></li>
+          <li><a href="#faq">{content.nav.faq}</a></li>
+          <li><a href="#apply">{content.nav.apply}</a></li>
+        </ul>
+      </nav>
+    </details>
+
     <div class="header-actions">
       <details class="language-menu">
-        <summary>Language</summary>
+        <summary aria-label={`${content.nav.language}: ${content.meta.language}`}>
+          {content.meta.language}
+        </summary>
         <ul>
           {
             languageLinks.map((language) => (

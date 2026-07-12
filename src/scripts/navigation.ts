@@ -31,6 +31,9 @@ document.addEventListener('click', (event) => {
     ? window.location.hash
     : '';
 
+  const locale = destination.pathname.split('/').filter(Boolean)[0];
+  if (locale) window.localStorage.setItem('preferredLocale', locale);
+
   event.preventDefault();
   window.location.assign(destination);
 });
