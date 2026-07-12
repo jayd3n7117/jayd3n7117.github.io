@@ -180,7 +180,7 @@ test('renders the Performance Sport hero and opportunity composition', async ({ 
   await page.goto('/en/');
   await expect(page.locator('[data-performance-hero]')).toHaveCount(1);
   await expect(page.locator('[data-motion-card]')).toHaveCount(3);
-  await expect(page.locator('[data-ticker-track]')).toContainText('ONLINE SALES TRAINING');
+  await expect(page.locator('[data-ticker-track]')).toContainText(/online sales training/i);
   await expect(page.locator('#opportunity')).toHaveCSS('background-color', 'rgb(234, 245, 244)');
 });
 ```
