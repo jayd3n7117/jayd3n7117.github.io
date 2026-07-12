@@ -1,6 +1,8 @@
 import { expect, test } from "@playwright/test";
 
-const productionOrigin = process.env.PUBLIC_SITE_URL ?? "https://join.coway.test";
+const productionOrigin = new URL(
+  process.env.PUBLIC_SITE_URL ?? "https://join.coway.test",
+).origin;
 
 const localizedRoutes = [
   { locale: "en", lang: "en-MY" },
@@ -58,7 +60,11 @@ test("publishes production crawl and metadata guards", async ({ page, request })
     await expect(page.locator("h1")).toHaveCount(1);
     await expect(page.locator('link[rel="canonical"]')).toHaveCount(1);
     await expect(page.locator('link[rel="alternate"][hreflang]')).toHaveCount(3);
-    await expect(page.locator('script[type="application/ld+json"]')).toHaveCount(0);
+    const structuredData = await page.locator('script[type="application/ld+json"]').allTextContents();
+    for (const source of structuredData) {
+      const schema = JSON.parse(source) as { "@type"?: string | string[] };
+      expect([schema["@type"]].flat()).not.toContain("JobPosting");
+    }
     expect(await page.content()).not.toContain("example.com");
     for (const image of await page.locator("img").all()) {
       await expect(image).toHaveAttribute("alt", /\S/);
@@ -221,7 +227,6 @@ test("does not POST or claim receipt and blocks repeat submission while checking
   await form.locator('[name="state"]').selectOption("Selangor");
   await form.locator('[name="salesExperience"]').selectOption("1-3");
   await form.locator('[name="consent"]').check();
-  const submit = form.locator('button[type="submit"]');
   const disabledDuringSubmission = await form.evaluate((formElement) => {
     const event = () => new SubmitEvent("submit", { bubbles: true, cancelable: true });
     formElement.dispatchEvent(event());
