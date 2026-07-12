@@ -32,7 +32,13 @@ document.addEventListener('click', (event) => {
     : '';
 
   const locale = destination.pathname.split('/').filter(Boolean)[0];
-  if (locale) window.localStorage.setItem('preferredLocale', locale);
+  if (locale) {
+    try {
+      window.localStorage.setItem('preferredLocale', locale);
+    } catch {
+      // Storage is optional; navigation must continue when it is unavailable.
+    }
+  }
 
   event.preventDefault();
   window.location.assign(destination);
