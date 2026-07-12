@@ -1,0 +1,19 @@
+---
+import type { LandingContent } from '../content/locales';
+
+const { content } = Astro.props as { content: LandingContent };
+---
+<section id="growth" class="section journey" data-journey>
+  <header class="section-heading" data-reveal>
+    <h2>{content.progression.title}</h2>
+    <p>{content.progression.body}</p>
+  </header>
+  <ol class="journey-flow">
+    {content.progression.steps.map((step, index) => (
+      <li data-journey-step data-reveal>
+        <span aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+        <h3>{step}</h3>
+      </li>
+    ))}
+  </ol>
+</section>

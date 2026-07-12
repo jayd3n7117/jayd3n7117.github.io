@@ -206,7 +206,19 @@ picture img {
 }
 .support-grid {
   display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1rem;
+}
+.support-section {
+  display: grid;
+  grid-template-columns: minmax(15rem, 0.8fr) minmax(0, 1.8fr);
+  gap: clamp(2rem, 5vw, 5rem);
+  align-items: start;
+}
+.support-heading {
+  position: sticky;
+  top: 7rem;
+  margin-bottom: 0;
 }
 .support-grid article {
   padding: 1.5rem;
@@ -251,14 +263,14 @@ picture img {
 .culture-grid picture:nth-child(3) {
   grid-column: 1/-1;
 }
-.growth ol,
+.journey-flow,
 .fit ol {
   display: grid;
   gap: 1rem;
   padding: 0;
   list-style: none;
 }
-.growth li,
+.journey-flow li,
 .fit li {
   display: flex;
   gap: 1rem;
@@ -267,7 +279,7 @@ picture img {
   border-top: 2px solid var(--color-coway-blue);
   font-weight: 750;
 }
-.growth li span,
+.journey-flow li span,
 .fit li > span {
   display: grid;
   min-width: 2.75rem;
@@ -276,6 +288,29 @@ picture img {
   border-radius: 50%;
   background: var(--color-coral);
   color: var(--color-navy);
+}
+.journey-flow {
+  position: relative;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.journey-flow::before {
+  content: "";
+  position: absolute;
+  top: 2.6rem;
+  right: 10%;
+  left: 10%;
+  height: 2px;
+  background: var(--color-coway-blue);
+}
+.journey-flow li {
+  position: relative;
+  z-index: 1;
+  flex-direction: column;
+  border-top: 0;
+  background: var(--color-on-dark);
+}
+.journey-flow h3 {
+  margin: 0;
 }
 .proof-grid {
   margin-top: 2rem;
@@ -421,9 +456,6 @@ picture img {
   font-weight: 750;
 }
 @media (min-width: 48rem) {
-  .support-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
   .opportunity,
   .culture,
   .video-section,
@@ -444,9 +476,6 @@ picture img {
   .form-field-wide {
     grid-column: 1 / -1;
   }
-  .growth ol {
-    grid-template-columns: repeat(3, 1fr);
-  }
 }
 @media (min-width: 64rem) {
   .hero {
@@ -462,8 +491,26 @@ picture img {
   .momentum {
     grid-template-columns: 5fr 7fr;
   }
-  .support-grid {
-    grid-template-columns: repeat(3, 1fr);
+}
+@media (max-width: 53.75rem) {
+  .support-section,
+  .support-grid,
+  .journey-flow {
+    grid-template-columns: 1fr;
+  }
+  .support-heading {
+    position: static;
+  }
+  .journey-flow::before {
+    top: 1.25rem;
+    right: auto;
+    bottom: 1.25rem;
+    left: 2.6rem;
+    width: 2px;
+    height: auto;
+  }
+  .journey-flow li {
+    flex-direction: row;
   }
 }
 @media (max-width: 30rem) {

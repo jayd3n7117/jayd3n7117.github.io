@@ -6,7 +6,7 @@ import MomentumStrip from '../../components/MomentumStrip.astro';
 import Opportunity from '../../components/Opportunity.astro';
 import SupportGrid from '../../components/SupportGrid.astro';
 import Culture from '../../components/Culture.astro';
-import Progression from '../../components/Progression.astro';
+import JourneyFlow from '../../components/JourneyFlow.astro';
 import TeamVideo from '../../components/TeamVideo.astro';
 import CandidateFit from '../../components/CandidateFit.astro';
 import Faq from '../../components/Faq.astro';
@@ -32,7 +32,7 @@ const content = getContent(locale);
   <Opportunity {content} />
   <SupportGrid {content} />
   <Culture {content} {locale} images={media.culture} />
-  <Progression {content} {locale} images={media.achievements} />
+  <JourneyFlow {content} />
   <TeamVideo {content} />
   <CandidateFit {content} />
   <Faq {content} />

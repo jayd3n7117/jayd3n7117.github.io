@@ -188,6 +188,14 @@ test("renders the Performance Sport hero and opportunity composition", async ({ 
   );
 });
 
+test("connects the three career stages into one journey", async ({ page }) => {
+  await page.goto("/en/");
+  await expect(page.locator("[data-journey]")).toHaveCount(1);
+  await expect(page.locator("[data-journey-step]")).toHaveCount(3);
+  await expect(page.locator("[data-journey-step]").nth(0)).toContainText("Learn");
+  await expect(page.locator("[data-journey-step]").nth(2)).toContainText("leadership");
+});
+
 for (const width of [320, 768, 1440]) {
   test(`keeps responsive footer gutters at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 });
