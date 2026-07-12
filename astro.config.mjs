@@ -1,8 +1,11 @@
 import sitemap from '@astrojs/sitemap';
 import { defineConfig } from 'astro/config';
+import { resolveSiteUrl } from './src/config/site.ts';
+
+const command = process.argv.includes('build') ? 'build' : 'dev';
 
 export default defineConfig({
-  site: 'https://example.com',
+  site: resolveSiteUrl({ command, siteUrl: process.env.PUBLIC_SITE_URL }),
   output: 'static',
   trailingSlash: 'always',
   redirects: {
