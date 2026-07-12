@@ -405,7 +405,11 @@ test("keeps reduced-motion content visible and ticker static", async ({ page }) 
 });
 
 test("updates scroll progress without changing layout bounds", async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 568 });
   await page.goto("/en/");
+  expect(await page.evaluate(() =>
+    document.body.scrollWidth <= document.documentElement.clientWidth
+  )).toBe(true);
   await page.evaluate(() => scrollTo(0, 900));
   await expect.poll(() => page.locator("html").evaluate((el) =>
     getComputedStyle(el).getPropertyValue("--page-progress").trim()

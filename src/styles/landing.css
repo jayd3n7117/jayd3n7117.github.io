@@ -149,11 +149,11 @@ picture img {
 [data-ticker] {
   animation: ticker-enter 250ms ease-out both;
 }
-[data-motion="hero-title"],
-[data-motion="hero-image"],
-[data-motion-card],
-[data-ticker-track],
-[data-media-tile] {
+.motion-ready [data-motion="hero-title"],
+.motion-ready [data-motion="hero-image"],
+.motion-ready [data-motion-card],
+.motion-ready [data-ticker-track],
+.motion-ready [data-media-tile] {
   will-change: transform;
 }
 .motion-ready [data-reveal] {
