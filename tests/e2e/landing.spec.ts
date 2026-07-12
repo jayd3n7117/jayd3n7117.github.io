@@ -313,6 +313,14 @@ test("does not POST or claim receipt and blocks repeat submission while checking
   await expect(form.locator('[name="name"]')).toHaveValue("Aina Rahman");
 });
 
+test("ends with prioritized candidates and the safe application form", async ({ page }) => {
+  await page.goto("/en/");
+  const cards = page.locator("#candidate-fit article");
+  await expect(cards).toHaveCount(3);
+  await expect(cards.nth(0)).toContainText("Experienced");
+  await expect(page.locator("#apply")).toHaveAttribute("data-conversion-section", "");
+});
+
 for (const { locale, labels, error, status } of [
   { locale: "en", labels: ["Name", "Age range", "Current job", "Malaysian state / location", "City", "Sales experience", "Experience detail", "I consent"], error: "This field is required.", status: "not been sent or stored" },
   { locale: "bm", labels: ["Nama", "Julat umur", "Pekerjaan semasa", "Negeri / lokasi di Malaysia", "Bandar", "Pengalaman jualan", "Butiran pengalaman", "Saya bersetuju"], error: "Medan ini wajib diisi.", status: "tidak dihantar atau disimpan" },

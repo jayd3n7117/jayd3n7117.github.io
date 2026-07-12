@@ -8,14 +8,16 @@ const copy = applicationContent[locale];
 const required = (label: string) => `${label} (${copy.required})`;
 ---
 
-<section id="apply" class="section application-section" data-reveal>
-  <div class="application-intro">
-    <p class="eyebrow">{copy.required}</p>
-    <h2>{copy.title}</h2>
-    <p class="lede">{copy.intro}</p>
-    <p class="privacy-note" id="application-privacy">{copy.privacy}</p>
-  </div>
-  <form class="application-form" data-application-form novalidate aria-describedby="application-privacy" data-copy={JSON.stringify({ errors: copy.errors, invalid: copy.invalid, notConfigured: copy.notConfigured, submitting: copy.submitting, submit: copy.submit })}>
+<section id="apply" class="section application-section" data-conversion-section data-reveal>
+  <div class="application-visual" aria-hidden="true"></div>
+  <div class="application-panel">
+    <div class="application-intro">
+      <p class="eyebrow">{copy.required}</p>
+      <h2>{copy.title}</h2>
+      <p class="lede">{copy.intro}</p>
+      <p class="privacy-note" id="application-privacy">{copy.privacy}</p>
+    </div>
+    <form class="application-form" data-application-form novalidate aria-describedby="application-privacy" data-copy={JSON.stringify({ errors: copy.errors, invalid: copy.invalid, notConfigured: copy.notConfigured, submitting: copy.submitting, submit: copy.submit })}>
     <div class="form-field">
       <label for="application-name">{required(copy.labels.name)} <span aria-hidden="true">*</span></label>
       <input id="application-name" name="name" type="text" required maxlength="120" autocomplete="name" aria-describedby="name-error" />
@@ -58,6 +60,7 @@ const required = (label: string) => `${label} (${copy.required})`;
     </div>
     <button class="button application-submit form-field-wide" type="submit">{copy.submit}</button>
     <p class="form-status form-field-wide" data-form-status role="status" aria-live="polite"></p>
-  </form>
+    </form>
+  </div>
 </section>
 <script src="../scripts/application.ts"></script>
