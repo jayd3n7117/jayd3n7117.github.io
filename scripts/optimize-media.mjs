@@ -74,6 +74,10 @@ export function createVideoDescriptor({ supportsWebm }) {
   };
 }
 
+export function canEncodeWebm({ supportsMuxer, supportsVp9, supportsOpus }) {
+  return supportsMuxer && supportsVp9 && supportsOpus;
+}
+
 async function clearVideoOutputs() {
   await Promise.all(videoOutputs.map((name) => rm(join(outputRoot, name), { force: true })));
 }
@@ -117,8 +121,11 @@ async function optimizeVideo() {
   const supportsMov = formatLines.some((line) => /^\s*D[ E]\s+mov,mp4(?:,|\s)/.test(line));
   const supportsMp4 = formatLines.some((line) => /^\s*[D ]E\s+mp4(?:,|\s)/.test(line))
     && /libx264/.test(encoders);
-  const supportsWebm = formatLines.some((line) => /^\s*[D ]E\s+webm(?:,|\s)/.test(line))
-    && /libvpx-vp9/.test(encoders);
+  const supportsWebm = canEncodeWebm({
+    supportsMuxer: formatLines.some((line) => /^\s*[D ]E\s+webm(?:,|\s)/.test(line)),
+    supportsVp9: /\blibvpx-vp9\b/.test(encoders),
+    supportsOpus: /\blibopus\b/.test(encoders),
+  });
 
   console.log('FFmpeg media capabilities:', {
     path: ffmpeg,
@@ -143,7 +150,7 @@ async function optimizeVideo() {
       '-b:v', '0', '-c:a', 'libopus', '-b:a', '128k', join(outputRoot, 'team-video-720.webm'),
     ], { stdio: 'inherit' });
   } else {
-    console.warn('WebM skipped: selected FFmpeg has no libvpx-vp9 WebM output support.');
+    console.warn('WebM skipped: selected FFmpeg lacks the WebM muxer, libvpx-vp9, or libopus.');
   }
 
   const temporaryPoster = join(outputRoot, 'team-video-poster.png');

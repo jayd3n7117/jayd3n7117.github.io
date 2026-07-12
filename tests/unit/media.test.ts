@@ -6,6 +6,7 @@ import { describe, expect, it } from 'vitest';
 import { media } from '../../src/content/media';
 import {
   IMAGE_WIDTHS,
+  canEncodeWebm,
   createVideoDescriptor,
   requireVideoCapabilities,
 } from '../../scripts/optimize-media.mjs';
@@ -66,19 +67,21 @@ describe('media manifest', () => {
   });
 
   it('advertises only candidates that do not enlarge the original image', () => {
-    const expectedWidths = [
-      [640, 960, 1440, 1920],
-      [640, 960, 1440, 1920],
-      [640, 960, 1440, 1920],
-      [640, 960],
-      [640, 960],
-      [640, 960, 1440, 1920],
-      [640],
-    ];
+    const expectedWidthsByAsset: Record<string, number[]> = {
+      'team-gathering': [640, 960, 1440, 1920],
+      'team-social-gathering': [640, 960, 1440, 1920],
+      'team-meeting': [640, 960, 1440, 1920],
+      'team-outdoor-activity': [640, 960],
+      'promotion-stage-photo': [640, 960],
+      'certificate-group-photo': [640, 960, 1440, 1920],
+      'manager-promotion-graphic': [640],
+    };
 
-    [...media.culture, ...media.achievements].forEach((entry, index) => {
-      expect(entry.sources.webp.map(({ width }) => width)).toEqual(expectedWidths[index]);
-      expect(entry.sources.avif.map(({ width }) => width)).toEqual(expectedWidths[index]);
+    [...media.culture, ...media.achievements].forEach((entry) => {
+      const asset = entry.src.match(/^\/media\/(.+)-\d+\.webp$/)?.[1];
+      expect(asset).toBeDefined();
+      expect(entry.sources.webp.map(({ width }) => width)).toEqual(expectedWidthsByAsset[asset!]);
+      expect(entry.sources.avif.map(({ width }) => width)).toEqual(expectedWidthsByAsset[asset!]);
     });
   });
 });
@@ -94,5 +97,16 @@ describe('high-quality media policy', () => {
       mp4: '/media/team-video-720.mp4',
       webm: null,
     });
+  });
+
+  it('skips WebM when VP9 is available but the Opus audio encoder is not', () => {
+    const supportsWebm = canEncodeWebm({
+      supportsMuxer: true,
+      supportsVp9: true,
+      supportsOpus: false,
+    });
+
+    expect(supportsWebm).toBe(false);
+    expect(createVideoDescriptor({ supportsWebm }).webm).toBeNull();
   });
 });
