@@ -247,6 +247,15 @@ test("uses an accessible user-controlled team video", async ({ page }) => {
   await expect(video.locator('source[type="video/webm"]')).toHaveCount(1);
 });
 
+test("uses one complete media mosaic without empty tiles", async ({ page }) => {
+  await page.goto("/en/");
+  const grid = page.locator("[data-media-grid]");
+  await expect(grid).toHaveCount(1);
+  await expect(grid.locator("[data-media-tile]")).toHaveCount(4);
+  await expect(grid.locator("video")).toHaveAttribute("controls", "");
+  await expect(grid.locator('video source[type="video/mp4"]')).toHaveCount(1);
+});
+
 for (const width of [320, 390, 1440]) {
   test(`has no horizontal page overflow at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 });

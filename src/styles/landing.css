@@ -84,6 +84,53 @@ picture img {
   height: 100%;
   object-fit: cover;
 }
+.team-media {
+  width: 100%;
+  max-width: none;
+  padding-inline: var(--page-gutter);
+  background: var(--color-surface-cool);
+}
+.team-media-heading {
+  max-width: 48rem;
+  margin-bottom: clamp(2rem, 5vw, 4rem);
+}
+.team-media-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr 0.8fr;
+  grid-template-rows: repeat(2, minmax(12rem, 24vw));
+  gap: clamp(0.75rem, 1.5vw, 1.25rem);
+}
+.media-tile {
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  border-radius: clamp(0.75rem, 2vw, 1.5rem);
+  background: var(--color-primary-raised);
+}
+.media-tile-lead { grid-row: 1 / 3; }
+.media-tile-video { grid-column: 2 / 4; }
+.media-tile picture,
+.media-tile video {
+  width: 100%;
+  height: 100%;
+}
+.media-tile video { object-fit: cover; }
+.media-tile-lead img { object-position: 52% center; }
+.media-tile-achievement-1 img { object-position: center 35%; }
+.media-tile-achievement-2 img { object-position: center 30%; }
+@media (max-width: 47.99rem) {
+  .team-media-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: auto;
+  }
+  .media-tile-lead,
+  .media-tile-video {
+    grid-column: 1 / -1;
+    grid-row: auto;
+    aspect-ratio: 16 / 10;
+  }
+  .media-tile-achievement { aspect-ratio: 1; }
+}
 [data-image-motion] img {
   transition: transform 250ms ease-out;
 }

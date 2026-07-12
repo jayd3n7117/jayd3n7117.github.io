@@ -5,9 +5,8 @@ import Hero from '../../components/Hero.astro';
 import MomentumStrip from '../../components/MomentumStrip.astro';
 import Opportunity from '../../components/Opportunity.astro';
 import SupportGrid from '../../components/SupportGrid.astro';
-import Culture from '../../components/Culture.astro';
 import JourneyFlow from '../../components/JourneyFlow.astro';
-import TeamVideo from '../../components/TeamVideo.astro';
+import TeamMedia from '../../components/TeamMedia.astro';
 import CandidateFit from '../../components/CandidateFit.astro';
 import Faq from '../../components/Faq.astro';
 import ApplicationForm from '../../components/ApplicationForm.astro';
@@ -31,9 +30,8 @@ const content = getContent(locale);
   <MomentumStrip {content} />
   <Opportunity {content} />
   <SupportGrid {content} />
-  <Culture {content} {locale} images={media.culture} />
+  <TeamMedia {content} {locale} lead={media.culture[2]} support={media.achievements.slice(0, 2)} video={media.video} />
   <JourneyFlow {content} />
-  <TeamVideo {content} />
   <CandidateFit {content} />
   <Faq {content} />
   <ApplicationForm {locale} />

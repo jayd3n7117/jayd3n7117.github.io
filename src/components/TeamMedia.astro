@@ -1,0 +1,39 @@
+---
+import type { LandingContent, Locale } from '../content/locales';
+import { media, type MediaImage } from '../content/media';
+import ResponsivePicture from './ResponsivePicture.astro';
+
+interface Props {
+  content: LandingContent;
+  locale: Locale;
+  lead: MediaImage;
+  support: readonly MediaImage[];
+  video: typeof media.video;
+}
+
+const { content, locale, lead, support, video } = Astro.props;
+---
+
+<section class="team-media section" aria-labelledby="team-media-title">
+  <header class="team-media-heading" data-reveal>
+    <p class="eyebrow">{content.nav.culture}</p>
+    <h2 id="team-media-title">{content.culture.title}</h2>
+    <p class="lede">{content.culture.statement}</p>
+  </header>
+  <div class="team-media-grid" data-media-grid>
+    <figure class="media-tile media-tile-lead" data-media-tile>
+      <ResponsivePicture image={lead} {locale} sizes="(min-width: 64rem) 40vw, 100vw" />
+    </figure>
+    <figure class="media-tile media-tile-video" data-media-tile>
+      <video controls preload="metadata" poster={video.poster} aria-label={video.alt[locale]} width={video.width} height={video.height}>
+        <source src={video.mp4} type="video/mp4" />
+        {video.webm && <source src={video.webm} type="video/webm" />}
+      </video>
+    </figure>
+    {support.map((image, index) => (
+      <figure class={`media-tile media-tile-achievement media-tile-achievement-${index + 1}`} data-media-tile>
+        <ResponsivePicture image={image} {locale} sizes="(min-width: 64rem) 27vw, 50vw" />
+      </figure>
+    ))}
+  </div>
+</section>
