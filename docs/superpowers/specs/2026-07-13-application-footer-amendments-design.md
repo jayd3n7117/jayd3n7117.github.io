@@ -41,7 +41,7 @@ Add a localized social-media area containing these four platforms:
 - TikTok
 - Xiaohongshu
 
-Social destinations will be stored in one typed configuration object. Initially, every URL is empty. An empty destination must render as a visibly inactive, non-focusable platform control rather than an anchor with an empty `href`. This prevents page jumps and avoids suggesting that a working account link exists. When a valid URL is added later, the same control becomes a normal external link with an accessible name, `target="_blank"`, and `rel="noopener noreferrer"`.
+Social destinations will be stored in one typed configuration object. The initial configuration uses the real profile destinations supplied by the user: Facebook `https://www.facebook.com/share/19WmC6tBsQ/`, Instagram `https://www.instagram.com/heipige_choy?igsh=eWc2YjFienF5bHdi`, TikTok `https://www.tiktok.com/@captain.choy?_r=1&_t=ZS-97zTdFNzYhw`, and Xiaohongshu `https://xhslink.com/m/2fkDxBavMuL`. Each configured control renders as an external link with an accessible name, `target="_blank"`, and `rel="noopener noreferrer"`. If a URL is removed in the future, the blank destination must render as a visibly inactive, non-focusable platform control rather than an anchor with an empty `href`.
 
 The controls will use the established Performance Sport styling: compact outlined pills or buttons, clear text labels, strong contrast, at least a 44-pixel touch target, visible focus treatment for active links, and a responsive wrapping layout. No fake URLs, placeholder domains, or emoji icons will be added.
 

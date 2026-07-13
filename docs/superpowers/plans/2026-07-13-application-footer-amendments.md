@@ -16,7 +16,7 @@
 - Below `48rem`, the application image frame must use `aspect-ratio: 4 / 3`.
 - From `48rem` upward, the application image frame must use `aspect-ratio: 4 / 5` and align to the top of its column.
 - Empty social URLs must never render as anchors, empty `href` values, or focusable controls.
-- Future active social links must use `target="_blank"` and `rel="noopener noreferrer"`.
+- The four supplied social destinations must render as active links with `target="_blank"` and `rel="noopener noreferrer"`.
 - Social controls must have at least a 44-pixel touch target, wrap responsively, and preserve visible keyboard focus for active links.
 - Keep the independent recruitment disclaimer and the safe non-submitting application workflow unchanged.
 - Add no social embeds, tracking scripts, APIs, fake URLs, placeholder domains, or emoji icons.
@@ -33,7 +33,7 @@
 - Modify `src/pages/[locale]/index.astro`: supply the team-meeting image to the application section.
 - Modify `src/styles/landing.css`: bounded responsive application-image geometry.
 - Modify `tests/unit/locales.test.ts`: copy/model assertions.
-- Create `tests/unit/social.test.ts`: empty and configured social-link behavior.
+- Create `tests/unit/social.test.ts`: supplied destinations, safe configured-link behavior, and blank-URL fallback behavior.
 - Modify `tests/e2e/landing.spec.ts`: rendered footer, social accessibility, and application-image breakpoint coverage.
 
 ### Task 1: Inclusive localized sales-experience answer
@@ -114,20 +114,19 @@ import { describe, expect, it } from 'vitest';
 import { getSocialLinkAttributes, socialProfiles } from '../../src/config/social';
 
 describe('social profile configuration', () => {
-  it('lists the four requested platforms with empty initial destinations', () => {
-    expect(socialProfiles.map(({ id, label }) => ({ id, label }))).toEqual([
-      { id: 'facebook', label: 'Facebook' },
-      { id: 'instagram', label: 'Instagram' },
-      { id: 'tiktok', label: 'TikTok' },
-      { id: 'xiaohongshu', label: 'Xiaohongshu' },
+  it('lists the four requested platforms with their supplied destinations', () => {
+    expect(socialProfiles).toEqual([
+      { id: 'facebook', label: 'Facebook', url: 'https://www.facebook.com/share/19WmC6tBsQ/' },
+      { id: 'instagram', label: 'Instagram', url: 'https://www.instagram.com/heipige_choy?igsh=eWc2YjFienF5bHdi' },
+      { id: 'tiktok', label: 'TikTok', url: 'https://www.tiktok.com/@captain.choy?_r=1&_t=ZS-97zTdFNzYhw' },
+      { id: 'xiaohongshu', label: 'Xiaohongshu', url: 'https://xhslink.com/m/2fkDxBavMuL' },
     ]);
-    expect(socialProfiles.every(({ url }) => url === '')).toBe(true);
   });
 
   it('keeps blank destinations inert and secures configured external links', () => {
     expect(getSocialLinkAttributes('   ')).toBeNull();
-    expect(getSocialLinkAttributes('https://social.example/profile')).toEqual({
-      href: 'https://social.example/profile',
+    expect(getSocialLinkAttributes('https://www.facebook.com/share/19WmC6tBsQ/')).toEqual({
+      href: 'https://www.facebook.com/share/19WmC6tBsQ/',
       target: '_blank',
       rel: 'noopener noreferrer',
     });
@@ -152,21 +151,28 @@ In the localized-route test in `tests/e2e/landing.spec.ts`, delete the Coway off
 ```ts
 await expect(page.locator('footer a[href="https://www.coway.com.my/"]')).toHaveCount(0);
 await expect(page.locator('[data-social-platform]')).toHaveCount(4);
-await expect(page.locator('[data-social-platform][aria-disabled="true"]')).toHaveCount(4);
-await expect(page.locator('[data-social-platform][href]')).toHaveCount(0);
+await expect(page.locator('[data-social-platform][aria-disabled="true"]')).toHaveCount(0);
+await expect(page.locator('a[data-social-platform]')).toHaveCount(4);
 ```
 
 In the localized-chrome table, remove the `official` property from every row and delete the `getByRole('link', { name: official })` assertion. Add one focused test:
 
 ```ts
-test('keeps unconfigured social platforms inert and out of the tab order', async ({ page }) => {
+test('renders configured social platforms as safe external links', async ({ page }) => {
   await page.goto('/en/');
-  const controls = page.locator('[data-social-platform]');
-  await expect(controls).toHaveCount(4);
-  for (const control of await controls.all()) {
-    await expect(control).toHaveAttribute('aria-disabled', 'true');
-    await expect(control).not.toHaveAttribute('href', /.+/);
-    await expect(control).not.toHaveAttribute('tabindex', '0');
+  const expectedProfiles = [
+    { id: 'facebook', url: 'https://www.facebook.com/share/19WmC6tBsQ/' },
+    { id: 'instagram', url: 'https://www.instagram.com/heipige_choy?igsh=eWc2YjFienF5bHdi' },
+    { id: 'tiktok', url: 'https://www.tiktok.com/@captain.choy?_r=1&_t=ZS-97zTdFNzYhw' },
+    { id: 'xiaohongshu', url: 'https://xhslink.com/m/2fkDxBavMuL' },
+  ] as const;
+
+  for (const { id, url } of expectedProfiles) {
+    const link = page.locator(`a[data-social-platform="${id}"]`);
+    await expect(link).toHaveAttribute('href', url);
+    await expect(link).toHaveAttribute('target', '_blank');
+    await expect(link).toHaveAttribute('rel', /(?:^|\s)noopener(?:\s|$)/);
+    await expect(link).toHaveAttribute('rel', /(?:^|\s)noreferrer(?:\s|$)/);
   }
 });
 ```
@@ -179,7 +185,7 @@ Expected: FAIL because `src/config/social.ts` and the footer social strings do n
 
 Run: `pnpm test:e2e -- --grep "social|locale route|accessible chrome"`
 
-Expected: FAIL because the current footer still contains the Coway corporate link and no social controls.
+Expected: FAIL because the social controls do not yet use the supplied active destinations.
 
 - [ ] **Step 5: Implement the typed social configuration**
 
@@ -195,10 +201,10 @@ export type SocialProfile = Readonly<{
 }>;
 
 export const socialProfiles: readonly SocialProfile[] = [
-  { id: 'facebook', label: 'Facebook', url: '' },
-  { id: 'instagram', label: 'Instagram', url: '' },
-  { id: 'tiktok', label: 'TikTok', url: '' },
-  { id: 'xiaohongshu', label: 'Xiaohongshu', url: '' },
+  { id: 'facebook', label: 'Facebook', url: 'https://www.facebook.com/share/19WmC6tBsQ/' },
+  { id: 'instagram', label: 'Instagram', url: 'https://www.instagram.com/heipige_choy?igsh=eWc2YjFienF5bHdi' },
+  { id: 'tiktok', label: 'TikTok', url: 'https://www.tiktok.com/@captain.choy?_r=1&_t=ZS-97zTdFNzYhw' },
+  { id: 'xiaohongshu', label: 'Xiaohongshu', url: 'https://xhslink.com/m/2fkDxBavMuL' },
 ];
 
 export function getSocialLinkAttributes(url: string) {
@@ -321,7 +327,7 @@ Expected: PASS.
 
 Run: `pnpm test:e2e -- --grep "social|locale route|accessible chrome"`
 
-Expected: PASS with four inert controls per locale and no Coway corporate link.
+Expected: PASS with four safe active social links per locale and no Coway corporate link.
 
 - [ ] **Step 10: Commit the footer amendment**
 

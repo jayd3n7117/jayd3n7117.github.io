@@ -34,8 +34,8 @@ for (const { locale, lang } of localizedRoutes) {
 
     await expect(page.locator('footer a[href="https://www.coway.com.my/"]')).toHaveCount(0);
     await expect(page.locator('[data-social-platform]')).toHaveCount(4);
-    await expect(page.locator('[data-social-platform][aria-disabled="true"]')).toHaveCount(4);
-    await expect(page.locator('[data-social-platform][href]')).toHaveCount(0);
+    await expect(page.locator('[data-social-platform][aria-disabled="true"]')).toHaveCount(0);
+    await expect(page.locator('a[data-social-platform]')).toHaveCount(4);
     await expect(page.locator(".site-disclosure")).toContainText(
       contentDisclosure(locale),
     );
@@ -584,14 +584,21 @@ for (const { locale, skip, home, nav, growth } of [
   });
 }
 
-test('keeps unconfigured social platforms inert and out of the tab order', async ({ page }) => {
+test('renders configured social platforms as safe external links', async ({ page }) => {
   await page.goto('/en/');
-  const controls = page.locator('[data-social-platform]');
-  await expect(controls).toHaveCount(4);
-  for (const control of await controls.all()) {
-    await expect(control).toHaveAttribute('aria-disabled', 'true');
-    await expect(control).not.toHaveAttribute('href', /.+/);
-    await expect(control).not.toHaveAttribute('tabindex', '0');
+  const expectedProfiles = [
+    { id: 'facebook', url: 'https://www.facebook.com/share/19WmC6tBsQ/' },
+    { id: 'instagram', url: 'https://www.instagram.com/heipige_choy?igsh=eWc2YjFienF5bHdi' },
+    { id: 'tiktok', url: 'https://www.tiktok.com/@captain.choy?_r=1&_t=ZS-97zTdFNzYhw' },
+    { id: 'xiaohongshu', url: 'https://xhslink.com/m/2fkDxBavMuL' },
+  ] as const;
+
+  for (const { id, url } of expectedProfiles) {
+    const link = page.locator(`a[data-social-platform="${id}"]`);
+    await expect(link).toHaveAttribute('href', url);
+    await expect(link).toHaveAttribute('target', '_blank');
+    await expect(link).toHaveAttribute('rel', /(?:^|\s)noopener(?:\s|$)/);
+    await expect(link).toHaveAttribute('rel', /(?:^|\s)noreferrer(?:\s|$)/);
   }
 });
 
