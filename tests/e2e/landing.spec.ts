@@ -190,6 +190,35 @@ test("renders the Performance Sport hero and opportunity composition", async ({ 
   );
 });
 
+test("serves a high-resolution responsive hero candidate on desktop", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/en/");
+
+  const heroPicture = page.locator("[data-performance-hero] .hero-picture");
+  const advertisedWidths = await heroPicture.locator("source").evaluateAll((sources) =>
+    sources.flatMap((source) =>
+      (source.getAttribute("srcset") ?? "")
+        .split(",")
+        .map((candidate) => Number(candidate.trim().match(/\s(\d+)w$/)?.[1]))
+        .filter(Number.isFinite),
+    ),
+  );
+  expect(advertisedWidths).toContain(1440);
+  expect(advertisedWidths).toContain(1920);
+
+  const selectedCandidate = await heroPicture.locator("img").evaluate((image) => ({
+    currentSrc: image.currentSrc,
+    requiredWidth: image.getBoundingClientRect().width * window.devicePixelRatio,
+  }));
+  const selectedWidth = Number(
+    new URL(selectedCandidate.currentSrc).pathname.match(/-(\d+)\.(?:avif|webp)$/)?.[1],
+  );
+  expect(selectedWidth).toBeGreaterThanOrEqual(selectedCandidate.requiredWidth);
+  expect(selectedWidth).toBeGreaterThan(640);
+});
+
 test("connects the three career stages into one journey", async ({ page }) => {
   await page.goto("/en/");
   await expect(page.locator("[data-journey]")).toHaveCount(1);
@@ -448,6 +477,43 @@ test("keeps reduced-motion content visible and ticker static", async ({ page }) 
   await expect(page.locator("[data-reveal]").first()).toHaveCSS("transform", "none");
   await expect(page.locator('[data-motion="hero-title"]')).toHaveCSS("transform", "none");
   await expect(page.locator("[data-ticker-track]")).toHaveCSS("transform", "none");
+
+  for (const tile of await page.locator("[data-media-tile]").all()) {
+    await expect(tile).toBeVisible();
+    await expect(tile).toHaveCSS("transform", "none");
+  }
+  for (const image of await page.locator("[data-media-tile] img").all()) {
+    await expect(image).toBeVisible();
+    await expect(image).toHaveCSS("transform", "none");
+  }
+  await expect(page.locator("[data-media-tile] video")).toBeVisible();
+  for (const step of await page.locator("[data-journey-step]").all()) {
+    await expect(step).toBeVisible();
+    await expect(step).toHaveCSS("transform", "none");
+  }
+
+  const journey = page.locator("[data-journey]");
+  const initialProgress = await journey.evaluate((element) =>
+    getComputedStyle(element).getPropertyValue("--journey-progress").trim(),
+  );
+  await journey.scrollIntoViewIfNeeded();
+  await page.waitForTimeout(100);
+  const scrolledProgress = await journey.evaluate((element) =>
+    getComputedStyle(element).getPropertyValue("--journey-progress").trim(),
+  );
+  expect(["", "0"]).toContain(initialProgress);
+  expect(scrolledProgress).toBe(initialProgress);
+});
+
+test("updates journey progress when the career journey enters view", async ({ page }) => {
+  await page.setViewportSize({ width: 1024, height: 700 });
+  await page.goto("/en/");
+  const journey = page.locator("[data-journey]");
+
+  await journey.scrollIntoViewIfNeeded();
+  await expect.poll(() => journey.evaluate((element) =>
+    Number(getComputedStyle(element).getPropertyValue("--journey-progress").trim() || 0)
+  )).toBeGreaterThan(0);
 });
 
 test("updates scroll progress without changing layout bounds", async ({ page }) => {
