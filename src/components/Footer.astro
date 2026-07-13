@@ -1,13 +1,14 @@
 ---
 import type { LandingContent, Locale } from '../content/locales';
-import { getSocialLinkAttributes, socialProfiles } from '../config/social';
+import { getSocialLinkAttributes, socialProfiles, type SocialProfile } from '../config/social';
 
 interface Props {
   locale: Locale;
   content: LandingContent;
+  profiles?: readonly SocialProfile[];
 }
 
-const { locale, content } = Astro.props;
+const { locale, content, profiles = socialProfiles } = Astro.props;
 
 const languageLinks = [
   { locale: 'en', label: 'English' },
@@ -45,7 +46,7 @@ const languageLinks = [
     <div class="footer-social">
       <p class="footer-heading">{content.footer.socialHeading}</p>
       <ul class="social-links">
-        {socialProfiles.map((profile) => {
+        {profiles.map((profile) => {
           const attributes = getSocialLinkAttributes(profile.url);
           const unavailableLabel = `${profile.label}: ${content.footer.socialUnavailableLabel}`;
 

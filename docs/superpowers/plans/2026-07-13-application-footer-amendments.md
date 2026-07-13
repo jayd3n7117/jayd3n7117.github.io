@@ -470,5 +470,5 @@ git commit -m "fix: keep application photography proportional"
 - [ ] Run `pnpm check` and expect zero Astro errors, warnings, or hints.
 - [ ] Run `$env:PUBLIC_SITE_URL='https://join.coway.test'; pnpm build` and expect successful `/en`, `/bm`, and `/zh` output plus sitemap and robots files.
 - [ ] Run `pnpm test:e2e` and expect all assertions to execute without failures; if the known Windows Playwright teardown hang recurs after assertions complete, record it separately rather than treating it as a product failure.
-- [ ] Visually inspect `/en/` at 375 and 1440 pixels: verify the FAQ wording, proportional application image, no Coway corporate link, four balanced inactive social controls, and no horizontal overflow.
+- [ ] Visually inspect `/en/` at 375 and 1440 pixels: verify the FAQ wording, proportional application image, no Coway corporate link, four balanced active social links with visible keyboard focus and safe external-link behavior, and no horizontal overflow.
 - [ ] Confirm `git status --short` contains only the preserved untracked `assets-source/` directory before final review.
