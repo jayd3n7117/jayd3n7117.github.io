@@ -25,6 +25,6 @@ const { content, locale, image } = Astro.props;
     <ResponsivePicture image={image} {locale} eager class="hero-picture" sizes="(min-width: 64rem) 50vw, 100vw" />
     <aside class="hero-fact hero-fact-income" data-motion-card>RM2,500–RM10,000+</aside>
     <aside class="hero-fact hero-fact-culture" data-motion-card>{content.culture.statement}</aside>
-    <aside class="hero-fact hero-fact-growth" data-motion-card>Learn → Lead</aside>
+    <aside class="hero-fact hero-fact-growth" data-motion-card>{content.chrome.growthFact}</aside>
   </div>
 </section>

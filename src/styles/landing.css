@@ -200,8 +200,20 @@ picture img {
 .motion-ready [data-motion="hero-image"],
 .motion-ready [data-motion-card],
 .motion-ready [data-ticker-track],
-.motion-ready [data-media-tile] {
+.motion-ready [data-motion-media-layer] {
   will-change: transform;
+}
+.page-progress {
+  position: fixed;
+  z-index: 1000;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 3px;
+  background: var(--color-accent);
+  pointer-events: none;
+  transform: scaleX(var(--page-progress, 0));
+  transform-origin: left center;
 }
 .motion-ready [data-reveal] {
   opacity: 0;
@@ -346,6 +358,18 @@ picture img {
   height: 2px;
   background: var(--color-coway-blue);
 }
+.journey-progress {
+  position: absolute;
+  z-index: 0;
+  top: 2.45rem;
+  right: 10%;
+  left: 10%;
+  height: 5px;
+  border-radius: 999px;
+  background: var(--color-accent);
+  transform: scaleX(var(--journey-progress, 0));
+  transform-origin: left center;
+}
 .journey-flow li {
   position: relative;
   z-index: 1;
@@ -452,7 +476,16 @@ picture img {
 }
 .application-visual {
   min-height: clamp(18rem, 58vw, 28rem);
-  background: url("/media/team-meeting-960.webp") center 35% / cover no-repeat;
+  overflow: hidden;
+}
+.application-visual picture,
+.application-visual img {
+  width: 100%;
+  height: 100%;
+}
+.application-visual img {
+  object-fit: cover;
+  object-position: center 35%;
 }
 .application-panel {
   padding: clamp(1.5rem, 5vw, 4rem);
@@ -602,6 +635,16 @@ picture img {
     width: 2px;
     height: auto;
   }
+  .journey-progress {
+    top: 1.25rem;
+    right: auto;
+    bottom: 1.25rem;
+    left: 2.45rem;
+    width: 5px;
+    height: auto;
+    transform: scaleY(var(--journey-progress, 0));
+    transform-origin: center top;
+  }
   .journey-flow li {
     flex-direction: row;
   }
@@ -641,7 +684,9 @@ picture img {
   [data-motion="hero-image"],
   [data-motion-card],
   [data-ticker-track],
-  [data-media-tile] {
+  [data-motion-media-layer],
+  .page-progress,
+  .journey-progress {
     opacity: 1;
     transform: none;
   }

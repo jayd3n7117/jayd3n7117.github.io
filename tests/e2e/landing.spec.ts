@@ -209,7 +209,7 @@ test("serves a high-resolution responsive hero candidate on desktop", async ({
   expect(advertisedWidths).toContain(1920);
 
   const selectedCandidate = await heroPicture.locator("img").evaluate((image) => ({
-    currentSrc: image.currentSrc,
+    currentSrc: (image as HTMLImageElement).currentSrc,
     requiredWidth: image.getBoundingClientRect().width * window.devicePixelRatio,
   }));
   const selectedWidth = Number(
@@ -515,6 +515,50 @@ test("updates journey progress when the career journey enters view", async ({ pa
     Number(getComputedStyle(element).getPropertyValue("--journey-progress").trim() || 0)
   )).toBeGreaterThan(0);
 });
+
+test("renders journey and page progress with transform-only indicators", async ({ page }) => {
+  await page.setViewportSize({ width: 1024, height: 700 });
+  await page.goto("/en/");
+  const journey = page.locator("[data-journey]");
+  const connector = journey.locator(".journey-progress");
+  const pageIndicator = page.locator("[data-page-progress]");
+  const before = await pageIndicator.evaluate((el) => getComputedStyle(el).transform);
+  await journey.scrollIntoViewIfNeeded();
+  await expect.poll(() => connector.evaluate((el) => getComputedStyle(el).transform)).not.toBe("none");
+  await expect.poll(() => pageIndicator.evaluate((el) => getComputedStyle(el).transform)).not.toBe(before);
+  const extent = await connector.boundingBox();
+  expect(extent!.width).toBeGreaterThan(extent!.height);
+});
+
+test("keeps media tile geometry fixed while moving only clipped photo layers", async ({ page }) => {
+  await page.setViewportSize({ width: 1024, height: 700 });
+  await page.goto("/en/");
+  const tile = page.locator("[data-media-tile]").first();
+  const before = await tile.boundingBox();
+  await tile.scrollIntoViewIfNeeded();
+  await page.waitForTimeout(100);
+  const after = await tile.boundingBox();
+  expect(after!.width).toBeCloseTo(before!.width, 1);
+  expect(after!.height).toBeCloseTo(before!.height, 1);
+  await expect(tile).toHaveCSS("transform", "none");
+  await expect(tile.locator("[data-motion-media-layer]")).not.toHaveCSS("transform", "none");
+  await expect(page.locator("[data-media-tile] video")).toHaveCSS("transform", "none");
+});
+
+for (const { locale, skip, home, nav, growth, official } of [
+  { locale: "en", skip: "Skip to main content", home: "Coway recruitment home", nav: "Primary navigation", growth: "Learn → Lead", official: "Coway Malaysia official website" },
+  { locale: "bm", skip: "Langkau ke kandungan utama", home: "Laman utama pengambilan Coway", nav: "Navigasi utama", growth: "Belajar → Memimpin", official: "Laman web rasmi Coway Malaysia" },
+  { locale: "zh", skip: "跳至主要内容", home: "Coway 招聘主页", nav: "主导航", growth: "学习 → 领导", official: "Coway 马来西亚官方网站" },
+] as const) {
+  test(`localizes visible and accessible chrome in ${locale}`, async ({ page }) => {
+    await page.goto(`/${locale}/`);
+    await expect(page.locator(".skip-link")).toHaveText(skip);
+    await expect(page.locator("header .wordmark")).toHaveAttribute("aria-label", home);
+    await expect(page.locator("header .desktop-navigation")).toHaveAttribute("aria-label", nav);
+    await expect(page.locator(".hero-fact-growth")).toHaveText(growth);
+    await expect(page.getByRole("link", { name: official })).toBeVisible();
+  });
+}
 
 test("updates scroll progress without changing layout bounds", async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 568 });

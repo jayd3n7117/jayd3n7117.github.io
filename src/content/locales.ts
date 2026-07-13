@@ -1,6 +1,13 @@
 export type Locale = "en" | "bm" | "zh";
 
 export interface LandingContent {
+  chrome: {
+    skipLink: string;
+    homeLabel: string;
+    primaryNavigationLabel: string;
+    officialSiteLabel: string;
+    growthFact: string;
+  };
   meta: {
     title: string;
     description: string;
@@ -102,6 +109,7 @@ export interface LandingContent {
 }
 
 const en: LandingContent = {
+  chrome: { skipLink: "Skip to main content", homeLabel: "Coway recruitment home", primaryNavigationLabel: "Primary navigation", officialSiteLabel: "Coway Malaysia official website", growthFact: "Learn → Lead" },
   meta: {
     title: "Coway Sales Recruitment Malaysia",
     description:
@@ -319,6 +327,7 @@ const en: LandingContent = {
 };
 
 const bm: LandingContent = {
+  chrome: { skipLink: "Langkau ke kandungan utama", homeLabel: "Laman utama pengambilan Coway", primaryNavigationLabel: "Navigasi utama", officialSiteLabel: "Laman web rasmi Coway Malaysia", growthFact: "Belajar → Memimpin" },
   meta: {
     title: "Pengambilan Jualan Coway Malaysia",
     description:
@@ -537,6 +546,7 @@ const bm: LandingContent = {
 };
 
 const zh: LandingContent = {
+  chrome: { skipLink: "跳至主要内容", homeLabel: "Coway 招聘主页", primaryNavigationLabel: "主导航", officialSiteLabel: "Coway 马来西亚官方网站", growthFact: "学习 → 领导" },
   meta: {
     title: "Coway 马来西亚销售招募",
     description:

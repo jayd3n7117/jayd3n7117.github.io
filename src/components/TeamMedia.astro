@@ -22,7 +22,7 @@ const { content, locale, lead, support, video } = Astro.props;
   </header>
   <div class="team-media-grid" data-media-grid>
     <figure class="media-tile media-tile-lead" data-media-tile>
-      <ResponsivePicture image={lead} {locale} sizes="(min-width: 64rem) 40vw, 100vw" />
+      <ResponsivePicture image={lead} {locale} motionLayer sizes="(min-width: 64rem) 40vw, 100vw" />
     </figure>
     <figure class="media-tile media-tile-video" data-media-tile>
       <video controls preload="metadata" poster={video.poster} aria-label={video.alt[locale]} width={video.width} height={video.height}>
@@ -32,7 +32,7 @@ const { content, locale, lead, support, video } = Astro.props;
     </figure>
     {support.map((image, index) => (
       <figure class={`media-tile media-tile-achievement media-tile-achievement-${index + 1}`} data-media-tile>
-        <ResponsivePicture image={image} {locale} sizes="(min-width: 64rem) 27vw, 50vw" />
+        <ResponsivePicture image={image} {locale} motionLayer sizes="(min-width: 64rem) 27vw, 50vw" />
       </figure>
     ))}
   </div>

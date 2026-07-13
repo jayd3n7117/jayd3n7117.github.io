@@ -2,14 +2,16 @@
 import { applicationContent } from "../application/content";
 import { AGE_RANGES, MALAYSIAN_LOCATIONS, SALES_EXPERIENCE } from "../application/schema";
 import type { Locale } from "../content/locales";
+import type { MediaImage } from "../content/media";
+import ResponsivePicture from "./ResponsivePicture.astro";
 
-const { locale } = Astro.props as { locale: Locale };
+const { locale, image } = Astro.props as { locale: Locale; image: MediaImage };
 const copy = applicationContent[locale];
 const required = (label: string) => `${label} (${copy.required})`;
 ---
 
 <section id="apply" class="section application-section" data-conversion-section data-reveal>
-  <div class="application-visual" aria-hidden="true"></div>
+  <div class="application-visual" aria-hidden="true"><ResponsivePicture {image} {locale} sizes="(min-width: 48rem) 50vw, 100vw" /></div>
   <div class="application-panel">
     <div class="application-intro">
       <p class="eyebrow">{copy.required}</p>

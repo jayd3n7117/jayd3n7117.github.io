@@ -17,11 +17,11 @@ const languageLinks = [
 
 <header class="site-header">
   <div class="shell section-inner header-inner">
-    <a class="wordmark" href={`/${locale}/`} aria-label={`${content.footer.copyright} home`}>
+    <a class="wordmark" href={`/${locale}/`} aria-label={content.chrome.homeLabel}>
       <span aria-hidden="true">COWAY</span>
     </a>
 
-    <nav class="desktop-navigation" aria-label="Primary navigation">
+    <nav class="desktop-navigation" aria-label={content.chrome.primaryNavigationLabel}>
       <ul class="primary-navigation">
         <li><a href="#opportunity">{content.nav.opportunity}</a></li>
         <li><a href="#support">{content.nav.support}</a></li>

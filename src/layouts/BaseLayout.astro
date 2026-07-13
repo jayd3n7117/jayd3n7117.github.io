@@ -33,7 +33,8 @@ const seo = getSeo(locale, Astro.site ?? new URL(Astro.url.origin));
     <meta property="og:url" content={seo.canonical} />
   </head>
   <body>
-    <a class="skip-link" href="#main-content">Skip to main content</a>
+    <div class="page-progress" data-page-progress aria-hidden="true"></div>
+    <a class="skip-link" href="#main-content">{content.chrome.skipLink}</a>
     <Header {locale} {content} />
     <main id="main-content" tabindex="-1">
       <slot />

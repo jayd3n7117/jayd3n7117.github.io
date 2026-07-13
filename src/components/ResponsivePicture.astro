@@ -6,6 +6,7 @@ interface Props {
   eager?: boolean;
   class?: string;
   sizes?: string;
+  motionLayer?: boolean;
 }
 const {
   image,
@@ -13,10 +14,11 @@ const {
   eager = false,
   class: className,
   sizes = '100vw',
+  motionLayer = false,
 } = Astro.props;
 const srcset = (items: readonly {src:string;width:number}[]) => items.map(i => `${i.src} ${i.width}w`).join(', ');
 ---
-<picture class={className} data-image-motion>
+<picture class={className} data-image-motion data-motion-media-layer={motionLayer ? '' : undefined}>
   <source type="image/avif" srcset={srcset(image.sources.avif)} {sizes} />
   <source type="image/webp" srcset={srcset(image.sources.webp)} {sizes} />
   <img src={image.src} width={image.width} height={image.height} alt={image.alt[locale]} loading={eager ? 'eager' : 'lazy'} fetchpriority={eager ? 'high' : 'auto'} />

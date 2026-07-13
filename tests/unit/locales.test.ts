@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { applicationInterim, getContent, locales } from '../../src/content/locales';
 
 const requiredSections = [
+  'chrome',
   'meta',
   'nav',
   'hero',
