@@ -315,6 +315,33 @@ for (const width of [320, 390, 1440]) {
   });
 }
 
+for (const { width, expectedRatio } of [
+  { width: 375, expectedRatio: 4 / 3 },
+  { width: 768, expectedRatio: 4 / 5 },
+  { width: 1024, expectedRatio: 4 / 5 },
+  { width: 1440, expectedRatio: 4 / 5 },
+] as const) {
+  test(`keeps the application image proportional at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto('/en/');
+    const visual = page.locator('.application-visual');
+    await visual.scrollIntoViewIfNeeded();
+    const box = await visual.boundingBox();
+    expect(box).not.toBeNull();
+    expect(box!.width / box!.height).toBeCloseTo(expectedRatio, 1);
+    await expect(visual.locator('img')).toHaveCSS('object-fit', 'cover');
+    expect(await page.evaluate(() => document.body.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
+  });
+}
+
+test('uses the team-meeting photograph in the application section', async ({ page }) => {
+  await page.goto('/en/');
+  await expect(page.locator('.application-visual img')).toHaveAttribute(
+    'src',
+    /\/media\/team-meeting-\d+\.webp$/,
+  );
+});
+
 for (const locale of ["bm", "zh"] as const) {
   test(`keeps ${locale} landing sections localized`, async ({ page }) => {
     await page.goto(`/${locale}/`);

@@ -470,11 +470,13 @@ picture img {
   background: var(--color-surface);
 }
 .application-visual {
-  min-height: clamp(18rem, 58vw, 28rem);
+  aspect-ratio: 4 / 3;
+  min-height: 0;
   overflow: hidden;
 }
 .application-visual picture,
 .application-visual img {
+  display: block;
   width: 100%;
   height: 100%;
 }
@@ -583,10 +585,11 @@ picture img {
   }
   .application-section {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    align-items: stretch;
+    align-items: start;
   }
   .application-visual {
-    min-height: 100%;
+    aspect-ratio: 4 / 5;
+    min-height: 0;
   }
   .application-panel {
     min-width: 0;
