@@ -23,7 +23,7 @@ for (const { locale, lang } of localizedRoutes) {
     );
     await expect(page.locator('link[rel="alternate"]')).toHaveCount(3);
 
-    const languageControl = page.getByText("Language", { exact: true }).first();
+    const languageControl = page.locator("header .language-menu > summary");
     await expect(languageControl).toBeVisible();
 
     for (const label of ["English", "Bahasa Malaysia", "中文"]) {
@@ -89,8 +89,8 @@ test("uses native language navigation and stable locale links", async ({
 }) => {
   await page.goto("/en/");
 
-  const languageMenu = page.locator("header details");
-  await languageMenu.locator("summary").click();
+  const languageMenu = page.locator("header .language-menu");
+  await languageMenu.locator(":scope > summary").click();
   await expect(languageMenu).toHaveAttribute("open", "");
   await expect(languageMenu.locator("[data-locale-link]")).toHaveCount(3);
 
@@ -113,7 +113,9 @@ test("keeps the prominent Apply action visible within a narrow viewport", async 
   expect(bounds!.x).toBeGreaterThanOrEqual(0);
   expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(320);
   expect(bounds!.height).toBeGreaterThanOrEqual(44);
-  const languageBounds = await page.locator("header details summary").boundingBox();
+  const languageBounds = await page
+    .locator("header .language-menu > summary")
+    .boundingBox();
   expect(languageBounds).not.toBeNull();
   expect(languageBounds!.height).toBeGreaterThanOrEqual(44);
 });
@@ -164,7 +166,7 @@ test("renders the complete landing story with honest opportunity details", async
   await expect(opportunity).toContainText("RM2,500-RM10,000+");
   await expect(opportunity).toContainText("Fully commission-based");
   await expect(opportunity).toContainText("No income is guaranteed");
-  await expect(page.locator(".culture-statement")).toContainText(
+  await expect(page.locator(".team-media-heading .lede")).toContainText(
     "There is no me in this team. Only us.",
   );
   await expect(page.locator("#faq details")).toHaveCount(7);
@@ -195,6 +197,22 @@ test("connects the three career stages into one journey", async ({ page }) => {
   await expect(page.locator("[data-journey-step]").nth(0)).toContainText("Learn");
   await expect(page.locator("[data-journey-step]").nth(2)).toContainText("leadership");
 });
+
+for (const width of [375, 768, 1024, 1440]) {
+  test(`Performance Sport layout fits at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto("/en/");
+    expect(await page.evaluate(() => ({
+      documentFits:
+        document.documentElement.scrollWidth <=
+        document.documentElement.clientWidth,
+      bodyFits:
+        document.body.scrollWidth <= document.documentElement.clientWidth,
+    }))).toEqual({ documentFits: true, bodyFits: true });
+    await expect(page.locator("[data-media-grid]")).toBeVisible();
+    await expect(page.locator("[data-journey]")).toBeVisible();
+  });
+}
 
 for (const width of [320, 768, 1440]) {
   test(`keeps responsive footer gutters at ${width}px`, async ({ page }) => {
