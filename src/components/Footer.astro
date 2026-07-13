@@ -1,5 +1,6 @@
 ---
 import type { LandingContent, Locale } from '../content/locales';
+import { getSocialLinkAttributes, socialProfiles } from '../config/social';
 
 interface Props {
   locale: Locale;
@@ -41,9 +42,33 @@ const languageLinks = [
       </ul>
     </nav>
 
-    <div>
-      <p class="footer-heading">Coway</p>
-      <a href="https://www.coway.com.my/">{content.chrome.officialSiteLabel}</a>
+    <div class="footer-social">
+      <p class="footer-heading">{content.footer.socialHeading}</p>
+      <ul class="social-links">
+        {socialProfiles.map((profile) => {
+          const attributes = getSocialLinkAttributes(profile.url);
+          const unavailableLabel = `${profile.label}: ${content.footer.socialUnavailableLabel}`;
+
+          return (
+            <li>
+              {attributes ? (
+                <a class="social-link" data-social-platform={profile.id} {...attributes}>
+                  {profile.label}
+                </a>
+              ) : (
+                <span
+                  class="social-link social-link-disabled"
+                  data-social-platform={profile.id}
+                  aria-disabled="true"
+                  aria-label={unavailableLabel}
+                >
+                  {profile.label}
+                </span>
+              )}
+            </li>
+          );
+        })}
+      </ul>
     </div>
   </div>
 

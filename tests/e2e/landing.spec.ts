@@ -32,9 +32,10 @@ for (const { locale, lang } of localizedRoutes) {
       ).toBeVisible();
     }
 
-    await expect(
-      page.getByRole("link", { name: /Coway Malaysia official website/i }),
-    ).toHaveAttribute("href", "https://www.coway.com.my/");
+    await expect(page.locator('footer a[href="https://www.coway.com.my/"]')).toHaveCount(0);
+    await expect(page.locator('[data-social-platform]')).toHaveCount(4);
+    await expect(page.locator('[data-social-platform][aria-disabled="true"]')).toHaveCount(4);
+    await expect(page.locator('[data-social-platform][href]')).toHaveCount(0);
     await expect(page.locator(".site-disclosure")).toContainText(
       contentDisclosure(locale),
     );
@@ -569,10 +570,10 @@ test("keeps media tile geometry fixed while moving only clipped photo layers", a
   await expect(page.locator("[data-media-tile] video")).toHaveCSS("transform", "none");
 });
 
-for (const { locale, skip, home, nav, growth, official } of [
-  { locale: "en", skip: "Skip to main content", home: "Coway recruitment home", nav: "Primary navigation", growth: "Learn → Lead", official: "Coway Malaysia official website" },
-  { locale: "bm", skip: "Langkau ke kandungan utama", home: "Laman utama pengambilan Coway", nav: "Navigasi utama", growth: "Belajar → Memimpin", official: "Laman web rasmi Coway Malaysia" },
-  { locale: "zh", skip: "跳至主要内容", home: "Coway 招聘主页", nav: "主导航", growth: "学习 → 领导", official: "Coway 马来西亚官方网站" },
+for (const { locale, skip, home, nav, growth } of [
+  { locale: "en", skip: "Skip to main content", home: "Coway recruitment home", nav: "Primary navigation", growth: "Learn → Lead" },
+  { locale: "bm", skip: "Langkau ke kandungan utama", home: "Laman utama pengambilan Coway", nav: "Navigasi utama", growth: "Belajar → Memimpin" },
+  { locale: "zh", skip: "跳至主要内容", home: "Coway 招聘主页", nav: "主导航", growth: "学习 → 领导" },
 ] as const) {
   test(`localizes visible and accessible chrome in ${locale}`, async ({ page }) => {
     await page.goto(`/${locale}/`);
@@ -580,9 +581,19 @@ for (const { locale, skip, home, nav, growth, official } of [
     await expect(page.locator("header .wordmark")).toHaveAttribute("aria-label", home);
     await expect(page.locator("header .desktop-navigation")).toHaveAttribute("aria-label", nav);
     await expect(page.locator(".hero-fact-growth")).toHaveText(growth);
-    await expect(page.getByRole("link", { name: official })).toBeVisible();
   });
 }
+
+test('keeps unconfigured social platforms inert and out of the tab order', async ({ page }) => {
+  await page.goto('/en/');
+  const controls = page.locator('[data-social-platform]');
+  await expect(controls).toHaveCount(4);
+  for (const control of await controls.all()) {
+    await expect(control).toHaveAttribute('aria-disabled', 'true');
+    await expect(control).not.toHaveAttribute('href', /.+/);
+    await expect(control).not.toHaveAttribute('tabindex', '0');
+  }
+});
 
 test("updates scroll progress without changing layout bounds", async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 568 });

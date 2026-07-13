@@ -5,7 +5,6 @@ export interface LandingContent {
     skipLink: string;
     homeLabel: string;
     primaryNavigationLabel: string;
-    officialSiteLabel: string;
     growthFact: string;
   };
   meta: {
@@ -101,6 +100,8 @@ export interface LandingContent {
     }>;
   };
   footer: {
+    socialHeading: string;
+    socialUnavailableLabel: string;
     disclaimer: string;
     privacy: string;
     privacyLink: string;
@@ -109,7 +110,7 @@ export interface LandingContent {
 }
 
 const en: LandingContent = {
-  chrome: { skipLink: "Skip to main content", homeLabel: "Coway recruitment home", primaryNavigationLabel: "Primary navigation", officialSiteLabel: "Coway Malaysia official website", growthFact: "Learn → Lead" },
+  chrome: { skipLink: "Skip to main content", homeLabel: "Coway recruitment home", primaryNavigationLabel: "Primary navigation", growthFact: "Learn → Lead" },
   meta: {
     title: "Coway Sales Recruitment Malaysia",
     description:
@@ -317,6 +318,8 @@ const en: LandingContent = {
     ],
   },
   footer: {
+    socialHeading: 'Follow our journey',
+    socialUnavailableLabel: 'link not available yet',
     disclaimer:
       "Independent sales recruitment information. This is not an official Coway corporate careers website. This opportunity is fully commission-based; actual income depends on individual sales performance and no income is guaranteed.",
     privacy:
@@ -327,7 +330,7 @@ const en: LandingContent = {
 };
 
 const bm: LandingContent = {
-  chrome: { skipLink: "Langkau ke kandungan utama", homeLabel: "Laman utama pengambilan Coway", primaryNavigationLabel: "Navigasi utama", officialSiteLabel: "Laman web rasmi Coway Malaysia", growthFact: "Belajar → Memimpin" },
+  chrome: { skipLink: "Langkau ke kandungan utama", homeLabel: "Laman utama pengambilan Coway", primaryNavigationLabel: "Navigasi utama", growthFact: "Belajar → Memimpin" },
   meta: {
     title: "Pengambilan Jualan Coway Malaysia",
     description:
@@ -536,6 +539,8 @@ const bm: LandingContent = {
     ],
   },
   footer: {
+    socialHeading: 'Ikuti perjalanan kami',
+    socialUnavailableLabel: 'pautan belum tersedia',
     disclaimer:
       "Maklumat pengambilan jualan bebas. Ini bukan laman kerjaya korporat rasmi Coway. Peluang ini berasaskan komisen sepenuhnya; pendapatan sebenar bergantung pada prestasi jualan individu dan tiada pendapatan yang dijamin.",
     privacy:
@@ -546,7 +551,7 @@ const bm: LandingContent = {
 };
 
 const zh: LandingContent = {
-  chrome: { skipLink: "跳至主要内容", homeLabel: "Coway 招聘主页", primaryNavigationLabel: "主导航", officialSiteLabel: "Coway 马来西亚官方网站", growthFact: "学习 → 领导" },
+  chrome: { skipLink: "跳至主要内容", homeLabel: "Coway 招聘主页", primaryNavigationLabel: "主导航", growthFact: "学习 → 领导" },
   meta: {
     title: "Coway 马来西亚销售招募",
     description:
@@ -732,6 +737,8 @@ const zh: LandingContent = {
     ],
   },
   footer: {
+    socialHeading: '关注我们的成长旅程',
+    socialUnavailableLabel: '链接暂未开放',
     disclaimer:
       "独立销售招募信息。本网站并非 Coway 官方企业招聘网站。此机会完全以佣金为基础；实际收入取决于个人销售业绩，并且不保证任何收入。",
     privacy: "你的资料只会用于回复你的应征意向。",

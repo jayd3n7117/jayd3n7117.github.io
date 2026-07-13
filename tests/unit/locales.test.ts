@@ -34,6 +34,9 @@ describe('localized recruitment content', () => {
       expect(content.form.fields).toHaveLength(5);
       expect(content.faq.items).toHaveLength(7);
       expect(content.opportunity.guarantee).toBe(false);
+      expect(content.footer.socialHeading.trim()).not.toBe('');
+      expect(content.footer.socialUnavailableLabel.trim()).not.toBe('');
+      expect(content.chrome).not.toHaveProperty('officialSiteLabel');
     }
   });
 
