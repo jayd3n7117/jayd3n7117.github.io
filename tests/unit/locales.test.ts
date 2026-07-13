@@ -88,4 +88,16 @@ describe('localized recruitment content', () => {
       'ambitiousNewcomers',
     ]);
   });
+
+  it('welcomes committed applicants without requiring sales experience', () => {
+    expect(locales.en.faq.items[1].answer).toBe(
+      'No. Sales experience is not required. What matters most is your ambition, commitment to the industry, and willingness to learn. With the right attitude and consistent action, we can develop your skills and grow together.',
+    );
+    expect(locales.bm.faq.items[1].answer).toBe(
+      'Tidak. Pengalaman jualan tidak diperlukan. Yang paling penting ialah cita-cita anda, komitmen terhadap industri ini dan kesediaan untuk belajar. Dengan sikap yang betul dan tindakan yang konsisten, kita boleh membina kemahiran anda dan berkembang bersama.',
+    );
+    expect(locales.zh.faq.items[1].answer).toBe(
+      '不需要。销售经验并非必要条件。我们更看重你对这份事业的企图心、投入和学习意愿。只要保持正确的态度并持续行动，我们就能一起提升你的能力，共同成长。',
+    );
+  });
 });

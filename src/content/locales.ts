@@ -287,7 +287,7 @@ const en: LandingContent = {
       {
         question: "Do I need sales experience?",
         answer:
-          "Experienced salespeople are prioritised, followed by career switchers and then ambitious newcomers who are ready to learn.",
+          "No. Sales experience is not required. What matters most is your ambition, commitment to the industry, and willingness to learn. With the right attitude and consistent action, we can develop your skills and grow together.",
       },
       {
         question: "What training and support will I receive?",
@@ -506,7 +506,7 @@ const bm: LandingContent = {
       {
         question: "Adakah saya memerlukan pengalaman jualan?",
         answer:
-          "Jurujual berpengalaman diberi keutamaan, diikuti individu yang mahu bertukar kerjaya, kemudian pendatang baharu bercita-cita tinggi yang bersedia untuk belajar.",
+          "Tidak. Pengalaman jualan tidak diperlukan. Yang paling penting ialah cita-cita anda, komitmen terhadap industri ini dan kesediaan untuk belajar. Dengan sikap yang betul dan tindakan yang konsisten, kita boleh membina kemahiran anda dan berkembang bersama.",
       },
       {
         question: "Apakah latihan dan sokongan yang akan saya terima?",
@@ -702,7 +702,7 @@ const zh: LandingContent = {
       {
         question: "我需要销售经验吗？",
         answer:
-          "我们优先考虑有经验的销售人员，其次是准备转行的人士，再其次是愿意学习、有抱负的销售新人。",
+          "不需要。销售经验并非必要条件。我们更看重你对这份事业的企图心、投入和学习意愿。只要保持正确的态度并持续行动，我们就能一起提升你的能力，共同成长。",
       },
       {
         question: "我会获得哪些培训和支持？",
