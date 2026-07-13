@@ -19,6 +19,7 @@ const initialize = () => {
     root.classList.add('motion-reduced');
     revealItems.forEach((item) => item.classList.add('is-revealed'));
     [heroTitle, heroImage, tickerTrack, ...motionCards, ...mediaLayers].forEach((item) => item?.style.removeProperty('transform'));
+    heroTitle?.style.removeProperty('opacity');
     journeys.forEach((journey) => journey.style.removeProperty('--journey-progress'));
     root.style.removeProperty('--page-progress');
     return;

@@ -8,13 +8,15 @@ const { content } = Astro.props as { content: LandingContent };
     <h2>{content.progression.title}</h2>
     <p>{content.progression.body}</p>
   </header>
-  <ol class="journey-flow">
+  <div class="journey-flow-wrapper">
     <span class="journey-progress" aria-hidden="true"></span>
-    {content.progression.steps.map((step, index) => (
-      <li data-journey-step data-reveal>
-        <span aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
-        <h3>{step}</h3>
-      </li>
-    ))}
-  </ol>
+    <ol class="journey-flow">
+      {content.progression.steps.map((step, index) => (
+        <li data-journey-step data-reveal>
+          <span aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+          <h3>{step}</h3>
+        </li>
+      ))}
+    </ol>
+  </div>
 </section>

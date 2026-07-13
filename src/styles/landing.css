@@ -196,13 +196,6 @@ picture img {
 [data-ticker] {
   animation: ticker-enter 250ms ease-out both;
 }
-.motion-ready [data-motion="hero-title"],
-.motion-ready [data-motion="hero-image"],
-.motion-ready [data-motion-card],
-.motion-ready [data-ticker-track],
-.motion-ready [data-motion-media-layer] {
-  will-change: transform;
-}
 .page-progress {
   position: fixed;
   z-index: 1000;
@@ -345,8 +338,10 @@ picture img {
   background: var(--color-coral);
   color: var(--color-navy);
 }
-.journey-flow {
+.journey-flow-wrapper {
   position: relative;
+}
+.journey-flow {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 .journey-flow::before {

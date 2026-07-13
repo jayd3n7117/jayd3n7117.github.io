@@ -528,6 +528,30 @@ test("renders journey and page progress with transform-only indicators", async (
   await expect.poll(() => pageIndicator.evaluate((el) => getComputedStyle(el).transform)).not.toBe(before);
   const extent = await connector.boundingBox();
   expect(extent!.width).toBeGreaterThan(extent!.height);
+  await expect(journey.locator("ol > .journey-progress")).toHaveCount(0);
+  await expect(journey.locator(".journey-flow-wrapper > .journey-progress")).toHaveCount(1);
+});
+
+test("restores visible static content when reduced motion is enabled at runtime", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await page.goto("/en/");
+  await page.evaluate(() => scrollTo(0, 500));
+
+  const heroTitle = page.locator('[data-motion="hero-title"]');
+  await expect.poll(() => heroTitle.evaluate((element) => element.style.opacity)).not.toBe("");
+  await page.emulateMedia({ reducedMotion: "reduce" });
+
+  await expect(heroTitle).toHaveCSS("opacity", "1");
+  await expect(heroTitle).toHaveCSS("transform", "none");
+  await expect(page.locator('[data-motion="hero-image"]')).toHaveCSS("transform", "none");
+  await expect(page.locator("[data-reveal]").first()).toBeVisible();
+});
+
+test("does not retain page-lifetime will-change hints", async ({ page }) => {
+  await page.goto("/en/");
+
+  await expect(page.locator('[data-motion="hero-title"]')).toHaveCSS("will-change", "auto");
+  await expect(page.locator("[data-motion-media-layer]").first()).toHaveCSS("will-change", "auto");
 });
 
 test("keeps media tile geometry fixed while moving only clipped photo layers", async ({ page }) => {
