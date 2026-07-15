@@ -16,11 +16,19 @@ describe('GitHub Pages deployment configuration', () => {
     const workflow = readFileSync(
       join(root, '.github', 'workflows', 'deploy.yml'),
       'utf8',
-    );
+    ).replace(/\r\n/g, '\n');
 
     expect(workflow).toContain('branches: [master]');
+    expect(workflow).toContain('workflow_dispatch:');
+    expect(workflow).toContain('uses: actions/checkout@v7');
     expect(workflow).toContain('PUBLIC_SITE_URL: https://jayd3n7117.github.io');
+    expect(workflow).toContain("ASTRO_TELEMETRY_DISABLED: '1'");
     expect(workflow).toContain('uses: withastro/action@v6');
+    expect(workflow).toContain(
+      'permissions:\n  contents: read\n  pages: write\n  id-token: write',
+    );
+    expect(workflow).toContain('deploy:\n    needs: build');
+    expect(workflow).toContain('environment:\n      name: github-pages');
     expect(workflow).toContain('uses: actions/deploy-pages@v4');
   });
 });
