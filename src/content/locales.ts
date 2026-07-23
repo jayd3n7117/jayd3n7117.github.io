@@ -77,21 +77,6 @@ export interface LandingContent {
     notForYouTitle: string;
     notForYou: string;
   };
-  form: {
-    title: string;
-    intro: string;
-    fields: Array<{
-      key: "name" | "ageRange" | "currentJob" | "location" | "salesExperience";
-      label: string;
-      placeholder: string;
-      required: true;
-    }>;
-    consent: string;
-    submit: string;
-    submitting: string;
-    success: string;
-    failure: string;
-  };
   faq: {
     title: string;
     items: Array<{
@@ -233,50 +218,6 @@ const en: LandingContent = {
     notForYou:
       "You expect a fixed salary, guaranteed earnings, or passive income without consistent sales activity.",
   },
-  form: {
-    title: "Start the conversation",
-    intro:
-      "Tell us a little about yourself. Your details will only be used to follow up on this opportunity.",
-    fields: [
-      {
-        key: "name",
-        label: "Name",
-        placeholder: "Your full name",
-        required: true,
-      },
-      {
-        key: "ageRange",
-        label: "Age range",
-        placeholder: "Select your age range",
-        required: true,
-      },
-      {
-        key: "currentJob",
-        label: "Current job",
-        placeholder: "What do you do now?",
-        required: true,
-      },
-      {
-        key: "location",
-        label: "Malaysian state / location",
-        placeholder: "Your state or location",
-        required: true,
-      },
-      {
-        key: "salesExperience",
-        label: "Sales experience",
-        placeholder: "Tell us about your sales experience",
-        required: true,
-      },
-    ],
-    consent:
-      "I consent to being contacted about this sales opportunity and understand that submitting this form does not guarantee selection or income.",
-    submit: "Submit interest",
-    submitting: "Submitting…",
-    success:
-      "Thank you. Your interest has been received and the team will contact you about the next step.",
-    failure: "We could not submit your details. Please try again.",
-  },
   faq: {
     title: "Frequently asked questions",
     items: [
@@ -323,7 +264,7 @@ const en: LandingContent = {
     disclaimer:
       "Independent sales recruitment information. This is not an official Coway corporate careers website. This opportunity is fully commission-based; actual income depends on individual sales performance and no income is guaranteed.",
     privacy:
-      "Your information is used only to respond to your expression of interest.",
+      "Your information is used for recruitment follow-up and is processed and stored through Formspree, our configured third-party form service.",
     privacyLink: "Privacy information",
     copyright: "Coway sales recruitment Malaysia",
   },
@@ -454,50 +395,6 @@ const bm: LandingContent = {
     notForYou:
       "Anda mengharapkan gaji tetap, pendapatan terjamin atau pendapatan pasif tanpa aktiviti jualan yang konsisten.",
   },
-  form: {
-    title: "Mulakan perbualan",
-    intro:
-      "Kongsikan sedikit maklumat tentang diri anda. Butiran anda hanya akan digunakan untuk tindakan susulan berkenaan peluang ini.",
-    fields: [
-      {
-        key: "name",
-        label: "Nama",
-        placeholder: "Nama penuh anda",
-        required: true,
-      },
-      {
-        key: "ageRange",
-        label: "Julat umur",
-        placeholder: "Pilih julat umur anda",
-        required: true,
-      },
-      {
-        key: "currentJob",
-        label: "Pekerjaan semasa",
-        placeholder: "Apakah pekerjaan anda sekarang?",
-        required: true,
-      },
-      {
-        key: "location",
-        label: "Negeri / lokasi di Malaysia",
-        placeholder: "Negeri atau lokasi anda",
-        required: true,
-      },
-      {
-        key: "salesExperience",
-        label: "Pengalaman jualan",
-        placeholder: "Ceritakan pengalaman jualan anda",
-        required: true,
-      },
-    ],
-    consent:
-      "Saya bersetuju untuk dihubungi tentang peluang jualan ini dan memahami bahawa penghantaran borang ini tidak menjamin pemilihan atau pendapatan.",
-    submit: "Hantar minat",
-    submitting: "Sedang dihantar…",
-    success:
-      "Terima kasih. Minat anda telah diterima dan pasukan akan menghubungi anda tentang langkah seterusnya.",
-    failure: "Butiran anda tidak dapat dihantar. Sila cuba lagi.",
-  },
   faq: {
     title: "Soalan lazim",
     items: [
@@ -544,7 +441,7 @@ const bm: LandingContent = {
     disclaimer:
       "Maklumat pengambilan jualan bebas. Ini bukan laman kerjaya korporat rasmi Coway. Peluang ini berasaskan komisen sepenuhnya; pendapatan sebenar bergantung pada prestasi jualan individu dan tiada pendapatan yang dijamin.",
     privacy:
-      "Maklumat anda hanya digunakan untuk membalas pernyataan minat anda.",
+      "Maklumat anda digunakan untuk tindakan susulan pengambilan dan diproses serta disimpan melalui Formspree, perkhidmatan borang pihak ketiga yang dikonfigurasikan.",
     privacyLink: "Maklumat privasi",
     copyright: "Pengambilan jualan Coway Malaysia",
   },
@@ -659,43 +556,6 @@ const zh: LandingContent = {
     notForYou:
       "你期待固定薪资、保证收入，或不持续进行销售活动也能获得被动收入。",
   },
-  form: {
-    title: "开始交流",
-    intro: "请简单介绍自己。你的资料只会用于跟进此销售机会。",
-    fields: [
-      { key: "name", label: "姓名", placeholder: "你的全名", required: true },
-      {
-        key: "ageRange",
-        label: "年龄范围",
-        placeholder: "选择你的年龄范围",
-        required: true,
-      },
-      {
-        key: "currentJob",
-        label: "目前职业",
-        placeholder: "你目前从事什么工作？",
-        required: true,
-      },
-      {
-        key: "location",
-        label: "马来西亚州属／地点",
-        placeholder: "你的州属或地点",
-        required: true,
-      },
-      {
-        key: "salesExperience",
-        label: "销售经验",
-        placeholder: "请介绍你的销售经验",
-        required: true,
-      },
-    ],
-    consent:
-      "我同意团队就此销售机会与我联系，并了解提交此表格不保证获选或获得任何收入。",
-    submit: "提交意向",
-    submitting: "正在提交……",
-    success: "谢谢。我们已收到你的意向，团队将与你联系并说明下一步。",
-    failure: "无法提交你的资料，请重试。",
-  },
   faq: {
     title: "常见问题",
     items: [
@@ -741,19 +601,13 @@ const zh: LandingContent = {
     socialUnavailableLabel: '链接暂未开放',
     disclaimer:
       "独立销售招募信息。本网站并非 Coway 官方企业招聘网站。此机会完全以佣金为基础；实际收入取决于个人销售业绩，并且不保证任何收入。",
-    privacy: "你的资料只会用于回复你的应征意向。",
+    privacy: "你的资料用于招聘跟进，并通过我们配置的第三方表单服务 Formspree 处理和存储。",
     privacyLink: "隐私信息",
     copyright: "Coway 马来西亚销售招募",
   },
 };
 
 export const locales: Record<Locale, LandingContent> = { en, bm, zh };
-
-export const applicationInterim: Record<Locale, string> = {
-  en: "The application form is being prepared and will be available here shortly. No details can be submitted yet.",
-  bm: "Borang permohonan sedang disediakan dan akan tersedia di sini tidak lama lagi. Tiada butiran boleh dihantar buat masa ini.",
-  zh: "\u7533\u8bf7\u8868\u683c\u6b63\u5728\u51c6\u5907\u4e2d\uff0c\u5c06\u5f88\u5feb\u5728\u6b64\u63d0\u4f9b\u3002\u76ee\u524d\u5c1a\u65e0\u6cd5\u63d0\u4ea4\u4efb\u4f55\u8d44\u6599\u3002",
-};
 
 export function getContent(locale: Locale): LandingContent {
   return locales[locale];

@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./fixtures";
 
 const productionOrigin = new URL(
   process.env.PUBLIC_SITE_URL ?? "https://join.coway.test",
@@ -9,6 +9,33 @@ const localizedRoutes = [
   { locale: "bm", lang: "ms-MY" },
   { locale: "zh", lang: "zh-CN" },
 ] as const;
+
+test("blocks unmocked Formspree requests suite-wide", async ({ context, page }) => {
+  let escapedGlobalGuard = false;
+  await context.route("https://formspree.io/**", async (route) => {
+    escapedGlobalGuard = true;
+    await route.fulfill({
+      status: 204,
+      contentType: "application/json",
+      body: "",
+    });
+  });
+
+  await page.goto("/en/");
+  const outcome = await page.evaluate(async () => {
+    try {
+      const response = await fetch("https://formspree.io/f/unmocked-guard-probe", {
+        method: "POST",
+      });
+      return `resolved:${response.status}`;
+    } catch {
+      return "blocked";
+    }
+  });
+
+  expect(outcome).toBe("blocked");
+  expect(escapedGlobalGuard).toBe(false);
+});
 
 for (const { locale, lang } of localizedRoutes) {
   test(`renders the ${locale} locale route`, async ({ page }) => {
@@ -444,10 +471,10 @@ test("ends with prioritized candidates and the safe application form", async ({ 
   await expect(page.locator("#apply")).toHaveAttribute("data-conversion-section", "");
 });
 
-for (const { locale, labels, error, submit, submitting, success, failure } of [
-  { locale: "en", labels: ["Name", "Contact number", "Age range", "Current job", "Malaysian state / location", "City", "Sales experience", "Experience detail", "I consent"], error: "This field is required.", submit: "Send application", submitting: "Sending…", success: "Thank you. Your application has been sent successfully.", failure: "We couldn't send your application. Please try again." },
-  { locale: "bm", labels: ["Nama", "Nombor telefon", "Julat umur", "Pekerjaan semasa", "Negeri / lokasi di Malaysia", "Bandar", "Pengalaman jualan", "Butiran pengalaman", "Saya bersetuju"], error: "Medan ini wajib diisi.", submit: "Hantar permohonan", submitting: "Sedang menghantar…", success: "Terima kasih. Permohonan anda telah berjaya dihantar.", failure: "Kami tidak dapat menghantar permohonan anda. Sila cuba lagi." },
-  { locale: "zh", labels: ["\u59d3\u540d", "\u8054\u7cfb\u7535\u8bdd", "\u5e74\u9f84\u8303\u56f4", "\u76ee\u524d\u804c\u4e1a", "\u9a6c\u6765\u897f\u4e9a\u5dde\u5c5e\uff0f\u5730\u70b9", "\u57ce\u5e02", "\u9500\u552e\u7ecf\u9a8c", "\u7ecf\u9a8c\u8be6\u60c5", "\u6211\u540c\u610f"], error: "\u6b64\u680f\u4e3a\u5fc5\u586b\u3002", submit: "\u63d0\u4ea4\u7533\u8bf7", submitting: "\u6b63\u5728\u63d0\u4ea4\u2026", success: "\u8c22\u8c22\u3002\u4f60\u7684\u7533\u8bf7\u5df2\u6210\u529f\u53d1\u9001\u3002", failure: "\u65e0\u6cd5\u53d1\u9001\u4f60\u7684\u7533\u8bf7\u3002\u8bf7\u518d\u8bd5\u4e00\u6b21\u3002" },
+for (const { locale, labels, error, submit, submitting, success, failure, privacy } of [
+  { locale: "en", labels: ["Name", "Contact number", "Age range", "Current job", "Malaysian state / location", "City", "Sales experience", "Experience detail", "I consent"], error: "This field is required.", submit: "Send application", submitting: "Sending…", success: "Thank you. Your application has been sent successfully.", failure: "We couldn't send your application. Please try again.", privacy: "Your information is used for recruitment follow-up and is processed and stored through Formspree, our configured third-party form service." },
+  { locale: "bm", labels: ["Nama", "Nombor telefon", "Julat umur", "Pekerjaan semasa", "Negeri / lokasi di Malaysia", "Bandar", "Pengalaman jualan", "Butiran pengalaman", "Saya bersetuju"], error: "Medan ini wajib diisi.", submit: "Hantar permohonan", submitting: "Sedang menghantar…", success: "Terima kasih. Permohonan anda telah berjaya dihantar.", failure: "Kami tidak dapat menghantar permohonan anda. Sila cuba lagi.", privacy: "Maklumat anda digunakan untuk tindakan susulan pengambilan dan diproses serta disimpan melalui Formspree, perkhidmatan borang pihak ketiga yang dikonfigurasikan." },
+  { locale: "zh", labels: ["\u59d3\u540d", "\u8054\u7cfb\u7535\u8bdd", "\u5e74\u9f84\u8303\u56f4", "\u76ee\u524d\u804c\u4e1a", "\u9a6c\u6765\u897f\u4e9a\u5dde\u5c5e\uff0f\u5730\u70b9", "\u57ce\u5e02", "\u9500\u552e\u7ecf\u9a8c", "\u7ecf\u9a8c\u8be6\u60c5", "\u6211\u540c\u610f"], error: "\u6b64\u680f\u4e3a\u5fc5\u586b\u3002", submit: "\u63d0\u4ea4\u7533\u8bf7", submitting: "\u6b63\u5728\u63d0\u4ea4\u2026", success: "\u8c22\u8c22\u3002\u4f60\u7684\u7533\u8bf7\u5df2\u6210\u529f\u53d1\u9001\u3002", failure: "\u65e0\u6cd5\u53d1\u9001\u4f60\u7684\u7533\u8bf7\u3002\u8bf7\u518d\u8bd5\u4e00\u6b21\u3002", privacy: "\u4f60\u7684\u8d44\u6599\u7528\u4e8e\u62db\u8058\u8ddf\u8fdb\uff0c\u5e76\u901a\u8fc7\u6211\u4eec\u914d\u7f6e\u7684\u7b2c\u4e09\u65b9\u8868\u5355\u670d\u52a1 Formspree \u5904\u7406\u548c\u5b58\u50a8\u3002" },
 ] as const) {
   test(`shows localized application labels, errors, and response copy in ${locale}`, async ({ page }) => {
     await page.goto(`/${locale}/`);
@@ -456,6 +483,8 @@ for (const { locale, labels, error, submit, submitting, success, failure } of [
     const form = page.locator("[data-application-form]");
     const copy = JSON.parse(await form.getAttribute("data-copy") ?? "{}");
     expect(copy).toMatchObject({ submit, submitting, success, failure });
+    await expect(page.locator("#application-privacy")).toHaveText(privacy);
+    await expect(page.locator("#privacy-note")).toHaveText(privacy);
     await expect(form.locator('button[type="submit"]')).toHaveText(submit);
     await form.locator('button[type="submit"]').click();
     await expect(form.locator("#name-error")).toHaveText(error);

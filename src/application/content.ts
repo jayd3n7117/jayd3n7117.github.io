@@ -12,7 +12,7 @@ type Copy = {
 export const applicationContent: Record<Locale, Copy> = {
   en: {
     title: "Start the conversation", intro: "Share a few non-sensitive details so we can understand your fit for this fully commission-based opportunity.",
-    privacy: "Your details are used only for this active recruitment submission so the recruitment team can contact you about this opportunity.",
+    privacy: "Your information is used for recruitment follow-up and is processed and stored through Formspree, our configured third-party form service.",
     required: "Required", optional: "Optional", placeholders: { select: "Select an option" },
     labels: { name: "Name", contactNumber: "Contact number", ageRange: "Age range", currentJob: "Current job", state: "Malaysian state / location", city: "City", salesExperience: "Sales experience", experienceDetail: "Experience detail", consent: "I consent to being contacted about this sales opportunity. I understand this form does not guarantee selection or income." },
     ageOptions: { "18-24": "18–24", "25-34": "25–34", "35-44": "35–44", "45+": "45+" }, experienceOptions: { none: "None", "<1": "Less than 1 year", "1-3": "1–3 years", "4-6": "4–6 years", "7+": "7+ years" },
@@ -21,7 +21,7 @@ export const applicationContent: Record<Locale, Copy> = {
   },
   bm: {
     title: "Mulakan perbualan", intro: "Kongsikan beberapa butiran tidak sensitif supaya kami dapat memahami kesesuaian anda untuk peluang berasaskan komisen sepenuhnya ini.",
-    privacy: "Butiran anda digunakan hanya untuk penghantaran permohonan pengambilan aktif ini supaya pasukan pengambilan boleh menghubungi anda tentang peluang ini.",
+    privacy: "Maklumat anda digunakan untuk tindakan susulan pengambilan dan diproses serta disimpan melalui Formspree, perkhidmatan borang pihak ketiga yang dikonfigurasikan.",
     required: "Wajib", optional: "Pilihan", placeholders: { select: "Pilih satu pilihan" },
     labels: { name: "Nama", contactNumber: "Nombor telefon", ageRange: "Julat umur", currentJob: "Pekerjaan semasa", state: "Negeri / lokasi di Malaysia", city: "Bandar", salesExperience: "Pengalaman jualan", experienceDetail: "Butiran pengalaman", consent: "Saya bersetuju untuk dihubungi tentang peluang jualan ini. Saya faham borang ini tidak menjamin pemilihan atau pendapatan." },
     ageOptions: { "18-24": "18–24", "25-34": "25–34", "35-44": "35–44", "45+": "45+" }, experienceOptions: { none: "Tiada", "<1": "Kurang 1 tahun", "1-3": "1–3 tahun", "4-6": "4–6 tahun", "7+": "7+ tahun" },
@@ -30,7 +30,7 @@ export const applicationContent: Record<Locale, Copy> = {
   },
   zh: {
     title: "开始沟通", intro: "请分享少量非敏感资料，以便我们了解你是否适合这个完全佣金制的机会。",
-    privacy: "这些资料仅用于此次进行中的招聘申请，以便招聘团队就此机会与你联系。",
+    privacy: "你的资料用于招聘跟进，并通过我们配置的第三方表单服务 Formspree 处理和存储。",
     required: "必填", optional: "选填", placeholders: { select: "请选择" },
     labels: { name: "姓名", contactNumber: "联系电话", ageRange: "年龄范围", currentJob: "目前职业", state: "马来西亚州属／地点", city: "城市", salesExperience: "销售经验", experienceDetail: "经验详情", consent: "我同意就此销售机会接受联系，并了解此表格不保证获选或收入。" },
     ageOptions: { "18-24": "18–24", "25-34": "25–34", "35-44": "35–44", "45+": "45岁以上" }, experienceOptions: { none: "无", "<1": "少于1年", "1-3": "1–3年", "4-6": "4–6年", "7+": "7年以上" },

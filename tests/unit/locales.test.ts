@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
-import { applicationInterim, getContent, locales } from '../../src/content/locales';
+import { applicationContent } from '../../src/application/content';
+import { getContent, locales } from '../../src/content/locales';
 
 const requiredSections = [
   'chrome',
@@ -14,7 +15,6 @@ const requiredSections = [
   'progression',
   'video',
   'candidateFit',
-  'form',
   'faq',
   'footer',
 ] as const;
@@ -31,7 +31,6 @@ describe('localized recruitment content', () => {
       expect(content.meta.description.trim()).not.toBe('');
       expect(content.meta.language.trim()).not.toBe('');
       expect(content.support.items).toHaveLength(6);
-      expect(content.form.fields).toHaveLength(5);
       expect(content.faq.items).toHaveLength(7);
       expect(content.opportunity.guarantee).toBe(false);
       expect(content.footer.socialHeading.trim()).not.toBe('');
@@ -59,10 +58,16 @@ describe('localized recruitment content', () => {
     expect(shape(locales.zh)).toEqual(shape(locales.en));
   });
 
-  it('provides an honest localized interim application message', () => {
-    expect(Object.keys(applicationInterim)).toEqual(['en', 'bm', 'zh']);
-    for (const message of Object.values(applicationInterim)) {
-      expect(message.trim()).not.toBe('');
+  it('discloses localized recruitment use and Formspree processing and storage', () => {
+    const expected = {
+      en: 'Your information is used for recruitment follow-up and is processed and stored through Formspree, our configured third-party form service.',
+      bm: 'Maklumat anda digunakan untuk tindakan susulan pengambilan dan diproses serta disimpan melalui Formspree, perkhidmatan borang pihak ketiga yang dikonfigurasikan.',
+      zh: '你的资料用于招聘跟进，并通过我们配置的第三方表单服务 Formspree 处理和存储。',
+    } as const;
+
+    for (const locale of Object.keys(expected) as Array<keyof typeof expected>) {
+      expect(applicationContent[locale].privacy).toBe(expected[locale]);
+      expect(locales[locale].footer.privacy).toBe(expected[locale]);
     }
   });
 
@@ -77,14 +82,7 @@ describe('localized recruitment content', () => {
     }
   });
 
-  it('models the five required applicant categories in priority order', () => {
-    expect(locales.en.form.fields.map(({ key }) => key)).toEqual([
-      'name',
-      'ageRange',
-      'currentJob',
-      'location',
-      'salesExperience',
-    ]);
+  it('models the applicant priorities in order', () => {
     expect(locales.en.candidateFit.priorities.map(({ audience }) => audience)).toEqual([
       'experiencedSalespeople',
       'careerSwitchers',
