@@ -13,6 +13,7 @@ const valid = {
   city: "Shah Alam",
   salesExperience: "1-3",
   experienceDetail: "Retail and account management",
+  contactNumber: "012-345 6789",
   consent: true,
 };
 
@@ -94,6 +95,31 @@ describe("application validation", () => {
     if (result.valid) {
       expect(result.data.city).toBe("Shah Alam");
       expect(result.data).not.toHaveProperty("experienceDetail");
+    }
+  });
+
+  it("requires a contact number", () => {
+    expect(validateApplication({ ...valid, contactNumber: "" })).toEqual(
+      expect.objectContaining({
+        valid: false,
+        errors: expect.objectContaining({ contactNumber: "REQUIRED" }),
+      }),
+    );
+  });
+
+  it("accepts Malaysian-formatted contact numbers", () => {
+    expect(validateApplication({ ...valid, contactNumber: "012-345 6789" }).valid).toBe(true);
+    expect(validateApplication({ ...valid, contactNumber: "+60 12-345 6789" }).valid).toBe(true);
+  });
+
+  it("rejects malformed and seven-digit contact numbers", () => {
+    for (const contactNumber of ["1234567", "012-ABC-6789"]) {
+      expect(validateApplication({ ...valid, contactNumber })).toEqual(
+        expect.objectContaining({
+          valid: false,
+          errors: expect.objectContaining({ contactNumber: "INVALID_PHONE" }),
+        }),
+      );
     }
   });
 

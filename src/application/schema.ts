@@ -5,6 +5,7 @@ export type State = (typeof MALAYSIAN_LOCATIONS)[number];
 
 export interface ApplicationData {
   name: string;
+  contactNumber: string;
   ageRange: (typeof AGE_RANGES)[number];
   currentJob: string;
   state: State;
@@ -18,6 +19,7 @@ export type ApplicationField = keyof ApplicationData;
 export type ValidationErrorCode =
   | "REQUIRED"
   | "NAME_TOO_SHORT"
+  | "INVALID_PHONE"
   | "INVALID_OPTION"
   | "TOO_LONG"
   | "CONSENT_REQUIRED";
@@ -38,6 +40,16 @@ export function validateApplication(input: Record<string, unknown>): ValidationR
   if (!name) errors.name = "REQUIRED";
   else if (name.length < 2) errors.name = "NAME_TOO_SHORT";
   else if (name.length > 120) errors.name = "TOO_LONG";
+
+  const contactNumber = typeof value.contactNumber === "string" ? value.contactNumber : "";
+  const contactDigits = contactNumber.replace(/\D/g, "");
+  if (!contactNumber) errors.contactNumber = "REQUIRED";
+  else if (
+    contactNumber.length < 8 ||
+    contactNumber.length > 20 ||
+    !/^[+\d\s()-]+$/.test(contactNumber) ||
+    contactDigits.length < 8
+  ) errors.contactNumber = "INVALID_PHONE";
 
   for (const field of textFields) {
     const text = typeof value[field] === "string" ? value[field] : "";

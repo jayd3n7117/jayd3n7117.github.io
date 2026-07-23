@@ -26,6 +26,11 @@ const required = (label: string) => `${label} (${copy.required})`;
       <p id="name-error" class="field-error" data-error-for="name"></p>
     </div>
     <div class="form-field">
+      <label for="application-contact">{required(copy.labels.contactNumber)} <span aria-hidden="true">*</span></label>
+      <input id="application-contact" name="contactNumber" type="tel" required minlength="8" maxlength="20" autocomplete="tel" inputmode="tel" aria-describedby="contactNumber-error" />
+      <p id="contactNumber-error" class="field-error" data-error-for="contactNumber"></p>
+    </div>
+    <div class="form-field">
       <label for="application-age">{required(copy.labels.ageRange)} <span aria-hidden="true">*</span></label>
       <select id="application-age" name="ageRange" required aria-describedby="ageRange-error"><option value="">{copy.placeholders.select}</option>{AGE_RANGES.map((value) => <option value={value}>{copy.ageOptions[value]}</option>)}</select>
       <p id="ageRange-error" class="field-error" data-error-for="ageRange"></p>
