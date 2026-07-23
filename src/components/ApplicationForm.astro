@@ -19,7 +19,8 @@ const required = (label: string) => `${label} (${copy.required})`;
       <p class="lede">{copy.intro}</p>
       <p class="privacy-note" id="application-privacy">{copy.privacy}</p>
     </div>
-    <form class="application-form" data-application-form novalidate aria-describedby="application-privacy" data-copy={JSON.stringify({ errors: copy.errors, invalid: copy.invalid, notConfigured: copy.notConfigured, submitting: copy.submitting, submit: copy.submit })}>
+    <form class="application-form" data-application-form novalidate aria-describedby="application-privacy" data-copy={JSON.stringify({ errors: copy.errors, invalid: copy.invalid, success: copy.success, failure: copy.failure, submitting: copy.submitting, submit: copy.submit })}>
+    <input name="_gotcha" type="text" tabindex="-1" autocomplete="off" aria-hidden="true" hidden />
     <div class="form-field">
       <label for="application-name">{required(copy.labels.name)} <span aria-hidden="true">*</span></label>
       <input id="application-name" name="name" type="text" required maxlength="120" autocomplete="name" aria-describedby="name-error" />

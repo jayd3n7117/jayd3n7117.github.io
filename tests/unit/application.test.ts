@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import {
   submitApplication,
@@ -123,10 +123,35 @@ describe("application validation", () => {
     }
   });
 
-  it("never transmits and reports that submission is not configured", async () => {
-    await expect(submitApplication(valid)).resolves.toEqual({
-      ok: false,
-      code: "SUBMISSION_NOT_CONFIGURED",
+  it("posts the application to Formspree as JSON", async () => {
+    const fetcher = vi.fn(async () => new Response("{}", { status: 200 }));
+
+    await expect(submitApplication(valid, fetcher)).resolves.toEqual({ ok: true });
+    expect(fetcher).toHaveBeenCalledOnce();
+    expect(fetcher).toHaveBeenCalledWith(
+      "https://formspree.io/f/xvzebykj",
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(valid),
+      },
+    );
+  });
+
+  it("reports a rejected Formspree response", async () => {
+    const fetcher = vi.fn(async () => new Response("{}", { status: 500 }));
+
+    await expect(submitApplication(valid, fetcher)).resolves.toEqual({ ok: false });
+  });
+
+  it("reports a network failure without throwing", async () => {
+    const fetcher = vi.fn(async () => {
+      throw new TypeError("Network unavailable");
     });
+
+    await expect(submitApplication(valid, fetcher)).resolves.toEqual({ ok: false });
   });
 });

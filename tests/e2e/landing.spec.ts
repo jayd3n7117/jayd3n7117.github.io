@@ -365,11 +365,21 @@ test("validates inline, focuses the first error, and preserves values", async ({
   await expect(form.locator('[name="currentJob"]')).toHaveValue("Designer");
 });
 
-test("does not POST or claim receipt and blocks repeat submission while checking", async ({ page }) => {
-  const requests: string[] = [];
-  page.on("request", (request) => { if (request.method() === "POST") requests.push(request.url()); });
+test("posts once, confirms success, and clears fields only after acceptance", async ({ page }) => {
+  let releaseResponse!: () => void;
+  const responseGate = new Promise<void>((resolve) => { releaseResponse = resolve; });
+  const requests: Array<{ method: string; body: string | null }> = [];
+  await page.route("https://formspree.io/f/xvzebykj", async (route) => {
+    const request = route.request();
+    requests.push({ method: request.method(), body: request.postData() });
+    await responseGate;
+    await route.fulfill({ status: 200, contentType: "application/json", body: "{}" });
+  });
   await page.goto("/en/");
   const form = page.locator("[data-application-form]");
+  const honeypot = form.locator('[name="_gotcha"]');
+  await expect(honeypot).toHaveAttribute("aria-hidden", "true");
+  await expect(honeypot).toHaveAttribute("tabindex", "-1");
   await form.locator('[name="name"]').fill("Aina Rahman");
   await form.locator('[name="ageRange"]').selectOption("25-34");
   await form.locator('[name="currentJob"]').fill("Designer");
@@ -384,9 +394,42 @@ test("does not POST or claim receipt and blocks repeat submission while checking
     return (formElement.querySelector('button[type="submit"]') as HTMLButtonElement).disabled;
   });
   expect(disabledDuringSubmission).toBe(true);
-  await expect(form.locator("[data-form-status]")).toContainText("not been sent or stored");
-  expect(requests).toEqual([]);
+  await expect.poll(() => requests.length).toBe(1);
+  releaseResponse();
+  await expect(form.locator("[data-form-status]")).toHaveText("Thank you. Your application has been sent successfully.");
+  await expect(form.locator("[data-form-status]")).toHaveAttribute("role", "status");
+  await expect(form.locator('button[type="submit"]')).toBeEnabled();
+  await expect(form.locator('button[type="submit"]')).toHaveText("Check application");
+  await expect(form.locator('[name="name"]')).toHaveValue("");
+  expect(requests).toHaveLength(1);
+  expect(requests[0]?.method).toBe("POST");
+  expect(JSON.parse(requests[0]?.body ?? "{}")).toMatchObject({
+    name: "Aina Rahman",
+    contactNumber: "012-345 6789",
+  });
+});
+
+test("shows failure and preserves fields when Formspree rejects the application", async ({ page }) => {
+  await page.route("https://formspree.io/f/xvzebykj", async (route) => {
+    await route.fulfill({ status: 500, contentType: "application/json", body: "{}" });
+  });
+  await page.goto("/en/");
+  const form = page.locator("[data-application-form]");
+  await form.locator('[name="name"]').fill("Aina Rahman");
+  await form.locator('[name="ageRange"]').selectOption("25-34");
+  await form.locator('[name="currentJob"]').fill("Designer");
+  await form.locator('[name="contactNumber"]').fill("012-345 6789");
+  await form.locator('[name="state"]').selectOption("Selangor");
+  await form.locator('[name="salesExperience"]').selectOption("1-3");
+  await form.locator('[name="consent"]').check();
+  await form.locator('button[type="submit"]').click();
+
+  await expect(form.locator("[data-form-status]")).toHaveText("We couldn't send your application. Please try again.");
+  await expect(form.locator("[data-form-status]")).toHaveAttribute("role", "alert");
   await expect(form.locator('[name="name"]')).toHaveValue("Aina Rahman");
+  await expect(form.locator('[name="contactNumber"]')).toHaveValue("012-345 6789");
+  await expect(form.locator('button[type="submit"]')).toBeEnabled();
+  await expect(form.locator('button[type="submit"]')).toHaveText("Check application");
 });
 
 test("ends with prioritized candidates and the safe application form", async ({ page }) => {
@@ -400,28 +443,20 @@ test("ends with prioritized candidates and the safe application form", async ({ 
   await expect(page.locator("#apply")).toHaveAttribute("data-conversion-section", "");
 });
 
-for (const { locale, labels, error, status } of [
-  { locale: "en", labels: ["Name", "Contact number", "Age range", "Current job", "Malaysian state / location", "City", "Sales experience", "Experience detail", "I consent"], error: "This field is required.", status: "not been sent or stored" },
-  { locale: "bm", labels: ["Nama", "Nombor telefon", "Julat umur", "Pekerjaan semasa", "Negeri / lokasi di Malaysia", "Bandar", "Pengalaman jualan", "Butiran pengalaman", "Saya bersetuju"], error: "Medan ini wajib diisi.", status: "tidak dihantar atau disimpan" },
-  { locale: "zh", labels: ["\u59d3\u540d", "\u8054\u7cfb\u7535\u8bdd", "\u5e74\u9f84\u8303\u56f4", "\u76ee\u524d\u804c\u4e1a", "\u9a6c\u6765\u897f\u4e9a\u5dde\u5c5e\uff0f\u5730\u70b9", "\u57ce\u5e02", "\u9500\u552e\u7ecf\u9a8c", "\u7ecf\u9a8c\u8be6\u60c5", "\u6211\u540c\u610f"], error: "\u6b64\u680f\u4e3a\u5fc5\u586b\u3002", status: "\u672a\u88ab\u53d1\u9001\u6216\u50a8\u5b58" },
+for (const { locale, labels, error, success, failure } of [
+  { locale: "en", labels: ["Name", "Contact number", "Age range", "Current job", "Malaysian state / location", "City", "Sales experience", "Experience detail", "I consent"], error: "This field is required.", success: "Thank you. Your application has been sent successfully.", failure: "We couldn't send your application. Please try again." },
+  { locale: "bm", labels: ["Nama", "Nombor telefon", "Julat umur", "Pekerjaan semasa", "Negeri / lokasi di Malaysia", "Bandar", "Pengalaman jualan", "Butiran pengalaman", "Saya bersetuju"], error: "Medan ini wajib diisi.", success: "Terima kasih. Permohonan anda telah berjaya dihantar.", failure: "Kami tidak dapat menghantar permohonan anda. Sila cuba lagi." },
+  { locale: "zh", labels: ["\u59d3\u540d", "\u8054\u7cfb\u7535\u8bdd", "\u5e74\u9f84\u8303\u56f4", "\u76ee\u524d\u804c\u4e1a", "\u9a6c\u6765\u897f\u4e9a\u5dde\u5c5e\uff0f\u5730\u70b9", "\u57ce\u5e02", "\u9500\u552e\u7ecf\u9a8c", "\u7ecf\u9a8c\u8be6\u60c5", "\u6211\u540c\u610f"], error: "\u6b64\u680f\u4e3a\u5fc5\u586b\u3002", success: "\u8c22\u8c22\u3002\u4f60\u7684\u7533\u8bf7\u5df2\u6210\u529f\u53d1\u9001\u3002", failure: "\u65e0\u6cd5\u53d1\u9001\u4f60\u7684\u7533\u8bf7\u3002\u8bf7\u518d\u8bd5\u4e00\u6b21\u3002" },
 ] as const) {
-  test(`shows localized application labels, errors, and disabled status in ${locale}`, async ({ page }) => {
+  test(`shows localized application labels, errors, and response copy in ${locale}`, async ({ page }) => {
     await page.goto(`/${locale}/`);
     for (const label of labels) await expect(page.getByLabel(new RegExp(label))).toBeVisible();
     await expect(page.locator("#apply form label")).toHaveCount(9);
     const form = page.locator("[data-application-form]");
+    const copy = JSON.parse(await form.getAttribute("data-copy") ?? "{}");
+    expect(copy).toMatchObject({ success, failure });
     await form.locator('button[type="submit"]').click();
     await expect(form.locator("#name-error")).toHaveText(error);
-    await form.locator('[name="name"]').fill("Aina Rahman");
-    await form.locator('[name="ageRange"]').selectOption("25-34");
-    await form.locator('[name="currentJob"]').fill("Designer");
-    await form.locator('[name="contactNumber"]').fill("012-345 6789");
-    await form.locator('[name="state"]').selectOption("Selangor");
-    await form.locator('[name="salesExperience"]').selectOption("1-3");
-    await form.locator('[name="consent"]').check();
-    await form.locator('button[type="submit"]').click();
-    await expect(form.locator('button[type="submit"]')).toBeDisabled();
-    await expect(form.locator("[data-form-status]")).toContainText(status);
   });
 }
 

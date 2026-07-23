@@ -35,6 +35,7 @@ document.querySelectorAll<HTMLFormElement>("[data-application-form]").forEach((f
     button.disabled = false;
     button.textContent = copy.submit;
     status.setAttribute("role", response.ok ? "status" : "alert");
-    status.textContent = copy.notConfigured;
+    status.textContent = response.ok ? copy.success : copy.failure;
+    if (response.ok) form.reset();
   });
 });

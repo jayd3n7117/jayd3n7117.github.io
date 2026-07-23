@@ -68,7 +68,23 @@ export function validateApplication(input: Record<string, unknown>): ValidationR
   return { valid: true, data, errors: {} };
 }
 
-export async function submitApplication(_data: ApplicationData | Record<string, unknown>) {
-  await new Promise((resolve) => setTimeout(resolve, 50));
-  return { ok: false as const, code: "SUBMISSION_NOT_CONFIGURED" as const };
+export const FORMSPREE_ENDPOINT = "https://formspree.io/f/xvzebykj";
+
+export async function submitApplication(
+  data: ApplicationData | Record<string, unknown>,
+  fetcher: typeof fetch = fetch,
+) {
+  try {
+    const response = await fetcher(FORMSPREE_ENDPOINT, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+    return { ok: response.ok } as const;
+  } catch {
+    return { ok: false } as const;
+  }
 }
