@@ -1,6 +1,6 @@
 # Coway sales recruitment landing page
 
-Static Astro landing page in English, Bahasa Malaysia, and Simplified Chinese. This repository does not deploy the site and intentionally has no form submission endpoint.
+Static Astro landing page in English, Bahasa Malaysia, and Simplified Chinese, deployed through GitHub Pages with applications submitted through Formspree.
 
 ## Commands
 
@@ -11,20 +11,20 @@ pnpm install
 pnpm dev
 pnpm test
 pnpm check
-$env:PUBLIC_SITE_URL='https://your-approved-domain.example'; pnpm build
-$env:PUBLIC_SITE_URL='https://your-approved-domain.example'; pnpm preview
+$env:PUBLIC_SITE_URL='https://cowaysalescareer.my'; pnpm build
+$env:PUBLIC_SITE_URL='https://cowaysalescareer.my'; pnpm preview
 pnpm media
 ```
 
 Run browser checks against a completed production build:
 
 ```powershell
-$env:PUBLIC_SITE_URL='https://your-approved-domain.example'; pnpm test:e2e
+$env:PUBLIC_SITE_URL='https://cowaysalescareer.my'; pnpm test:e2e
 ```
 
 Localized page content lives in `src/content/locales.ts`; SEO metadata lives in `src/content/seo.ts`. Keep the commission disclosure explicit in every language: the role is fully commission-based, earnings vary, and no income is guaranteed. Never replace this with an earnings promise.
 
-The application form is deliberately disabled after local validation. It does not transmit, store, or claim to submit personal data. Do not add an endpoint until the owner has approved the production domain, privacy notice, contact/retention workflow, and endpoint security.
+The application form submits to Formspree. New applications are available in the Formspree dashboard and sent to the configured notification email recipient. Formspree's free plan retains submissions in the dashboard for 30 days, so the recipient must export, archive, or otherwise process applications within that window according to the approved retention and deletion workflow.
 
 ## Launch gates
 
@@ -37,4 +37,4 @@ The application form is deliberately disabled after local validation. It does no
 - final media rights, selections, crops, and alt text;
 - Coway brand and legal approval.
 
-After approvals, replace any documentation-only placeholder origin, rebuild, run unit/check/build/E2E commands, inspect 390px and 1440px layouts, test keyboard navigation and reduced motion, and only then hand the static output to the approved hosting process.
+After approvals, rebuild with `PUBLIC_SITE_URL=https://cowaysalescareer.my`, run unit/check/build/E2E commands, inspect 390px and 1440px layouts, test keyboard navigation and reduced motion, and only then hand the static output to the approved hosting process.

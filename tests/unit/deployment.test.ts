@@ -21,7 +21,8 @@ describe('GitHub Pages deployment configuration', () => {
     expect(workflow).toContain('branches: [master]');
     expect(workflow).toContain('workflow_dispatch:');
     expect(workflow).toContain('uses: actions/checkout@v7');
-    expect(workflow).toContain('PUBLIC_SITE_URL: https://jayd3n7117.github.io');
+    expect(workflow).toContain('PUBLIC_SITE_URL: https://cowaysalescareer.my');
+    expect(workflow).not.toContain('https://jayd3n7117.github.io');
     expect(workflow).toContain("ASTRO_TELEMETRY_DISABLED: '1'");
     expect(workflow).toContain('uses: withastro/action@v6');
     expect(workflow).toContain(

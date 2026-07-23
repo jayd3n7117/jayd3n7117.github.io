@@ -8,8 +8,8 @@ describe('production site origin', () => {
   });
 
   it('uses PUBLIC_SITE_URL after validating it', () => {
-    expect(resolveSiteUrl({ command: 'build', siteUrl: 'https://join.example.org/' })).toBe(
-      'https://join.example.org',
+    expect(resolveSiteUrl({ command: 'build', siteUrl: 'https://cowaysalescareer.my/' })).toBe(
+      'https://cowaysalescareer.my',
     );
   });
 

@@ -24,7 +24,7 @@ jobs:
       - name: Install, build, and upload site
         uses: withastro/action@v6
         env:
-          PUBLIC_SITE_URL: https://jayd3n7117.github.io
+          PUBLIC_SITE_URL: https://cowaysalescareer.my
           ASTRO_TELEMETRY_DISABLED: '1'
 
   deploy:
