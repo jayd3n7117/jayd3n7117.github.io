@@ -41,13 +41,14 @@ export function validateApplication(input: Record<string, unknown>): ValidationR
   else if (name.length < 2) errors.name = "NAME_TOO_SHORT";
   else if (name.length > 120) errors.name = "TOO_LONG";
 
+  const contactNumberInput = typeof input.contactNumber === "string" ? input.contactNumber : "";
   const contactNumber = typeof value.contactNumber === "string" ? value.contactNumber : "";
   const contactDigits = contactNumber.replace(/\D/g, "");
   if (!contactNumber) errors.contactNumber = "REQUIRED";
   else if (
     contactNumber.length < 8 ||
     contactNumber.length > 20 ||
-    !/^[+\d\s()-]+$/.test(contactNumber) ||
+    !/^[+\d ()-]+$/.test(contactNumberInput) ||
     contactDigits.length < 8
   ) errors.contactNumber = "INVALID_PHONE";
 

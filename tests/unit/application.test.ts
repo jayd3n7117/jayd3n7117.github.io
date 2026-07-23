@@ -123,6 +123,28 @@ describe("application validation", () => {
     }
   });
 
+  it("rejects a contact number containing a tab", () => {
+    for (const contactNumber of ["012\t345 6789", "012-345 6789\t"]) {
+      expect(validateApplication({ ...valid, contactNumber })).toEqual(
+        expect.objectContaining({
+          valid: false,
+          errors: expect.objectContaining({ contactNumber: "INVALID_PHONE" }),
+        }),
+      );
+    }
+  });
+
+  it("rejects a contact number containing a newline", () => {
+    for (const contactNumber of ["012\n345 6789", "012-345 6789\n"]) {
+      expect(validateApplication({ ...valid, contactNumber })).toEqual(
+        expect.objectContaining({
+          valid: false,
+          errors: expect.objectContaining({ contactNumber: "INVALID_PHONE" }),
+        }),
+      );
+    }
+  });
+
   it("posts the application to Formspree as JSON", async () => {
     const fetcher = vi.fn(async () => new Response("{}", { status: 200 }));
 
