@@ -37,6 +37,45 @@ test("blocks unmocked Formspree requests suite-wide", async ({ context, page }) 
   expect(escapedGlobalGuard).toBe(false);
 });
 
+test("blocks unmocked Google Analytics requests suite-wide", async ({
+  context,
+  page,
+}) => {
+  const escapedGlobalGuard: string[] = [];
+  await context.route(
+    /https:\/\/(?:www\.googletagmanager\.com|(?:www\.|region1\.)?google-analytics\.com|analytics\.google\.com|stats\.g\.doubleclick\.net)\/.*/,
+    async (route) => {
+      escapedGlobalGuard.push(route.request().url());
+      await route.fulfill({ status: 204, body: "" });
+    },
+  );
+
+  await page.goto("/en/");
+  const outcomes = await page.evaluate(async () => {
+    const urls = [
+      "https://www.googletagmanager.com/gtag/js?id=G-KGTRGW5765",
+      "https://www.google-analytics.com/g/collect?v=2&tid=G-KGTRGW5765",
+      "https://region1.google-analytics.com/g/collect?v=2&tid=G-KGTRGW5765",
+      "https://analytics.google.com/g/collect?v=2&tid=G-KGTRGW5765",
+      "https://stats.g.doubleclick.net/g/collect?v=2&tid=G-KGTRGW5765",
+    ];
+
+    return Promise.all(
+      urls.map(async (url) => {
+        try {
+          const response = await fetch(url);
+          return `resolved:${response.status}`;
+        } catch {
+          return "blocked";
+        }
+      }),
+    );
+  });
+
+  expect(outcomes).toEqual(Array(5).fill("blocked"));
+  expect(escapedGlobalGuard).toEqual([]);
+});
+
 for (const { locale, lang } of localizedRoutes) {
   test(`renders the ${locale} locale route`, async ({ page }) => {
     const response = await page.goto(`/${locale}/`);
@@ -753,7 +792,7 @@ test("provides a keyboard-operable mobile menu and privacy-information link", as
 });
 
 test.describe('analytics consent', () => {
-  test('defaults to denied and loads GA4 only after acceptance', async ({
+  test('queues denied defaults before the accepted GA4 command sequence', async ({
     page,
   }) => {
     const googleRequests: string[] = [];
@@ -775,6 +814,43 @@ test.describe('analytics consent', () => {
     ).toHaveCount(0);
     expect(googleRequests).toHaveLength(0);
 
+    const initialQueue = await page.evaluate(() =>
+      window.dataLayer.map((entry) => ({
+        tag: Object.prototype.toString.call(entry),
+        values: Array.from(entry as ArrayLike<unknown>),
+      })),
+    );
+    expect(initialQueue).toEqual([
+      {
+        tag: '[object Arguments]',
+        values: [
+          'consent',
+          'default',
+          {
+            analytics_storage: 'denied',
+            ad_storage: 'denied',
+            ad_user_data: 'denied',
+            ad_personalization: 'denied',
+          },
+        ],
+      },
+    ]);
+
+    const distinctiveFormValues = [
+      'Applicant Queue Marker 92841',
+      '01987654321',
+      'Private Occupation Marker 64152',
+      'Private City Marker 37018',
+      'Distinctive recruitment experience marker 81279',
+    ];
+    await page.locator('[name="name"]').fill(distinctiveFormValues[0]);
+    await page.locator('[name="contactNumber"]').fill(distinctiveFormValues[1]);
+    await page.locator('[name="currentJob"]').fill(distinctiveFormValues[2]);
+    await page.locator('[name="city"]').fill(distinctiveFormValues[3]);
+    await page
+      .locator('[name="experienceDetail"]')
+      .fill(distinctiveFormValues[4]);
+
     await banner.getByRole('button', { name: 'Accept analytics' }).click();
 
     await expect(banner).toBeHidden();
@@ -789,6 +865,45 @@ test.describe('analytics consent', () => {
         window.localStorage.getItem('coway-analytics-consent'),
       ),
     ).toBe('granted');
+
+    const acceptedQueue = await page.evaluate(() =>
+      window.dataLayer.map((entry) => ({
+        tag: Object.prototype.toString.call(entry),
+        values: Array.from(entry as ArrayLike<unknown>),
+      })),
+    );
+    expect(acceptedQueue.map(({ tag }) => tag)).toEqual(
+      Array(4).fill('[object Arguments]'),
+    );
+    expect(acceptedQueue.map(({ values }) => values[0])).toEqual([
+      'consent',
+      'consent',
+      'js',
+      'config',
+    ]);
+    expect(acceptedQueue[0].values).toEqual([
+      'consent',
+      'default',
+      {
+        analytics_storage: 'denied',
+        ad_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied',
+      },
+    ]);
+    expect(acceptedQueue[1].values).toEqual([
+      'consent',
+      'update',
+      { analytics_storage: 'granted' },
+    ]);
+    expect(acceptedQueue[3].values).toEqual([
+      'config',
+      'G-KGTRGW5765',
+    ]);
+    const serializedQueue = JSON.stringify(acceptedQueue);
+    for (const value of distinctiveFormValues) {
+      expect(serializedQueue).not.toContain(value);
+    }
   });
 
   test('persists decline without loading the Google tag', async ({ page }) => {
@@ -854,31 +969,63 @@ test.describe('analytics consent', () => {
     ).toBeEnabled();
   });
 
-  test('restores accepted consent without installing a duplicate tag', async ({
+  test('prevents duplicate tag and config commands in the same document', async ({
     page,
   }) => {
     await page.goto('/en/');
-    await page
+    const accept = page
       .locator('[data-analytics-consent]')
-      .getByRole('button', { name: 'Accept analytics' })
-      .click();
+      .getByRole('button', { name: 'Accept analytics' });
+    await accept.click();
+    await page.evaluate(() => {
+      const hiddenAccept = document.querySelector<HTMLButtonElement>(
+        '[data-analytics-accept]',
+      );
+      hiddenAccept?.click();
+      hiddenAccept?.click();
+    });
 
-    await page.goto('/zh/');
     await expect(
       page.locator('[data-google-analytics-tag="G-KGTRGW5765"]'),
     ).toHaveCount(1);
+    expect(
+      await page.evaluate(() =>
+        window.dataLayer.filter(
+          (entry) => Array.from(entry as ArrayLike<unknown>)[0] === 'config',
+        ).length,
+      ),
+    ).toBe(1);
   });
 
   test('localizes consent controls and leaves the application usable', async ({
     page,
   }) => {
-    for (const { locale, accept, decline } of [
-      { locale: 'en', accept: 'Accept analytics', decline: 'Decline analytics' },
-      { locale: 'bm', accept: 'Terima analitik', decline: 'Tolak analitik' },
-      { locale: 'zh', accept: '接受分析', decline: '拒绝分析' },
+    for (const { locale, message, accept, decline } of [
+      {
+        locale: 'en',
+        message:
+          'We use Google Analytics to understand how this website is used. Recruitment form answers are not intentionally sent to analytics.',
+        accept: 'Accept analytics',
+        decline: 'Decline analytics',
+      },
+      {
+        locale: 'bm',
+        message:
+          'Kami menggunakan Google Analytics untuk memahami cara laman ini digunakan. Jawapan borang pengambilan tidak dihantar dengan sengaja kepada analitik.',
+        accept: 'Terima analitik',
+        decline: 'Tolak analitik',
+      },
+      {
+        locale: 'zh',
+        message:
+          '我们使用 Google Analytics 来了解此网站的使用情况。招聘申请表中的资料不会被刻意发送到分析服务。',
+        accept: '接受分析',
+        decline: '拒绝分析',
+      },
     ]) {
       await page.goto(`/${locale}/`);
       const banner = page.locator('[data-analytics-consent]');
+      await expect(banner.locator('p')).toHaveText(message);
       await expect(banner.getByRole('button', { name: accept })).toBeVisible();
       await expect(banner.getByRole('button', { name: decline })).toBeVisible();
       await expect(page.locator('[data-application-form]')).toBeVisible();
