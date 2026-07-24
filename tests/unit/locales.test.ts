@@ -16,6 +16,7 @@ const requiredSections = [
   'video',
   'candidateFit',
   'faq',
+  'analytics',
   'footer',
 ] as const;
 
@@ -64,10 +65,15 @@ describe('localized recruitment content', () => {
       bm: 'Maklumat anda digunakan untuk tindakan susulan pengambilan dan diproses serta disimpan melalui Formspree, perkhidmatan borang pihak ketiga yang dikonfigurasikan.',
       zh: '你的资料用于招聘跟进，并通过我们配置的第三方表单服务 Formspree 处理和存储。',
     } as const;
+    const footerExpected = {
+      en: `${expected.en} With your permission, Google Analytics also measures website use; recruitment form answers are not intentionally sent to analytics.`,
+      bm: `${expected.bm} Dengan kebenaran anda, Google Analytics turut mengukur penggunaan laman; jawapan borang pengambilan tidak dihantar dengan sengaja kepada analitik.`,
+      zh: `${expected.zh} 在获得你的许可后，Google Analytics 也会衡量网站使用情况；招聘申请表中的资料不会被刻意发送到分析服务。`,
+    } as const;
 
     for (const locale of Object.keys(expected) as Array<keyof typeof expected>) {
       expect(applicationContent[locale].privacy).toBe(expected[locale]);
-      expect(locales[locale].footer.privacy).toBe(expected[locale]);
+      expect(locales[locale].footer.privacy).toBe(footerExpected[locale]);
     }
   });
 

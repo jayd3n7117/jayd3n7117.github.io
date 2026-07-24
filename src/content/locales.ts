@@ -84,6 +84,11 @@ export interface LandingContent {
       answer: string;
     }>;
   };
+  analytics: {
+    message: string;
+    accept: string;
+    decline: string;
+  };
   footer: {
     socialHeading: string;
     socialUnavailableLabel: string;
@@ -258,13 +263,19 @@ const en: LandingContent = {
       },
     ],
   },
+  analytics: {
+    message:
+      'We use Google Analytics to understand how this website is used. Recruitment form answers are not intentionally sent to analytics.',
+    accept: 'Accept analytics',
+    decline: 'Decline analytics',
+  },
   footer: {
     socialHeading: 'Follow our journey',
     socialUnavailableLabel: 'link not available yet',
     disclaimer:
       "Independent sales recruitment information. This is not an official Coway corporate careers website. This opportunity is fully commission-based; actual income depends on individual sales performance and no income is guaranteed.",
     privacy:
-      "Your information is used for recruitment follow-up and is processed and stored through Formspree, our configured third-party form service.",
+      "Your information is used for recruitment follow-up and is processed and stored through Formspree, our configured third-party form service. With your permission, Google Analytics also measures website use; recruitment form answers are not intentionally sent to analytics.",
     privacyLink: "Privacy information",
     copyright: "Coway sales recruitment Malaysia",
   },
@@ -435,13 +446,19 @@ const bm: LandingContent = {
       },
     ],
   },
+  analytics: {
+    message:
+      'Kami menggunakan Google Analytics untuk memahami cara laman ini digunakan. Jawapan borang pengambilan tidak dihantar dengan sengaja kepada analitik.',
+    accept: 'Terima analitik',
+    decline: 'Tolak analitik',
+  },
   footer: {
     socialHeading: 'Ikuti perjalanan kami',
     socialUnavailableLabel: 'pautan belum tersedia',
     disclaimer:
       "Maklumat pengambilan jualan bebas. Ini bukan laman kerjaya korporat rasmi Coway. Peluang ini berasaskan komisen sepenuhnya; pendapatan sebenar bergantung pada prestasi jualan individu dan tiada pendapatan yang dijamin.",
     privacy:
-      "Maklumat anda digunakan untuk tindakan susulan pengambilan dan diproses serta disimpan melalui Formspree, perkhidmatan borang pihak ketiga yang dikonfigurasikan.",
+      "Maklumat anda digunakan untuk tindakan susulan pengambilan dan diproses serta disimpan melalui Formspree, perkhidmatan borang pihak ketiga yang dikonfigurasikan. Dengan kebenaran anda, Google Analytics turut mengukur penggunaan laman; jawapan borang pengambilan tidak dihantar dengan sengaja kepada analitik.",
     privacyLink: "Maklumat privasi",
     copyright: "Pengambilan jualan Coway Malaysia",
   },
@@ -596,12 +613,18 @@ const zh: LandingContent = {
       },
     ],
   },
+  analytics: {
+    message:
+      '我们使用 Google Analytics 来了解此网站的使用情况。招聘申请表中的资料不会被刻意发送到分析服务。',
+    accept: '接受分析',
+    decline: '拒绝分析',
+  },
   footer: {
     socialHeading: '关注我们的成长旅程',
     socialUnavailableLabel: '链接暂未开放',
     disclaimer:
       "独立销售招募信息。本网站并非 Coway 官方企业招聘网站。此机会完全以佣金为基础；实际收入取决于个人销售业绩，并且不保证任何收入。",
-    privacy: "你的资料用于招聘跟进，并通过我们配置的第三方表单服务 Formspree 处理和存储。",
+    privacy: "你的资料用于招聘跟进，并通过我们配置的第三方表单服务 Formspree 处理和存储。 在获得你的许可后，Google Analytics 也会衡量网站使用情况；招聘申请表中的资料不会被刻意发送到分析服务。",
     privacyLink: "隐私信息",
     copyright: "Coway 马来西亚销售招募",
   },
