@@ -1,0 +1,36 @@
+---
+import type { LandingContent } from '../content/locales';
+import {
+  ANALYTICS_CONSENT_STORAGE_KEY,
+  GA_MEASUREMENT_ID,
+} from '../config/analytics';
+
+interface Props {
+  content: LandingContent;
+}
+
+const { content } = Astro.props;
+---
+
+<aside
+  class="analytics-consent"
+  data-analytics-consent
+  data-measurement-id={GA_MEASUREMENT_ID}
+  data-storage-key={ANALYTICS_CONSENT_STORAGE_KEY}
+  aria-label={content.analytics.message}
+  hidden
+>
+  <p>{content.analytics.message}</p>
+  <div class="analytics-consent-actions">
+    <button type="button" data-analytics-accept>
+      {content.analytics.accept}
+    </button>
+    <button type="button" data-analytics-decline>
+      {content.analytics.decline}
+    </button>
+  </div>
+</aside>
+
+<script>
+  import '../scripts/analytics';
+</script>

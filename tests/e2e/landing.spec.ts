@@ -471,6 +471,12 @@ test("ends with prioritized candidates and the safe application form", async ({ 
   await expect(page.locator("#apply")).toHaveAttribute("data-conversion-section", "");
 });
 
+const footerPrivacyByLocale = {
+  en: "Your information is used for recruitment follow-up and is processed and stored through Formspree, our configured third-party form service. With your permission, Google Analytics also measures website use; recruitment form answers are not intentionally sent to analytics.",
+  bm: "Maklumat anda digunakan untuk tindakan susulan pengambilan dan diproses serta disimpan melalui Formspree, perkhidmatan borang pihak ketiga yang dikonfigurasikan. Dengan kebenaran anda, Google Analytics turut mengukur penggunaan laman; jawapan borang pengambilan tidak dihantar dengan sengaja kepada analitik.",
+  zh: "\u4f60\u7684\u8d44\u6599\u7528\u4e8e\u62db\u8058\u8ddf\u8fdb\uff0c\u5e76\u901a\u8fc7\u6211\u4eec\u914d\u7f6e\u7684\u7b2c\u4e09\u65b9\u8868\u5355\u670d\u52a1 Formspree \u5904\u7406\u548c\u5b58\u50a8\u3002 \u5728\u83b7\u5f97\u4f60\u7684\u8bb8\u53ef\u540e\uff0cGoogle Analytics \u4e5f\u4f1a\u8861\u91cf\u7f51\u7ad9\u4f7f\u7528\u60c5\u51b5\uff1b\u62db\u8058\u7533\u8bf7\u8868\u4e2d\u7684\u8d44\u6599\u4e0d\u4f1a\u88ab\u523b\u610f\u53d1\u9001\u5230\u5206\u6790\u670d\u52a1\u3002",
+} as const;
+
 for (const { locale, labels, error, submit, submitting, success, failure, privacy } of [
   { locale: "en", labels: ["Name", "Contact number", "Age range", "Current job", "Malaysian state / location", "City", "Sales experience", "Experience detail", "I consent"], error: "This field is required.", submit: "Send application", submitting: "Sending…", success: "Thank you. Your application has been sent successfully.", failure: "We couldn't send your application. Please try again.", privacy: "Your information is used for recruitment follow-up and is processed and stored through Formspree, our configured third-party form service." },
   { locale: "bm", labels: ["Nama", "Nombor telefon", "Julat umur", "Pekerjaan semasa", "Negeri / lokasi di Malaysia", "Bandar", "Pengalaman jualan", "Butiran pengalaman", "Saya bersetuju"], error: "Medan ini wajib diisi.", submit: "Hantar permohonan", submitting: "Sedang menghantar…", success: "Terima kasih. Permohonan anda telah berjaya dihantar.", failure: "Kami tidak dapat menghantar permohonan anda. Sila cuba lagi.", privacy: "Maklumat anda digunakan untuk tindakan susulan pengambilan dan diproses serta disimpan melalui Formspree, perkhidmatan borang pihak ketiga yang dikonfigurasikan." },
@@ -484,7 +490,7 @@ for (const { locale, labels, error, submit, submitting, success, failure, privac
     const copy = JSON.parse(await form.getAttribute("data-copy") ?? "{}");
     expect(copy).toMatchObject({ submit, submitting, success, failure });
     await expect(page.locator("#application-privacy")).toHaveText(privacy);
-    await expect(page.locator("#privacy-note")).toHaveText(privacy);
+    await expect(page.locator("#privacy-note")).toHaveText(footerPrivacyByLocale[locale]);
     await expect(form.locator('button[type="submit"]')).toHaveText(submit);
     await form.locator('button[type="submit"]').click();
     await expect(form.locator("#name-error")).toHaveText(error);
@@ -744,4 +750,138 @@ test("provides a keyboard-operable mobile menu and privacy-information link", as
   await expect(menu.getByRole("link", { name: "Support" })).toBeVisible();
   const privacy = page.getByRole("link", { name: "Privacy information" });
   await expect(privacy).toHaveAttribute("href", "#privacy-note");
+});
+
+test.describe('analytics consent', () => {
+  test('defaults to denied and loads GA4 only after acceptance', async ({
+    page,
+  }) => {
+    const googleRequests: string[] = [];
+    await page.route('https://www.googletagmanager.com/**', async (route) => {
+      googleRequests.push(route.request().url());
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/javascript',
+        body: '',
+      });
+    });
+
+    await page.goto('/en/');
+
+    const banner = page.locator('[data-analytics-consent]');
+    await expect(banner).toBeVisible();
+    await expect(
+      page.locator('[data-google-analytics-tag="G-KGTRGW5765"]'),
+    ).toHaveCount(0);
+    expect(googleRequests).toHaveLength(0);
+
+    await banner.getByRole('button', { name: 'Accept analytics' }).click();
+
+    await expect(banner).toBeHidden();
+    await expect(
+      page.locator('[data-google-analytics-tag="G-KGTRGW5765"]'),
+    ).toHaveCount(1);
+    await expect
+      .poll(() => googleRequests.some((url) => url.includes('id=G-KGTRGW5765')))
+      .toBe(true);
+    expect(
+      await page.evaluate(() =>
+        window.localStorage.getItem('coway-analytics-consent'),
+      ),
+    ).toBe('granted');
+  });
+
+  test('persists decline without loading the Google tag', async ({ page }) => {
+    await page.goto('/en/');
+    const banner = page.locator('[data-analytics-consent]');
+
+    await banner.getByRole('button', { name: 'Decline analytics' }).click();
+    await expect(banner).toBeHidden();
+    expect(
+      await page.evaluate(() =>
+        window.localStorage.getItem('coway-analytics-consent'),
+      ),
+    ).toBe('denied');
+    await expect(
+      page.locator('[data-google-analytics-tag="G-KGTRGW5765"]'),
+    ).toHaveCount(0);
+
+    await page.reload();
+    await expect(banner).toBeHidden();
+    await expect(
+      page.locator('[data-google-analytics-tag="G-KGTRGW5765"]'),
+    ).toHaveCount(0);
+  });
+
+  test('fails closed when browser storage is unavailable', async ({
+    context,
+    page,
+  }) => {
+    await context.addInitScript(() => {
+      Object.defineProperty(window, 'localStorage', {
+        configurable: true,
+        get() {
+          throw new Error('storage unavailable');
+        },
+      });
+    });
+
+    await page.goto('/en/');
+    const banner = page.locator('[data-analytics-consent]');
+    await banner.getByRole('button', { name: 'Accept analytics' }).click();
+
+    await expect(banner).toBeVisible();
+    await expect(
+      page.locator('[data-google-analytics-tag="G-KGTRGW5765"]'),
+    ).toHaveCount(0);
+  });
+
+  test('keeps the application usable when the Google script is blocked', async ({
+    page,
+  }) => {
+    await page.route('https://www.googletagmanager.com/**', (route) =>
+      route.abort(),
+    );
+    await page.goto('/en/');
+    await page
+      .locator('[data-analytics-consent]')
+      .getByRole('button', { name: 'Accept analytics' })
+      .click();
+
+    await expect(page.locator('[data-application-form]')).toBeVisible();
+    await expect(
+      page.locator('[data-application-form] button[type="submit"]'),
+    ).toBeEnabled();
+  });
+
+  test('restores accepted consent without installing a duplicate tag', async ({
+    page,
+  }) => {
+    await page.goto('/en/');
+    await page
+      .locator('[data-analytics-consent]')
+      .getByRole('button', { name: 'Accept analytics' })
+      .click();
+
+    await page.goto('/zh/');
+    await expect(
+      page.locator('[data-google-analytics-tag="G-KGTRGW5765"]'),
+    ).toHaveCount(1);
+  });
+
+  test('localizes consent controls and leaves the application usable', async ({
+    page,
+  }) => {
+    for (const { locale, accept, decline } of [
+      { locale: 'en', accept: 'Accept analytics', decline: 'Decline analytics' },
+      { locale: 'bm', accept: 'Terima analitik', decline: 'Tolak analitik' },
+      { locale: 'zh', accept: '接受分析', decline: '拒绝分析' },
+    ]) {
+      await page.goto(`/${locale}/`);
+      const banner = page.locator('[data-analytics-consent]');
+      await expect(banner.getByRole('button', { name: accept })).toBeVisible();
+      await expect(banner.getByRole('button', { name: decline })).toBeVisible();
+      await expect(page.locator('[data-application-form]')).toBeVisible();
+    }
+  });
 });
