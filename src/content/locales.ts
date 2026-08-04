@@ -117,10 +117,10 @@ const en: LandingContent = {
     apply: "Apply now",
   },
   hero: {
-    eyebrow: "Build your sales journey",
-    title: "Grow with a Coway sales team in Malaysia",
+    eyebrow: "Malaysia-wide sales opportunity",
+    title: "Build a sales career that moves you forward.",
     subtitle:
-      "Turn your drive into a flexible, fully commission-based sales career with training and a team behind you.",
+      "Join a performance-led Coway sales team with practical training, real team support and room to grow into leadership.",
     primaryCta: "See if you are a fit",
     secondaryCta: "Explore the opportunity",
   },

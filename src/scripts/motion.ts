@@ -3,7 +3,7 @@ import { clamp01, sectionProgress } from '../motion/scroll';
 const root = document.documentElement;
 const motionPreference = matchMedia('(prefers-reduced-motion: reduce)');
 const revealItems = [...document.querySelectorAll<HTMLElement>('[data-reveal]')];
-const hero = document.querySelector<HTMLElement>('[data-performance-hero]');
+const hero = document.querySelector<HTMLElement>('[data-career-hero]');
 const heroTitle = document.querySelector<HTMLElement>('[data-motion="hero-title"]');
 const heroImage = document.querySelector<HTMLElement>('[data-motion="hero-image"]');
 const motionCards = [...document.querySelectorAll<HTMLElement>('[data-motion-card]')];

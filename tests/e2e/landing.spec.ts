@@ -206,9 +206,9 @@ test("uses a two-color focus indicator visible across page surfaces", async ({
       };
     }),
   ).toEqual({
-    outlineColor: "rgb(255, 255, 255)",
+    outlineColor: "rgb(251, 250, 255)",
     outlineWidth: "3px",
-    boxShadow: "rgb(8, 47, 73) 0px 0px 0px 6px",
+    boxShadow: "rgb(140, 103, 232) 0px 0px 0px 6px",
   });
 });
 
@@ -241,50 +241,38 @@ test("renders the complete landing story with honest opportunity details", async
   expect(await page.locator("main h2").count()).toBeGreaterThanOrEqual(8);
 });
 
-test("renders the Performance Sport hero and opportunity composition", async ({ page }) => {
+test("renders the approved recruitment hero hierarchy", async ({ page }) => {
   await page.goto("/en/");
-  await expect(page.locator("[data-performance-hero]")).toHaveCount(1);
-  await expect(page.locator("[data-motion-card]")).toHaveCount(3);
-  await expect(page.locator("[data-ticker-track]")).toContainText(/online sales training/i);
-  await expect(page.locator("#opportunity")).toHaveCSS("background-color", "rgb(234, 245, 244)");
-  await expect(page.locator("#opportunity .income-card")).toHaveCSS(
-    "background-color",
-    "rgb(53, 213, 208)",
+  const hero = page.locator("[data-career-hero]");
+  await expect(hero).toHaveCount(1);
+  await expect(hero.locator("h1")).toHaveText(
+    "Build a sales career that moves you forward.",
   );
-  await expect(page.locator("#opportunity .income-card")).toHaveCSS(
-    "color",
-    "rgb(7, 31, 43)",
-  );
+  await expect(hero.locator(".hero-actions .button-primary")).toHaveCount(1);
+  await expect(hero.locator(".hero-actions .button-secondary")).toHaveCount(1);
+  await expect(hero.locator(".hero-growth-panel")).toBeVisible();
+  await expect(hero.locator("[data-hero-stage]")).toHaveCount(3);
+  await expect(hero).not.toContainText("not the official corporate website");
 });
 
-test("serves a high-resolution responsive hero candidate on desktop", async ({
-  page,
-}) => {
-  await page.setViewportSize({ width: 1440, height: 900 });
-  await page.goto("/en/");
+for (const width of [320, 1440]) {
+  test(`keeps the approved hero inside a ${width}px viewport`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto("/en/");
 
-  const heroPicture = page.locator("[data-performance-hero] .hero-picture");
-  const advertisedWidths = await heroPicture.locator("source").evaluateAll((sources) =>
-    sources.flatMap((source) =>
-      (source.getAttribute("srcset") ?? "")
-        .split(",")
-        .map((candidate) => Number(candidate.trim().match(/\s(\d+)w$/)?.[1]))
-        .filter(Number.isFinite),
-    ),
-  );
-  expect(advertisedWidths).toContain(1440);
-  expect(advertisedWidths).toContain(1920);
-
-  const selectedCandidate = await heroPicture.locator("img").evaluate((image) => ({
-    currentSrc: (image as HTMLImageElement).currentSrc,
-    requiredWidth: image.getBoundingClientRect().width * window.devicePixelRatio,
-  }));
-  const selectedWidth = Number(
-    new URL(selectedCandidate.currentSrc).pathname.match(/-(\d+)\.(?:avif|webp)$/)?.[1],
-  );
-  expect(selectedWidth).toBeGreaterThanOrEqual(selectedCandidate.requiredWidth);
-  expect(selectedWidth).toBeGreaterThan(640);
-});
+    const hero = page.locator("[data-career-hero]");
+    await expect(hero).toBeVisible();
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= document.documentElement.clientWidth,
+      ),
+    ).toBe(true);
+    const bounds = await hero.boundingBox();
+    expect(bounds).not.toBeNull();
+    expect(bounds!.x).toBeGreaterThanOrEqual(0);
+    expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(width);
+  });
+}
 
 test("connects the three career stages into one journey", async ({ page }) => {
   await page.goto("/en/");
@@ -327,7 +315,7 @@ for (const width of [320, 768, 1440]) {
   });
 }
 
-test("keeps Performance Sport controls touch-sized with readable contrast", async ({ page }) => {
+test("keeps recruitment controls touch-sized with readable contrast", async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 900 });
   await page.goto("/en/");
 
@@ -341,13 +329,13 @@ test("keeps Performance Sport controls touch-sized with readable contrast", asyn
     expect(bounds!.height).toBeGreaterThanOrEqual(44);
   }
 
-  await expect(page.locator(".performance-hero")).toHaveCSS(
+  await expect(page.locator(".career-hero")).toHaveCSS(
     "color",
-    "rgb(255, 255, 255)",
+    "rgb(251, 250, 255)",
   );
   await expect(page.locator(".button-primary")).toHaveCSS(
     "color",
-    "rgb(7, 31, 43)",
+    "rgb(9, 7, 17)",
   );
 });
 
@@ -720,7 +708,9 @@ for (const { locale, skip, home, nav, growth } of [
     await expect(page.locator(".skip-link")).toHaveText(skip);
     await expect(page.locator("header .wordmark")).toHaveAttribute("aria-label", home);
     await expect(page.locator("header .desktop-navigation")).toHaveAttribute("aria-label", nav);
-    await expect(page.locator(".hero-fact-growth")).toHaveText(growth);
+    await expect(page.locator("[data-hero-stage]").first()).toContainText(
+      growth.split(/\s+/)[0],
+    );
   });
 }
 

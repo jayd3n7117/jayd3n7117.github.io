@@ -1,17 +1,35 @@
 ---
 import type { LandingContent, Locale } from '../content/locales';
-import type { MediaImage } from '../content/media';
-import ResponsivePicture from './ResponsivePicture.astro';
 
 interface Props {
   content: LandingContent;
   locale: Locale;
-  image: MediaImage;
 }
 
-const { content, locale, image } = Astro.props;
+const { content, locale } = Astro.props;
+
+const growthCopy = {
+  en: {
+    title: 'Start where you are. Grow as far as you can.',
+    body: 'A clear journey for career switchers, salespeople, graduates, and aspiring leaders.',
+    stages: ['Learn', 'Perform', 'Lead'],
+  },
+  bm: {
+    title: 'Mulakan di mana anda berada. Maju sejauh yang anda mampu.',
+    body: 'Laluan jelas untuk mereka yang bertukar kerjaya, jurujual, graduan dan bakal pemimpin.',
+    stages: ['Belajar', 'Berprestasi', 'Memimpin'],
+  },
+  zh: {
+    title: '从你所在的位置开始，向更高的目标成长。',
+    body: '为转职人士、销售人员、毕业生和未来领导者提供清晰的成长路径。',
+    stages: ['学习', '实践', '领导'],
+  },
+} as const;
+
+const growth = growthCopy[locale];
 ---
-<section class="hero performance-hero" data-performance-hero>
+
+<section class="hero career-hero" data-career-hero>
   <div class="hero-copy">
     <p class="eyebrow">{content.hero.eyebrow}</p>
     <h1 data-motion="hero-title">{content.hero.title}</h1>
@@ -21,10 +39,17 @@ const { content, locale, image } = Astro.props;
       <a class="button button-secondary" href="#support">{content.hero.secondaryCta}</a>
     </div>
   </div>
-  <div class="hero-visual" data-motion="hero-image">
-    <ResponsivePicture image={image} {locale} eager class="hero-picture" sizes="(min-width: 64rem) 50vw, 100vw" />
-    <aside class="hero-fact hero-fact-income" data-motion-card>RM2,500–RM10,000+</aside>
-    <aside class="hero-fact hero-fact-culture" data-motion-card>{content.culture.statement}</aside>
-    <aside class="hero-fact hero-fact-growth" data-motion-card>{content.chrome.growthFact}</aside>
-  </div>
+
+  <aside class="hero-growth-panel glass-surface glass-interactive" data-motion="hero-image" aria-labelledby="hero-growth-title">
+    <h2 id="hero-growth-title">{growth.title}</h2>
+    <p>{growth.body}</p>
+    <ol class="hero-stage-list">
+      {growth.stages.map((stage, index) => (
+        <li data-hero-stage>
+          <strong>{stage}</strong>
+          <span>{content.progression.steps[index]}</span>
+        </li>
+      ))}
+    </ol>
+  </aside>
 </section>

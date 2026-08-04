@@ -167,8 +167,11 @@ summary:focus-visible {
 }
 
 .site-header {
-  border-bottom: 1px solid rgb(255 255 255 / 18%);
-  background: var(--color-primary);
+  position: sticky;
+  z-index: 50;
+  top: 0;
+  padding: 0.75rem var(--page-gutter) 0;
+  background: var(--color-night);
   color: var(--color-on-dark);
 }
 
@@ -180,7 +183,10 @@ summary:focus-visible {
 }
 
 .header-inner {
-  min-height: 5rem;
+  width: min(76rem, 100%);
+  min-height: 4.5rem;
+  padding-inline: clamp(1rem, 3vw, 1.5rem);
+  border-radius: var(--radius-card);
   justify-content: space-between;
   gap: var(--space-6);
 }
@@ -263,12 +269,12 @@ summary:focus-visible {
 }
 
 .button-accent {
-  background: var(--color-accent);
-  color: var(--color-primary);
+  background: var(--color-white);
+  color: var(--color-night);
 }
 
 .button-accent:hover {
-  background: #d0ff5e;
+  background: var(--color-lilac);
 }
 
 main {
