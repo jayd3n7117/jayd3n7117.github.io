@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { applicationContent } from '../../src/application/content';
 import { getContent, locales } from '../../src/content/locales';
+import { getSupportingPage, supportingPageKeys } from '../../src/content/pages';
 
 const requiredSections = [
   'chrome',
@@ -21,6 +22,27 @@ const requiredSections = [
 ] as const;
 
 describe('localized recruitment content', () => {
+  it('defines five useful supporting pages in English and Chinese', () => {
+    expect(supportingPageKeys).toEqual([
+      'coway-sales-career',
+      'career-change-to-sales',
+      'sales-training-leadership',
+      'coway-sales-malaysia-locations',
+      'application-faq',
+    ]);
+
+    for (const locale of ['en', 'zh'] as const) {
+      for (const key of supportingPageKeys) {
+        const page = getSupportingPage(locale, key);
+        expect(page.meta.title.length).toBeGreaterThan(locale === 'zh' ? 12 : 20);
+        expect(page.meta.description.length).toBeGreaterThan(locale === 'zh' ? 35 : 80);
+        expect(page.sections.length).toBeGreaterThanOrEqual(3);
+        expect(page.sections.flatMap(({ body }) => body).join(' ').length).toBeGreaterThanOrEqual(
+          locale === 'zh' ? 450 : 500,
+        );
+      }
+    }
+  });
   it('provides complete dictionaries for every public locale', () => {
     expect(Object.keys(locales)).toEqual(['en', 'bm', 'zh']);
 
