@@ -71,7 +71,7 @@
   line-height: 1.7;
 }
 
-.content-hero-orbit {
+.content-hero-orbit.glass-surface {
   position: absolute;
   right: max(0rem, 4vw);
   bottom: 2.5rem;

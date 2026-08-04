@@ -16,6 +16,7 @@ interface Props {
 
 const { locale, pageKey, content } = Astro.props;
 const faqHeading = locale === 'zh' ? '常见问题' : 'Frequently asked questions';
+const growthStages = locale === 'zh' ? ['学习', '行动', '带领'] : ['Learn', 'Perform', 'Lead'];
 ---
 
 <article class="content-page">
@@ -28,7 +29,7 @@ const faqHeading = locale === 'zh' ? '常见问题' : 'Frequently asked question
         <p class="content-introduction">{content.introduction}</p>
       </div>
       <div class="content-hero-orbit glass-surface" aria-hidden="true">
-        <span>Learn</span><span>Perform</span><span>Lead</span>
+        {growthStages.map((stage) => <span>{stage}</span>)}
       </div>
     </div>
   </header>

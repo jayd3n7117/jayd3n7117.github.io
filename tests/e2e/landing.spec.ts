@@ -37,8 +37,31 @@ for (const locale of ["en", "zh"] as const) {
         .locator('script[type="application/ld+json"]')
         .evaluateAll((scripts) => scripts.map((script) => JSON.parse(script.textContent ?? '{}')['@type']));
       expect(schemaTypes).toEqual(['BreadcrumbList', 'FAQPage']);
+      if (locale === 'zh') {
+        await expect(page.locator('.content-hero-orbit')).toHaveText('学习行动带领');
+      }
     });
   }
+}
+
+for (const width of [375, 1440]) {
+  test(`keeps the supporting-page growth pill clear of copy at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto('/en/coway-sales-career/');
+    const introduction = await page.locator('.content-introduction').boundingBox();
+    const orbit = page.locator('.content-hero-orbit');
+    const orbitBounds = await orbit.boundingBox();
+
+    expect(introduction).not.toBeNull();
+    expect(orbitBounds).not.toBeNull();
+    await expect(orbit).toHaveCSS('position', 'absolute');
+    expect(
+      orbitBounds!.x < introduction!.x + introduction!.width &&
+      orbitBounds!.x + orbitBounds!.width > introduction!.x &&
+      orbitBounds!.y < introduction!.y + introduction!.height &&
+      orbitBounds!.y + orbitBounds!.height > introduction!.y,
+    ).toBe(false);
+  });
 }
 
 test("blocks unmocked Formspree requests suite-wide", async ({ context, page }) => {
