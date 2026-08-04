@@ -14,12 +14,8 @@ const { content } = Astro.props;
     <p>{content.support.intro}</p>
   </header>
   <div class="support-grid">
-    {content.support.items.map((item, i) => (
-      <article data-reveal>
-        <span aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
-        <svg viewBox="0 0 48 12" aria-hidden="true">
-          <path d="M1 6h38m-6-5 6 5-6 5"></path>
-        </svg>
+    {content.support.items.map((item, index) => (
+      <article class={`support-item support-item-${(index % 3) + 1}`} data-reveal>
         <h3>{item.title}</h3>
         <p>{item.description}</p>
       </article>

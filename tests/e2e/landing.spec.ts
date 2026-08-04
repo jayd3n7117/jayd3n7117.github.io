@@ -145,9 +145,9 @@ function contentDisclosure(
   locale: (typeof localizedRoutes)[number]["locale"],
 ): string {
   return {
-    en: "Independent sales recruitment information.",
-    bm: "Maklumat pengambilan jualan bebas.",
-    zh: "独立销售招募信息。",
+    en: "Coway Sales Career is an independent recruitment website operated by a Coway sales team in Malaysia.",
+    bm: "Coway Sales Career ialah laman web pengambilan bebas yang dikendalikan oleh pasukan jualan Coway di Malaysia.",
+    zh: "Coway Sales Career 是由马来西亚 Coway 销售团队运营的独立招聘网站。",
   }[locale];
 }
 
@@ -490,12 +490,38 @@ test("shows failure and preserves fields when Formspree rejects the application"
 test("ends with prioritized candidates and the safe application form", async ({ page }) => {
   await page.goto("/en/");
   const priorities = page.locator("#candidate-fit > ol");
-  await expect(priorities.locator(":scope > li")).toHaveCount(3);
-  await expect(priorities.locator(":scope > li > article")).toHaveCount(3);
+  await expect(priorities.locator(":scope > li")).toHaveCount(4);
+  await expect(priorities.locator(":scope > li > article")).toHaveCount(4);
   const cards = page.locator("#candidate-fit article");
-  await expect(cards).toHaveCount(3);
-  await expect(cards.nth(0)).toContainText("Experienced");
+  await expect(cards).toHaveCount(4);
+  await expect(cards.nth(0)).toContainText("Aspiring team leaders");
+  await expect(cards.nth(1)).toContainText("Career switchers");
+  await expect(cards.nth(2)).toContainText("Existing salespeople");
+  await expect(cards.nth(3)).toContainText("Fresh graduates");
   await expect(page.locator("#apply")).toHaveAttribute("data-conversion-section", "");
+});
+
+test("uses the approved homepage section system and trust placement", async ({ page }) => {
+  await page.goto("/en/");
+
+  await expect(page.locator("#support")).toHaveCSS("background-color", "rgb(251, 250, 255)");
+  await expect(page.locator("#growth")).toHaveCSS("background-color", "rgb(242, 237, 255)");
+  await expect(page.locator("#opportunity .income-card")).toContainText(
+    "RM2,500-RM10,000+",
+  );
+  await expect(page.locator("#opportunity .income-card")).toContainText(
+    "No income is guaranteed",
+  );
+
+  const disclosure =
+    "Coway Sales Career is an independent recruitment website operated by a Coway sales team in Malaysia. It is not the official corporate website of Coway (Malaysia) Sdn. Bhd.";
+  await expect(page.locator("footer .site-disclosure")).toContainText(disclosure);
+  await expect(page.locator("[data-career-hero]")).not.toContainText(disclosure);
+  await expect(page.locator("#apply .application-reviewer")).toContainText(
+    "sales leadership team",
+  );
+
+  expect(await page.locator(".glass-surface").count()).toBeLessThanOrEqual(3);
 });
 
 const footerPrivacyByLocale = {

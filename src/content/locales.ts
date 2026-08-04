@@ -70,7 +70,10 @@ export interface LandingContent {
     intro: string;
     priorities: Array<{
       audience:
-        "experiencedSalespeople" | "careerSwitchers" | "ambitiousNewcomers";
+        | "aspiringLeaders"
+        | "careerSwitchers"
+        | "existingSalespeople"
+        | "freshGraduates";
       title: string;
       description: string;
     }>;
@@ -201,10 +204,10 @@ const en: LandingContent = {
     intro: "We welcome motivated people, with priority given in this order:",
     priorities: [
       {
-        audience: "experiencedSalespeople",
-        title: "Experienced salespeople",
+        audience: "aspiringLeaders",
+        title: "Aspiring team leaders",
         description:
-          "You already know how to build trust, follow up, and close sales.",
+          "You want to build sales capability, support others and grow toward leadership responsibility.",
       },
       {
         audience: "careerSwitchers",
@@ -213,10 +216,16 @@ const en: LandingContent = {
           "You are ready to apply transferable skills in a performance-led sales career.",
       },
       {
-        audience: "ambitiousNewcomers",
-        title: "Ambitious newcomers",
+        audience: "existingSalespeople",
+        title: "Existing salespeople",
         description:
-          "You are new to sales but coachable, proactive, and ready to learn.",
+          "You already understand customer conversations and want stronger training, systems and team support.",
+      },
+      {
+        audience: "freshGraduates",
+        title: "Fresh graduates",
+        description:
+          "You are ready to learn practical sales skills, take consistent action and build career confidence.",
       },
     ],
     notForYouTitle: "This may not be for you if…",
@@ -273,7 +282,7 @@ const en: LandingContent = {
     socialHeading: 'Follow our journey',
     socialUnavailableLabel: 'link not available yet',
     disclaimer:
-      "Independent sales recruitment information. This is not an official Coway corporate careers website. This opportunity is fully commission-based; actual income depends on individual sales performance and no income is guaranteed.",
+      "Coway Sales Career is an independent recruitment website operated by a Coway sales team in Malaysia. It is not the official corporate website of Coway (Malaysia) Sdn. Bhd.",
     privacy:
       "Your information is used for recruitment follow-up and is processed and stored through Formspree, our configured third-party form service. With your permission, Google Analytics also measures website use; recruitment form answers are not intentionally sent to analytics.",
     privacyLink: "Privacy information",
@@ -384,10 +393,10 @@ const bm: LandingContent = {
       "Kami mengalu-alukan individu bermotivasi, dengan keutamaan mengikut susunan berikut:",
     priorities: [
       {
-        audience: "experiencedSalespeople",
-        title: "Jurujual berpengalaman",
+        audience: "aspiringLeaders",
+        title: "Bakal pemimpin pasukan",
         description:
-          "Anda sudah tahu cara membina kepercayaan, membuat susulan dan menutup jualan.",
+          "Anda mahu membina keupayaan jualan, menyokong orang lain dan berkembang ke arah tanggungjawab kepimpinan.",
       },
       {
         audience: "careerSwitchers",
@@ -396,10 +405,16 @@ const bm: LandingContent = {
           "Anda bersedia menggunakan kemahiran sedia ada dalam kerjaya jualan berasaskan prestasi.",
       },
       {
-        audience: "ambitiousNewcomers",
-        title: "Pendatang baharu yang bercita-cita tinggi",
+        audience: "existingSalespeople",
+        title: "Jurujual sedia ada",
         description:
-          "Anda baharu dalam jualan tetapi mudah dibimbing, proaktif dan bersedia untuk belajar.",
+          "Anda memahami perbualan pelanggan dan mahukan latihan, sistem serta sokongan pasukan yang lebih kukuh.",
+      },
+      {
+        audience: "freshGraduates",
+        title: "Graduan baharu",
+        description:
+          "Anda bersedia mempelajari kemahiran jualan praktikal, bertindak secara konsisten dan membina keyakinan kerjaya.",
       },
     ],
     notForYouTitle: "Ini mungkin bukan untuk anda jika…",
@@ -456,7 +471,7 @@ const bm: LandingContent = {
     socialHeading: 'Ikuti perjalanan kami',
     socialUnavailableLabel: 'pautan belum tersedia',
     disclaimer:
-      "Maklumat pengambilan jualan bebas. Ini bukan laman kerjaya korporat rasmi Coway. Peluang ini berasaskan komisen sepenuhnya; pendapatan sebenar bergantung pada prestasi jualan individu dan tiada pendapatan yang dijamin.",
+      "Coway Sales Career ialah laman web pengambilan bebas yang dikendalikan oleh pasukan jualan Coway di Malaysia. Ia bukan laman web korporat rasmi Coway (Malaysia) Sdn. Bhd.",
     privacy:
       "Maklumat anda digunakan untuk tindakan susulan pengambilan dan diproses serta disimpan melalui Formspree, perkhidmatan borang pihak ketiga yang dikonfigurasikan. Dengan kebenaran anda, Google Analytics turut mengukur penggunaan laman; jawapan borang pengambilan tidak dihantar dengan sengaja kepada analitik.",
     privacyLink: "Maklumat privasi",
@@ -554,9 +569,9 @@ const zh: LandingContent = {
     intro: "我们欢迎积极进取的人，并按以下顺序优先考虑：",
     priorities: [
       {
-        audience: "experiencedSalespeople",
-        title: "有经验的销售人员",
-        description: "你已经懂得建立信任、持续跟进和完成销售。",
+        audience: "aspiringLeaders",
+        title: "有志成为团队领导者的人",
+        description: "你希望提升销售能力、支持团队成员，并逐步承担领导责任。",
       },
       {
         audience: "careerSwitchers",
@@ -564,9 +579,14 @@ const zh: LandingContent = {
         description: "你准备好把可转移技能运用在以业绩为导向的销售事业中。",
       },
       {
-        audience: "ambitiousNewcomers",
-        title: "有抱负的销售新人",
-        description: "你虽没有销售经验，但愿意接受指导、主动行动并认真学习。",
+        audience: "existingSalespeople",
+        title: "现有销售人员",
+        description: "你了解客户沟通，并希望获得更完善的培训、系统和团队支持。",
+      },
+      {
+        audience: "freshGraduates",
+        title: "应届毕业生",
+        description: "你愿意学习实用销售技能、持续行动，并建立职业信心。",
       },
     ],
     notForYouTitle: "如果你有以下期待，这可能不适合你……",
@@ -623,7 +643,7 @@ const zh: LandingContent = {
     socialHeading: '关注我们的成长旅程',
     socialUnavailableLabel: '链接暂未开放',
     disclaimer:
-      "独立销售招募信息。本网站并非 Coway 官方企业招聘网站。此机会完全以佣金为基础；实际收入取决于个人销售业绩，并且不保证任何收入。",
+      "Coway Sales Career 是由马来西亚 Coway 销售团队运营的独立招聘网站。它不是 Coway (Malaysia) Sdn. Bhd. 的官方企业网站。",
     privacy: "你的资料用于招聘跟进，并通过我们配置的第三方表单服务 Formspree 处理和存储。 在获得你的许可后，Google Analytics 也会衡量网站使用情况；招聘申请表中的资料不会被刻意发送到分析服务。",
     privacyLink: "隐私信息",
     copyright: "Coway 马来西亚销售招募",

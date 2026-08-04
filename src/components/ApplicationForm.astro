@@ -17,6 +17,7 @@ const required = (label: string) => `${label} (${copy.required})`;
       <p class="eyebrow">{copy.required}</p>
       <h2>{copy.title}</h2>
       <p class="lede">{copy.intro}</p>
+      <p class="application-reviewer">{copy.reviewer}</p>
       <p class="privacy-note" id="application-privacy">{copy.privacy}</p>
     </div>
     <form class="application-form" data-application-form novalidate aria-describedby="application-privacy" data-copy={JSON.stringify({ errors: copy.errors, invalid: copy.invalid, success: copy.success, failure: copy.failure, submitting: copy.submitting, submit: copy.submit })}>

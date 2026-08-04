@@ -80,7 +80,7 @@ describe('localized recruitment content', () => {
   it('preserves the required opportunity facts in all languages', () => {
     for (const content of Object.values(locales)) {
       expect(content.meta.title).toContain('Coway');
-      expect(content.hero.title).toContain('Coway');
+      expect(`${content.hero.title} ${content.hero.subtitle}`).toContain('Coway');
       expect(content.opportunity.incomeRange).toBe('RM2,500-RM10,000+');
       expect(content.opportunity.commissionBased).toBe(true);
       expect(content.opportunity.guarantee).toBe(false);
@@ -90,9 +90,10 @@ describe('localized recruitment content', () => {
 
   it('models the applicant priorities in order', () => {
     expect(locales.en.candidateFit.priorities.map(({ audience }) => audience)).toEqual([
-      'experiencedSalespeople',
+      'aspiringLeaders',
       'careerSwitchers',
-      'ambitiousNewcomers',
+      'existingSalespeople',
+      'freshGraduates',
     ]);
   });
 

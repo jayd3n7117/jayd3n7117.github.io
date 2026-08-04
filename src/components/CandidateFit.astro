@@ -10,8 +10,8 @@ const { content } = Astro.props;
 <section id="candidate-fit" class="section fit">
   <header><h2>{content.candidateFit.title}</h2><p>{content.candidateFit.intro}</p></header>
   <ol class="candidate-cards">
-    {content.candidateFit.priorities.map((item, i) => (
-      <li><article data-reveal><span>{i + 1}</span><div><h3>{item.title}</h3><p>{item.description}</p></div></article></li>
+    {content.candidateFit.priorities.map((item) => (
+      <li><article data-reveal><div><h3>{item.title}</h3><p>{item.description}</p></div></article></li>
     ))}
   </ol>
   <aside>
