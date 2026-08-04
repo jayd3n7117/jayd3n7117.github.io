@@ -5,6 +5,7 @@ import Header from '../components/Header.astro';
 import { getContent, type LandingContent, type Locale } from '../content/locales';
 import type { SupportingPageKey } from '../content/pages';
 import { getSeo } from '../content/seo';
+import type { StructuredData } from '../content/structured-data';
 import '../styles/global.css';
 
 interface Props {
@@ -12,9 +13,10 @@ interface Props {
   content?: LandingContent;
   meta?: Pick<LandingContent['meta'], 'title' | 'description'>;
   pathKey?: SupportingPageKey;
+  structuredData?: StructuredData[];
 }
 
-const { locale, pathKey } = Astro.props;
+const { locale, pathKey, structuredData = [] } = Astro.props;
 const content = Astro.props.content ?? getContent(locale);
 const meta = Astro.props.meta ?? content.meta;
 const seo = getSeo(locale, Astro.site ?? new URL(Astro.url.origin), pathKey);
@@ -37,6 +39,13 @@ const seo = getSeo(locale, Astro.site ?? new URL(Astro.url.origin), pathKey);
     <meta property="og:description" content={meta.description} />
     <meta property="og:type" content="website" />
     <meta property="og:url" content={seo.canonical} />
+    {structuredData.map((schema) => (
+      <script
+        is:inline
+        type="application/ld+json"
+        set:html={JSON.stringify(schema).replace(/</g, '\\u003c')}
+      />
+    ))}
   </head>
   <body>
     <a class="skip-link" href="#main-content">{content.chrome.skipLink}</a>

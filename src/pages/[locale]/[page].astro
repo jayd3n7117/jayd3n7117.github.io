@@ -8,6 +8,7 @@ import {
   type SupportingPageKey,
 } from '../../content/pages';
 import '../../styles/content-page.css';
+import { buildSupportingPageStructuredData } from '../../content/structured-data';
 
 export function getStaticPaths() {
   return (['en', 'zh'] as const).flatMap((locale) =>
@@ -25,8 +26,14 @@ interface Props {
 
 const { locale, page } = Astro.props;
 const content = getSupportingPage(locale, page);
+const structuredData = buildSupportingPageStructuredData(
+  locale,
+  page,
+  content,
+  Astro.site ?? new URL(Astro.url.origin),
+);
 ---
 
-<BaseLayout {locale} meta={content.meta} pathKey={page}>
+<BaseLayout {locale} meta={content.meta} pathKey={page} {structuredData}>
   <ContentPage {locale} pageKey={page} {content} />
 </BaseLayout>

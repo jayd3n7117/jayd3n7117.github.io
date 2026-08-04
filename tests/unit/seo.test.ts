@@ -1,8 +1,33 @@
 import { describe, expect, it } from 'vitest';
 
 import { getSeo } from '../../src/content/seo';
+import {
+  buildHomeStructuredData,
+  buildSupportingPageStructuredData,
+} from '../../src/content/structured-data';
+import { getSupportingPage } from '../../src/content/pages';
 
 describe('localized SEO URLs', () => {
+  it('builds useful page schemas without presenting the opportunity as a job posting', () => {
+    const origin = new URL('https://cowaysalescareer.my');
+    const page = getSupportingPage('en', 'application-faq');
+    const supporting = buildSupportingPageStructuredData(
+      'en',
+      'application-faq',
+      page,
+      origin,
+    );
+    const home = buildHomeStructuredData('en', origin);
+    const serialized = JSON.stringify([home, ...supporting]);
+
+    expect(home['@type']).toBe('WebSite');
+    expect(supporting.map((schema) => schema['@type'])).toEqual([
+      'BreadcrumbList',
+      'FAQPage',
+    ]);
+    expect(serialized).not.toContain('JobPosting');
+    expect(serialized).toContain('https://cowaysalescareer.my/en/application-faq/');
+  });
   it('builds reciprocal English and Chinese URLs for a supporting page', () => {
     const seo = getSeo(
       'zh',

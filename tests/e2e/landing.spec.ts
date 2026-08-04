@@ -33,6 +33,10 @@ for (const locale of ["en", "zh"] as const) {
       expect(await page.locator("main article .content-section").count()).toBeGreaterThanOrEqual(3);
       await expect(page.locator("main .trust-disclosure")).toHaveCount(1);
       await expect(page.locator("main h1.trust-disclosure")).toHaveCount(0);
+      const schemaTypes = await page
+        .locator('script[type="application/ld+json"]')
+        .evaluateAll((scripts) => scripts.map((script) => JSON.parse(script.textContent ?? '{}')['@type']));
+      expect(schemaTypes).toEqual(['BreadcrumbList', 'FAQPage']);
     });
   }
 }
@@ -280,6 +284,15 @@ test("renders the approved recruitment hero hierarchy", async ({ page }) => {
   await expect(hero.locator(".hero-growth-panel")).toBeVisible();
   await expect(hero.locator("[data-hero-stage]")).toHaveCount(3);
   await expect(hero).not.toContainText("not the official corporate website");
+});
+
+test('publishes WebSite structured data on the homepage and links the content cluster', async ({ page }) => {
+  await page.goto('/en/');
+  const schemaTypes = await page
+    .locator('script[type="application/ld+json"]')
+    .evaluateAll((scripts) => scripts.map((script) => JSON.parse(script.textContent ?? '{}')['@type']));
+  expect(schemaTypes).toContain('WebSite');
+  await expect(page.locator('footer .footer-guides a')).toHaveCount(5);
 });
 
 for (const width of [320, 1440]) {

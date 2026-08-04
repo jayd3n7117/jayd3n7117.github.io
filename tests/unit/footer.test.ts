@@ -6,6 +6,22 @@ import { locales } from '../../src/content/locales';
 import type { SocialProfile } from '../../src/config/social';
 
 describe('footer social rendering', () => {
+  it('links the English homepage to every supporting recruitment guide', async () => {
+    const container = await AstroContainer.create();
+    const html = await container.renderToString(Footer, {
+      props: { locale: 'en', content: locales.en },
+    });
+
+    for (const page of [
+      'coway-sales-career',
+      'career-change-to-sales',
+      'sales-training-leadership',
+      'coway-sales-malaysia-locations',
+      'application-faq',
+    ]) {
+      expect(html).toContain(`href="/en/${page}/"`);
+    }
+  });
   it('renders a blank social destination as a localized inert control', async () => {
     const profiles: readonly SocialProfile[] = [
       { id: 'facebook', label: 'Facebook', url: '' },

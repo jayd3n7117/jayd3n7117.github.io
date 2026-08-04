@@ -11,6 +11,7 @@ import CandidateFit from '../../components/CandidateFit.astro';
 import Faq from '../../components/Faq.astro';
 import ApplicationForm from '../../components/ApplicationForm.astro';
 import { media } from '../../content/media';
+import { buildHomeStructuredData } from '../../content/structured-data';
 import '../../styles/landing.css';
 
 export function getStaticPaths() {
@@ -23,9 +24,12 @@ export function getStaticPaths() {
 
 const locale = Astro.params.locale as Locale;
 const content = getContent(locale);
+const structuredData = [
+  buildHomeStructuredData(locale, Astro.site ?? new URL(Astro.url.origin)),
+];
 ---
 
-<BaseLayout {locale} {content}>
+<BaseLayout {locale} {content} {structuredData}>
   <Hero {content} {locale} />
   <MomentumStrip {content} />
   <Opportunity {content} />

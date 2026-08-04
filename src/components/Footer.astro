@@ -2,6 +2,7 @@
 import type { LandingContent, Locale } from '../content/locales';
 import { getSocialLinkAttributes, socialProfiles, type SocialProfile } from '../config/social';
 import TrustDisclosure from './TrustDisclosure.astro';
+import { getSupportingPage, supportingPageKeys, type SupportingLocale } from '../content/pages';
 
 interface Props {
   locale: Locale;
@@ -10,6 +11,12 @@ interface Props {
 }
 
 const { locale, content, profiles = socialProfiles } = Astro.props;
+const guideLocale: SupportingLocale = locale === 'bm' ? 'en' : locale;
+const guidesHeading = locale === 'zh'
+  ? '销售事业指南'
+  : locale === 'bm'
+    ? 'Panduan kerjaya jualan (English)'
+    : 'Sales career guides';
 
 const languageLinks = [
   { locale: 'en', label: 'English' },
@@ -41,6 +48,19 @@ const languageLinks = [
             </li>
           ))
         }
+      </ul>
+    </nav>
+
+    <nav class="footer-guides" aria-label={guidesHeading}>
+      <p class="footer-heading">{guidesHeading}</p>
+      <ul class="footer-links">
+        {supportingPageKeys.map((page) => (
+          <li>
+            <a href={`/${guideLocale}/${page}/`}>
+              {getSupportingPage(guideLocale, page).title}
+            </a>
+          </li>
+        ))}
       </ul>
     </nav>
 
