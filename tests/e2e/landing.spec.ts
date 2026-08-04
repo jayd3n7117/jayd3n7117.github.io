@@ -911,6 +911,27 @@ test("provides a keyboard-operable mobile menu and privacy-information link", as
   await expect(privacy).toHaveAttribute("href", "#privacy-note");
 });
 
+for (const width of [320, 390]) {
+  test(`keeps all visible header controls on one row at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 844 });
+    await page.goto('/zh/sales-training-leadership/');
+
+    const controls = [
+      page.locator('header .wordmark'),
+      page.locator('header .mobile-navigation > summary'),
+      page.locator('header .language-menu > summary'),
+      page.locator('header .button-accent'),
+    ];
+    const boxes = await Promise.all(controls.map((control) => control.boundingBox()));
+    expect(boxes.every(Boolean)).toBe(true);
+
+    const centres = boxes.map((box) => box!.y + box!.height / 2);
+    expect(Math.max(...centres) - Math.min(...centres)).toBeLessThanOrEqual(1);
+    expect(Math.max(...boxes.map((box) => box!.x + box!.width))).toBeLessThanOrEqual(width);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(width);
+  });
+}
+
 for (const width of [320, 375, 390]) {
   test(`keeps header menus inside a ${width}px viewport`, async ({ page }) => {
     await page.setViewportSize({ width, height: 844 });
