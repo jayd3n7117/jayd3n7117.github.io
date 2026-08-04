@@ -791,6 +791,40 @@ test("provides a keyboard-operable mobile menu and privacy-information link", as
   await expect(privacy).toHaveAttribute("href", "#privacy-note");
 });
 
+for (const width of [320, 375, 390]) {
+  test(`keeps header menus inside a ${width}px viewport`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 844 });
+    await page.goto("/en/");
+
+    const documentWidth = await page.evaluate(
+      () => document.documentElement.scrollWidth,
+    );
+    const mobileMenu = page.locator(".mobile-navigation");
+    await mobileMenu.locator(":scope > summary").click();
+    const mobilePanel = mobileMenu.locator("nav");
+    await expect(mobilePanel).toBeVisible();
+
+    const mobileBounds = await mobilePanel.boundingBox();
+    expect(mobileBounds).not.toBeNull();
+    expect(mobileBounds!.x).toBeGreaterThanOrEqual(0);
+    expect(mobileBounds!.x + mobileBounds!.width).toBeLessThanOrEqual(width);
+
+    const languageMenu = page.locator(".language-menu");
+    await languageMenu.locator(":scope > summary").click();
+    await expect(languageMenu).toHaveAttribute("open", "");
+    await expect(mobileMenu).not.toHaveAttribute("open", "");
+
+    const languagePanel = languageMenu.locator(":scope > ul");
+    const languageBounds = await languagePanel.boundingBox();
+    expect(languageBounds).not.toBeNull();
+    expect(languageBounds!.x).toBeGreaterThanOrEqual(0);
+    expect(languageBounds!.x + languageBounds!.width).toBeLessThanOrEqual(width);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(
+      documentWidth,
+    );
+  });
+}
+
 test.describe('analytics consent', () => {
   test('queues denied defaults before the accepted GA4 command sequence', async ({
     page,

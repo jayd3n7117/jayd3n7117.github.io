@@ -31,7 +31,7 @@ const languageLinks = [
       </ul>
     </nav>
 
-    <details class="mobile-navigation">
+    <details class="mobile-navigation" data-header-disclosure="navigation">
       <summary>{content.nav.menu}</summary>
       <nav aria-label={content.nav.menu}>
         <ul>
@@ -45,7 +45,7 @@ const languageLinks = [
     </details>
 
     <div class="header-actions">
-      <details class="language-menu">
+      <details class="language-menu" data-header-disclosure="language">
         <summary aria-label={`${content.nav.language}: ${content.meta.language}`}>
           {content.meta.language}
         </summary>

@@ -6,6 +6,27 @@ const recognizedHashes = new Set([
   '#apply',
 ]);
 
+const headerDisclosures = Array.from(
+  document.querySelectorAll<HTMLDetailsElement>('[data-header-disclosure]'),
+);
+
+const closeHeaderDisclosures = (except?: HTMLDetailsElement) => {
+  for (const disclosure of headerDisclosures) {
+    if (disclosure !== except) disclosure.open = false;
+  }
+};
+
+for (const disclosure of headerDisclosures) {
+  disclosure.addEventListener('toggle', () => {
+    if (disclosure.open) closeHeaderDisclosures(disclosure);
+  });
+}
+
+document.addEventListener('keydown', (event) => {
+  if (event.key !== 'Escape') return;
+  closeHeaderDisclosures();
+});
+
 document.addEventListener('click', (event) => {
   if (
     event.defaultPrevented ||
@@ -20,6 +41,13 @@ document.addEventListener('click', (event) => {
 
   const target = event.target;
   if (!(target instanceof Element)) return;
+
+  const headerLink = target.closest<HTMLAnchorElement>(
+    '[data-header-disclosure] a',
+  );
+  if (headerLink) closeHeaderDisclosures();
+
+  if (!target.closest('.header-inner')) closeHeaderDisclosures();
 
   const link = target.closest<HTMLAnchorElement>('a[data-locale-link]');
   if (!link || link.hasAttribute('download') || link.target) return;
