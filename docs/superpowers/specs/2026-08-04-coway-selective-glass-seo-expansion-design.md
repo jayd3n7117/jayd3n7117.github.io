@@ -176,11 +176,12 @@ Do not use the phrase “not fake” in primary site copy. Use a precise identit
 
 Placement:
 
-- Short visible trust statement near the first application CTA.
 - Full statement in an About/Trust section reachable from every page.
 - Full or compact statement in the footer on every page.
 - Application form context explaining who reviews the submission.
 - Privacy copy remains separate and continues explaining Formspree and consent-controlled analytics.
+
+The disclosure is legal and trust-supporting copy, not the site's primary marketing message. It must not appear in the page title, SEO title, hero headline, hero eyebrow, or primary CTA. The homepage may link naturally to the About/Trust section without repeating the full disclosure above the fold.
 
 Only use the existing authorized Coway logo asset. Preserve proportions, clear space, original colours, and alternative text. Do not apply the site's gradient, glass, glow, shadow, or recolouring effects to the Coway logo.
 
@@ -221,6 +222,15 @@ Only use the existing authorized Coway logo asset. Preserve proportions, clear s
 - Maintain accessible contrast, semantic heading order, skip navigation, keyboard access, visible focus, touch targets, form labels, and no horizontal overflow.
 - Test at 375, 768, 1024, and 1440 pixels.
 
+### Mobile navigation regression requirement
+
+- Replace the current narrow dropdown positioning with a viewport-safe mobile panel aligned to the same left and right page gutters as the header.
+- The open menu and language selector must remain completely inside the viewport at 320, 375, and 390 pixel widths.
+- Opening either control must not change the document's horizontal scroll width, shift the centred page shell, or push content to the right.
+- Menu links must remain at least 44 pixels high, keyboard operable, and readable in English, Bahasa Malaysia, and Simplified Chinese.
+- Opening one disclosure menu must close the other so overlapping panels cannot widen the header.
+- The mobile menu closes after navigation, on Escape, and when focus or pointer interaction moves outside it where supported by the existing navigation script.
+
 ## Application and Measurement
 
 - Preserve the current short Formspree application flow, validation, honeypot, localized privacy disclosure, and failure recovery.
@@ -255,6 +265,7 @@ Only use the existing authorized Coway logo asset. Preserve proportions, clear s
 
 - All routes load, navigate, and remain free of horizontal overflow.
 - Global navigation, mobile navigation, breadcrumbs, language switching, and internal links work.
+- At 320, 375, and 390 pixel widths, the open mobile menu and language menu have bounding boxes within the viewport, the document has no horizontal overflow, and the main page shell remains centred.
 - Scroll reveals occur once, content remains readable without JavaScript, and reduced-motion mode shows content immediately.
 - Glass hover and pressed states do not obscure text or shift surrounding layout.
 - Application success and failure behavior remains correct with mocked Formspree requests.
@@ -281,4 +292,3 @@ Only use the existing authorized Coway logo asset. Preserve proportions, clear s
 - [Build and submit a sitemap](https://developers.google.com/search/docs/crawling-indexing/sitemaps/build-sitemap)
 - [JobPosting structured-data policies](https://developers.google.com/search/docs/appearance/structured-data/job-posting)
 - [Google Search spam policies](https://developers.google.com/search/docs/essentials/spam-policies)
-
