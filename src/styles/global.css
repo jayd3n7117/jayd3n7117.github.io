@@ -1,22 +1,31 @@
 :root {
-  --color-primary: #071f2b;
-  --color-primary-raised: #0b2e3d;
-  --color-accent: #bdf23a;
-  --color-secondary-accent: #35d5d0;
-  --color-surface-cool: #eaf5f4;
-  --color-on-dark: #ffffff;
+  --color-night: #090711;
+  --color-night-soft: #151126;
+  --color-violet: #8c67e8;
+  --color-rose: #ee709d;
+  --color-peach: #ffb78d;
+  --color-lilac: #f2edff;
+  --color-ink: #1a1724;
+  --color-muted: #686474;
+  --color-line: #e9e3f3;
+  --color-primary: var(--color-night);
+  --color-primary-raised: var(--color-night-soft);
+  --color-accent: var(--color-rose);
+  --color-secondary-accent: var(--color-violet);
+  --color-surface-cool: var(--color-lilac);
+  --color-on-dark: #fbfaff;
   --page-gutter: clamp(1.25rem, 4vw, 5rem);
   --content-measure: 72rem;
-  --color-white: #ffffff;
+  --color-white: #fbfaff;
   --color-coway-blue: #0067b9;
-  --color-navy: #082f49;
-  --color-coral: #f26a5a;
-  --color-coral-dark: #b93427;
-  --color-surface: #f4f8fb;
-  --color-border: #cbd9e4;
-  --color-text: #17324d;
-  --focus-ring: #ffffff;
-  --focus-ring-contrast: #082f49;
+  --color-navy: var(--color-night-soft);
+  --color-coral: var(--color-rose);
+  --color-coral-dark: #a83e69;
+  --color-surface: #f7f5fc;
+  --color-border: var(--color-line);
+  --color-text: var(--color-ink);
+  --focus-ring: #fbfaff;
+  --focus-ring-contrast: var(--color-violet);
   --space-1: 0.25rem;
   --space-2: 0.5rem;
   --space-3: 0.75rem;
@@ -25,7 +34,8 @@
   --space-8: 2rem;
   --space-12: 3rem;
   --radius-sm: 0.375rem;
-  --radius-md: 0.75rem;
+  --radius-md: 0.875rem;
+  --radius-card: 1.5rem;
   --radius-pill: 999px;
   --font-sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   color: var(--color-text);
@@ -48,6 +58,54 @@ html:lang(zh-CN) {
 body {
   margin: 0;
   background: var(--color-white);
+}
+
+.glass-surface {
+  position: relative;
+  border: 1px solid rgb(255 255 255 / 14%);
+  background: #151126;
+  background: rgb(18 15 35 / 59%);
+  -webkit-backdrop-filter: blur(14px) saturate(1.4);
+  backdrop-filter: blur(14px) saturate(1.4);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 18%);
+}
+
+.glass-interactive {
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.glass-interactive::after {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 20%,
+    rgb(255 255 255 / 30%) 48%,
+    transparent 76%
+  );
+  content: '';
+  pointer-events: none;
+  transform: translateX(-120%);
+  transition: transform 650ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-interactive:hover::after,
+.glass-interactive:focus-within::after {
+  transform: translateX(120%);
+}
+
+.glass-interactive:active {
+  transform: scale(0.98);
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .glass-surface {
+    background: var(--color-night-soft);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
 }
 
 a {

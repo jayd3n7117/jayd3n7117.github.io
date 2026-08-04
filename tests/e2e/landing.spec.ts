@@ -825,6 +825,23 @@ for (const width of [320, 375, 390]) {
   });
 }
 
+test("uses selective glass only on prominent interface surfaces", async ({ page }) => {
+  await page.goto("/en/");
+
+  const headerGlass = page.locator(".site-header .glass-surface");
+  await expect(headerGlass).toHaveCount(1);
+  const headerStyle = await headerGlass.evaluate((element) =>
+    getComputedStyle(element),
+  );
+  expect(headerStyle.backdropFilter).toContain("blur");
+  expect(headerStyle.borderTopWidth).toBe("1px");
+
+  const faqFilter = await page.locator("#faq details").first().evaluate(
+    (element) => getComputedStyle(element).backdropFilter,
+  );
+  expect(faqFilter === "none" || faqFilter === "").toBe(true);
+});
+
 test.describe('analytics consent', () => {
   test('queues denied defaults before the accepted GA4 command sequence', async ({
     page,
