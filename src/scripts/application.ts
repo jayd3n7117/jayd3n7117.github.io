@@ -1,4 +1,5 @@
 import { submitApplication, validateApplication } from "../application/schema";
+import { trackApplicationLead } from "../application/analytics";
 
 document.querySelectorAll<HTMLFormElement>("[data-application-form]").forEach((form) => {
   const copy = JSON.parse(form.dataset.copy ?? "{}");
@@ -36,6 +37,9 @@ document.querySelectorAll<HTMLFormElement>("[data-application-form]").forEach((f
     button.textContent = copy.submit;
     status.setAttribute("role", response.ok ? "status" : "alert");
     status.textContent = response.ok ? copy.success : copy.failure;
-    if (response.ok) form.reset();
+    if (response.ok) {
+      trackApplicationLead();
+      form.reset();
+    }
   });
 });

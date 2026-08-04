@@ -495,6 +495,13 @@ test("posts once, confirms success, and clears fields only after acceptance", as
   await expect(form.locator('button[type="submit"]')).toBeEnabled();
   await expect(form.locator('button[type="submit"]')).toHaveText("Send application");
   await expect(form.locator('[name="name"]')).toHaveValue("");
+  expect(
+    await page.evaluate(() =>
+      window.dataLayer.filter(
+        (entry) => Array.from(entry as ArrayLike<unknown>)[1] === 'generate_lead',
+      ).length,
+    ),
+  ).toBe(0);
   expect(requests).toHaveLength(1);
   expect(requests[0]?.method).toBe("POST");
   expect(JSON.parse(requests[0]?.body ?? "{}")).toMatchObject({
@@ -539,6 +546,43 @@ test("ends with prioritized candidates and the safe application form", async ({ 
   await expect(cards.nth(2)).toContainText("Existing salespeople");
   await expect(cards.nth(3)).toContainText("Fresh graduates");
   await expect(page.locator("#apply")).toHaveAttribute("data-conversion-section", "");
+});
+
+test('records one consented generate_lead event after Formspree success without PII', async ({ page }) => {
+  await page.route('https://formspree.io/f/xvzebykj', async (route) => {
+    await route.fulfill({ status: 200, contentType: 'application/json', body: '{}' });
+  });
+  await page.goto('/en/');
+  await page
+    .locator('[data-analytics-consent]')
+    .getByRole('button', { name: 'Accept analytics' })
+    .click();
+
+  const form = page.locator('[data-application-form]');
+  const privateValues = ['Applicant Private 88421', '012-884 2121', 'Private City 731'];
+  await form.locator('[name="name"]').fill(privateValues[0]);
+  await form.locator('[name="ageRange"]').selectOption('25-34');
+  await form.locator('[name="currentJob"]').fill('Designer');
+  await form.locator('[name="contactNumber"]').fill(privateValues[1]);
+  await form.locator('[name="state"]').selectOption('Selangor');
+  await form.locator('[name="city"]').fill(privateValues[2]);
+  await form.locator('[name="salesExperience"]').selectOption('1-3');
+  await form.locator('[name="consent"]').check();
+  await form.locator('button[type="submit"]').click();
+  await expect(form.locator('[data-form-status]')).toContainText('sent successfully');
+
+  const leadEvents = await page.evaluate(() =>
+    window.dataLayer
+      .map((entry) => Array.from(entry as ArrayLike<unknown>))
+      .filter((entry) => entry[0] === 'event' && entry[1] === 'generate_lead'),
+  );
+  expect(leadEvents).toEqual([[
+    'event',
+    'generate_lead',
+    { form_id: 'career_application', opportunity_type: 'commission_sales' },
+  ]]);
+  const serializedEvents = JSON.stringify(leadEvents);
+  for (const value of privateValues) expect(serializedEvents).not.toContain(value);
 });
 
 test("uses the approved homepage section system and trust placement", async ({ page }) => {
