@@ -1,0 +1,32 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ContentPage from '../../components/ContentPage.astro';
+import {
+  getSupportingPage,
+  supportingPageKeys,
+  type SupportingLocale,
+  type SupportingPageKey,
+} from '../../content/pages';
+import '../../styles/content-page.css';
+
+export function getStaticPaths() {
+  return (['en', 'zh'] as const).flatMap((locale) =>
+    supportingPageKeys.map((page) => ({
+      params: { locale, page },
+      props: { locale, page },
+    })),
+  );
+}
+
+interface Props {
+  locale: SupportingLocale;
+  page: SupportingPageKey;
+}
+
+const { locale, page } = Astro.props;
+const content = getSupportingPage(locale, page);
+---
+
+<BaseLayout {locale} meta={content.meta} pathKey={page}>
+  <ContentPage {locale} pageKey={page} {content} />
+</BaseLayout>

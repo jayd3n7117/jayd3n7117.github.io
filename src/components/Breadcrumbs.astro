@@ -1,0 +1,21 @@
+---
+import type { SupportingLocale, SupportingPageContent } from '../content/pages';
+
+interface Props {
+  locale: SupportingLocale;
+  title: SupportingPageContent['title'];
+}
+
+const { locale, title } = Astro.props;
+const homeLabel = locale === 'zh' ? '首页' : 'Home';
+const ariaLabel = locale === 'zh'
+  ? 'Breadcrumb navigation / 面包屑导航'
+  : 'Breadcrumb navigation';
+---
+
+<nav class="breadcrumbs" aria-label={ariaLabel}>
+  <ol>
+    <li><a href={`/${locale}/`}>{homeLabel}</a></li>
+    <li aria-current="page">{title}</li>
+  </ol>
+</nav>

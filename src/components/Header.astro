@@ -1,12 +1,15 @@
 ---
 import type { LandingContent, Locale } from '../content/locales';
+import type { SupportingPageKey } from '../content/pages';
 
 interface Props {
   locale: Locale;
   content: LandingContent;
+  supportingPageKey?: SupportingPageKey;
 }
 
-const { locale, content } = Astro.props;
+const { locale, content, supportingPageKey } = Astro.props;
+const homeSection = (id: string) => supportingPageKey ? `/${locale}/#${id}` : `#${id}`;
 
 const languageLinks = [
   { locale: 'en', label: 'English' },
@@ -23,11 +26,11 @@ const languageLinks = [
 
     <nav class="desktop-navigation" aria-label={content.chrome.primaryNavigationLabel}>
       <ul class="primary-navigation">
-        <li><a href="#opportunity">{content.nav.opportunity}</a></li>
-        <li><a href="#support">{content.nav.support}</a></li>
-        <li><a href="#growth">{content.nav.culture}</a></li>
-        <li><a href="#faq">{content.nav.faq}</a></li>
-        <li><a href="#apply">{content.nav.apply}</a></li>
+        <li><a href={homeSection('opportunity')}>{content.nav.opportunity}</a></li>
+        <li><a href={homeSection('support')}>{content.nav.support}</a></li>
+        <li><a href={homeSection('growth')}>{content.nav.culture}</a></li>
+        <li><a href={homeSection('faq')}>{content.nav.faq}</a></li>
+        <li><a href={homeSection('apply')}>{content.nav.apply}</a></li>
       </ul>
     </nav>
 
@@ -35,11 +38,11 @@ const languageLinks = [
       <summary>{content.nav.menu}</summary>
       <nav aria-label={content.nav.menu}>
         <ul>
-          <li><a href="#opportunity">{content.nav.opportunity}</a></li>
-          <li><a href="#support">{content.nav.support}</a></li>
-          <li><a href="#growth">{content.nav.culture}</a></li>
-          <li><a href="#faq">{content.nav.faq}</a></li>
-          <li><a href="#apply">{content.nav.apply}</a></li>
+          <li><a href={homeSection('opportunity')}>{content.nav.opportunity}</a></li>
+          <li><a href={homeSection('support')}>{content.nav.support}</a></li>
+          <li><a href={homeSection('growth')}>{content.nav.culture}</a></li>
+          <li><a href={homeSection('faq')}>{content.nav.faq}</a></li>
+          <li><a href={homeSection('apply')}>{content.nav.apply}</a></li>
         </ul>
       </nav>
     </details>
@@ -54,7 +57,9 @@ const languageLinks = [
             languageLinks.map((language) => (
               <li>
                 <a
-                  href={`/${language.locale}/`}
+                  href={supportingPageKey && language.locale !== 'bm'
+                    ? `/${language.locale}/${supportingPageKey}/`
+                    : `/${language.locale}/`}
                   data-locale-link
                   aria-current={language.locale === locale ? 'page' : undefined}
                 >
@@ -65,7 +70,7 @@ const languageLinks = [
           }
         </ul>
       </details>
-      <a class="button button-accent" href="#apply">{content.nav.apply}</a>
+      <a class="button button-accent" href={homeSection('apply')}>{content.nav.apply}</a>
     </div>
   </div>
 </header>

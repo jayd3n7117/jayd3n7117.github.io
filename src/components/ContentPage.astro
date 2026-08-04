@@ -1,0 +1,70 @@
+---
+import Breadcrumbs from './Breadcrumbs.astro';
+import InternalLinks from './InternalLinks.astro';
+import type {
+  SupportingLocale,
+  SupportingPageContent,
+  SupportingPageKey,
+} from '../content/pages';
+
+interface Props {
+  locale: SupportingLocale;
+  pageKey: SupportingPageKey;
+  content: SupportingPageContent;
+}
+
+const { locale, pageKey, content } = Astro.props;
+const faqHeading = locale === 'zh' ? '常见问题' : 'Frequently asked questions';
+---
+
+<article class="content-page">
+  <header class="content-hero">
+    <div class="shell content-hero-inner">
+      <Breadcrumbs {locale} title={content.title} />
+      <div class="content-hero-copy" data-reveal>
+        <p class="section-kicker">{content.eyebrow}</p>
+        <h1>{content.title}</h1>
+        <p class="content-introduction">{content.introduction}</p>
+      </div>
+      <div class="content-hero-orbit glass-surface" aria-hidden="true">
+        <span>Learn</span><span>Perform</span><span>Lead</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="content-body shell">
+    {content.sections.map((section, index) => (
+      <section id={section.id} class:list={['content-section', index % 2 === 1 && 'content-section-tinted']} data-reveal>
+        <p class="section-number" aria-hidden="true">{String(index + 1).padStart(2, '0')}</p>
+        <div>
+          <h2>{section.title}</h2>
+          {section.body.map((paragraph) => <p>{paragraph}</p>)}
+        </div>
+      </section>
+    ))}
+
+    {content.faq.length > 0 && (
+      <section class="content-faq" data-reveal>
+        <p class="section-kicker">FAQ</p>
+        <h2>{faqHeading}</h2>
+        <div class="content-faq-list">
+          {content.faq.map((item) => (
+            <details>
+              <summary>{item.question}</summary>
+              <p>{item.answer}</p>
+            </details>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <InternalLinks {locale} currentPage={pageKey} />
+
+    <section class="content-cta" data-reveal>
+      <p class="section-kicker">{locale === 'zh' ? '下一步' : 'Next step'}</p>
+      <h2>{content.cta.title}</h2>
+      <p>{content.cta.body}</p>
+      <a class="button content-cta-button" href={`/${locale}/#apply`}>{content.cta.label}<span aria-hidden="true"> →</span></a>
+    </section>
+  </div>
+</article>

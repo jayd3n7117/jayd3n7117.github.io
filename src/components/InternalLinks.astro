@@ -1,0 +1,29 @@
+---
+import {
+  getSupportingPage,
+  supportingPageKeys,
+  type SupportingLocale,
+  type SupportingPageKey,
+} from '../content/pages';
+
+interface Props {
+  locale: SupportingLocale;
+  currentPage: SupportingPageKey;
+}
+
+const { locale, currentPage } = Astro.props;
+const heading = locale === 'zh' ? '继续了解销售事业' : 'Continue exploring the sales career';
+const links = supportingPageKeys
+  .filter((key) => key !== currentPage)
+  .map((key) => ({ key, title: getSupportingPage(locale, key).title }));
+---
+
+<aside class="content-links" aria-labelledby="related-guides-heading">
+  <p class="section-kicker">{locale === 'zh' ? '相关指南' : 'Related guides'}</p>
+  <h2 id="related-guides-heading">{heading}</h2>
+  <ul>
+    {links.map(({ key, title }) => (
+      <li><a href={`/${locale}/${key}/`}>{title}<span aria-hidden="true"> →</span></a></li>
+    ))}
+  </ul>
+</aside>

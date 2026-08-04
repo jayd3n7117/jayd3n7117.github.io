@@ -1,4 +1,8 @@
 import { expect, test } from "./fixtures";
+import {
+  getSupportingPage,
+  supportingPageKeys,
+} from "../../src/content/pages";
 
 const productionOrigin = new URL(
   process.env.PUBLIC_SITE_URL ?? "https://join.coway.test",
@@ -9,6 +13,27 @@ const localizedRoutes = [
   { locale: "bm", lang: "ms-MY" },
   { locale: "zh", lang: "zh-CN" },
 ] as const;
+
+for (const locale of ["en", "zh"] as const) {
+  for (const pageKey of supportingPageKeys) {
+    test(`renders the ${locale}/${pageKey} supporting recruitment page`, async ({ page }) => {
+      const response = await page.goto(`/${locale}/${pageKey}/`);
+      const content = getSupportingPage(locale, pageKey);
+
+      expect(response?.status()).toBe(200);
+      await expect(page).toHaveTitle(content.meta.title);
+      await expect(page.locator("main h1")).toHaveCount(1);
+      await expect(page.locator("main h1")).toHaveText(content.title);
+      await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+        "href",
+        `${productionOrigin}/${locale}/${pageKey}/`,
+      );
+      await expect(page.locator('link[rel="alternate"]')).toHaveCount(3);
+      await expect(page.locator("nav[aria-label*=Breadcrumb]")).toHaveCount(1);
+      expect(await page.locator("main article .content-section").count()).toBeGreaterThanOrEqual(3);
+    });
+  }
+}
 
 test("blocks unmocked Formspree requests suite-wide", async ({ context, page }) => {
   let escapedGlobalGuard = false;
