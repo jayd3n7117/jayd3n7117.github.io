@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { clamp01, sectionProgress } from '../../src/motion/scroll';
+import { clamp01, revealDelay, sectionProgress } from '../../src/motion/scroll';
 
 describe('scroll motion calculations', () => {
   it('clamps progress', () => {
@@ -21,5 +21,12 @@ describe('scroll motion calculations', () => {
     expect(sectionProgress(800, 2400, 800)).toBe(0);
     expect(sectionProgress(0, 2400, 800)).toBe(1);
     expect(sectionProgress(400, 2400, 800)).toBe(0.5);
+  });
+
+  it('stages grouped reveals without creating long waits', () => {
+    expect(revealDelay(0)).toBe(0);
+    expect(revealDelay(1)).toBe(70);
+    expect(revealDelay(3)).toBe(210);
+    expect(revealDelay(8)).toBe(280);
   });
 });

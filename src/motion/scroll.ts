@@ -1,5 +1,7 @@
 export const clamp01 = (value: number) => Math.max(0, Math.min(1, value));
 
+export const revealDelay = (index: number) => Math.min(index * 70, 280);
+
 export const sectionProgress = (
   rectTop: number,
   _rectHeight: number,

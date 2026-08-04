@@ -3,13 +3,13 @@ import type { LandingContent } from '../content/locales';
 
 const { content } = Astro.props as { content: LandingContent };
 ---
-<section id="growth" class="section journey" data-journey>
+<section id="growth" class="section journey" data-journey data-reveal-group>
   <header class="section-heading" data-reveal>
     <h2>{content.progression.title}</h2>
     <p>{content.progression.body}</p>
   </header>
   <div class="journey-flow-wrapper">
-    <span class="journey-progress" aria-hidden="true"></span>
+    <span class="journey-path" aria-hidden="true"></span>
     <ol class="journey-flow">
       {content.progression.steps.map((step) => (
         <li data-journey-step data-reveal>

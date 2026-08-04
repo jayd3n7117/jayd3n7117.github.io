@@ -646,56 +646,38 @@ test("keeps reduced-motion content visible and ticker static", async ({ page }) 
     await expect(step).toBeVisible();
     await expect(step).toHaveCSS("transform", "none");
   }
-
-  const journey = page.locator("[data-journey]");
-  const initialProgress = await journey.evaluate((element) =>
-    getComputedStyle(element).getPropertyValue("--journey-progress").trim(),
-  );
-  await journey.scrollIntoViewIfNeeded();
-  await page.waitForTimeout(100);
-  const scrolledProgress = await journey.evaluate((element) =>
-    getComputedStyle(element).getPropertyValue("--journey-progress").trim(),
-  );
-  expect(["", "0"]).toContain(initialProgress);
-  expect(scrolledProgress).toBe(initialProgress);
+  await expect(page.locator(".journey-path")).toHaveCSS("transform", "none");
 });
 
-test("updates journey progress when the career journey enters view", async ({ page }) => {
+test("reveals the career journey once it enters view", async ({ page }) => {
   await page.setViewportSize({ width: 1024, height: 700 });
   await page.goto("/en/");
   const journey = page.locator("[data-journey]");
 
   await journey.scrollIntoViewIfNeeded();
-  await expect.poll(() => journey.evaluate((element) =>
-    Number(getComputedStyle(element).getPropertyValue("--journey-progress").trim() || 0)
-  )).toBeGreaterThan(0);
+  for (const step of await journey.locator("[data-journey-step]").all()) {
+    await expect(step).toHaveClass(/is-revealed/);
+  }
 });
 
-test("renders journey and page progress with transform-only indicators", async ({ page }) => {
+test("uses a static journey path without a page-lifetime progress indicator", async ({ page }) => {
   await page.setViewportSize({ width: 1024, height: 700 });
   await page.goto("/en/");
   const journey = page.locator("[data-journey]");
-  const connector = journey.locator(".journey-progress");
-  const pageIndicator = page.locator("[data-page-progress]");
-  const before = await pageIndicator.evaluate((el) => getComputedStyle(el).transform);
-  await journey.scrollIntoViewIfNeeded();
-  await expect.poll(() => connector.evaluate((el) => getComputedStyle(el).transform)).not.toBe("none");
-  await expect.poll(() => pageIndicator.evaluate((el) => getComputedStyle(el).transform)).not.toBe(before);
+  const connector = journey.locator(".journey-path");
   const extent = await connector.boundingBox();
   expect(extent!.width).toBeGreaterThan(extent!.height);
-  await expect(journey.locator("ol > .journey-progress")).toHaveCount(0);
-  await expect(journey.locator(".journey-flow-wrapper > .journey-progress")).toHaveCount(1);
+  await expect(journey.locator(".journey-flow-wrapper > .journey-path")).toHaveCount(1);
+  await expect(page.locator("[data-page-progress]")).toHaveCount(0);
 });
 
 test("restores visible static content when reduced motion is enabled at runtime", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "no-preference" });
   await page.goto("/en/");
-  await page.evaluate(() => scrollTo(0, 500));
-
   const heroTitle = page.locator('[data-motion="hero-title"]');
-  await expect.poll(() => heroTitle.evaluate((element) => element.style.opacity)).not.toBe("");
   await page.emulateMedia({ reducedMotion: "reduce" });
 
+  await expect(page.locator("html")).toHaveClass(/motion-reduced/);
   await expect(heroTitle).toHaveCSS("opacity", "1");
   await expect(heroTitle).toHaveCSS("transform", "none");
   await expect(page.locator('[data-motion="hero-image"]')).toHaveCSS("transform", "none");
@@ -709,7 +691,7 @@ test("does not retain page-lifetime will-change hints", async ({ page }) => {
   await expect(page.locator("[data-motion-media-layer]").first()).toHaveCSS("will-change", "auto");
 });
 
-test("keeps media tile geometry fixed while moving only clipped photo layers", async ({ page }) => {
+test("keeps media tile geometry fixed without continuous parallax", async ({ page }) => {
   await page.setViewportSize({ width: 1024, height: 700 });
   await page.goto("/en/");
   const tile = page.locator("[data-media-tile]").first();
@@ -720,7 +702,7 @@ test("keeps media tile geometry fixed while moving only clipped photo layers", a
   expect(after!.width).toBeCloseTo(before!.width, 1);
   expect(after!.height).toBeCloseTo(before!.height, 1);
   await expect(tile).toHaveCSS("transform", "none");
-  await expect(tile.locator("[data-motion-media-layer]")).not.toHaveCSS("transform", "none");
+  await expect(tile.locator("[data-motion-media-layer]")).toHaveCSS("transform", "none");
   await expect(page.locator("[data-media-tile] video")).toHaveCSS("transform", "none");
 });
 
@@ -758,16 +740,13 @@ test('renders configured social platforms as safe external links', async ({ page
   }
 });
 
-test("updates scroll progress without changing layout bounds", async ({ page }) => {
+test("scrolling does not change layout bounds", async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 568 });
   await page.goto("/en/");
   expect(await page.evaluate(() =>
     document.body.scrollWidth <= document.documentElement.clientWidth
   )).toBe(true);
   await page.evaluate(() => scrollTo(0, 900));
-  await expect.poll(() => page.locator("html").evaluate((el) =>
-    getComputedStyle(el).getPropertyValue("--page-progress").trim()
-  )).not.toBe("0");
   expect(await page.evaluate(() =>
     document.body.scrollWidth <= document.documentElement.clientWidth
   )).toBe(true);
@@ -782,6 +761,24 @@ test("keeps reveal content readable without JavaScript", async ({ browser }) => 
   await expect(page.locator("[data-reveal]").first()).toBeVisible();
   await expect(page.locator("#support article").first()).toBeVisible();
   await context.close();
+});
+
+test("stages grouped content as it enters the viewport", async ({ page }) => {
+  await page.goto("/en/");
+
+  const supportItems = page.locator("#support [data-reveal]");
+  await expect(supportItems).toHaveCount(7);
+  expect(
+    await supportItems.evaluateAll((items) =>
+      items.slice(0, 4).map((item) =>
+        (item as HTMLElement).style.getPropertyValue("--reveal-delay"),
+      ),
+    ),
+  ).toEqual(["0ms", "70ms", "140ms", "210ms"]);
+
+  const lastItem = supportItems.last();
+  await lastItem.scrollIntoViewIfNeeded();
+  await expect(lastItem).toHaveClass(/is-revealed/);
 });
 
 test("identifies and persists the selected language without overriding direct URLs", async ({ page }) => {

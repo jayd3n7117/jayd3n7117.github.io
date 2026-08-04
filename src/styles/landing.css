@@ -318,24 +318,13 @@ picture img {
 [data-ticker] {
   animation: ticker-enter 250ms ease-out both;
 }
-.page-progress {
-  position: fixed;
-  z-index: 1000;
-  top: 0;
-  right: 0;
-  left: 0;
-  height: 3px;
-  background: var(--color-accent);
-  pointer-events: none;
-  transform: scaleX(var(--page-progress, 0));
-  transform-origin: left center;
-}
 .motion-ready [data-reveal] {
   opacity: 0;
   transform: translateY(1rem);
   transition:
     opacity 240ms ease-out,
     transform 240ms ease-out;
+  transition-delay: var(--reveal-delay, 0ms);
 }
 .motion-ready [data-reveal].is-revealed {
   opacity: 1;
@@ -475,7 +464,7 @@ picture img {
   height: 2px;
   background: var(--color-coway-blue);
 }
-.journey-progress {
+.journey-path {
   position: absolute;
   z-index: 0;
   top: 2.45rem;
@@ -483,9 +472,7 @@ picture img {
   left: 10%;
   height: 5px;
   border-radius: 999px;
-  background: var(--color-accent);
-  transform: scaleX(var(--journey-progress, 0));
-  transform-origin: left center;
+  background: linear-gradient(90deg, var(--color-violet), var(--color-rose));
 }
 .journey-flow li {
   position: relative;
@@ -755,15 +742,13 @@ picture img {
     width: 2px;
     height: auto;
   }
-  .journey-progress {
+  .journey-path {
     top: 1.25rem;
     right: auto;
     bottom: 1.25rem;
     left: 2.45rem;
     width: 5px;
     height: auto;
-    transform: scaleY(var(--journey-progress, 0));
-    transform-origin: center top;
   }
   .journey-flow li {
     flex-direction: row;
@@ -902,10 +887,6 @@ picture img {
   background: #d6c9ef;
 }
 
-.journey-progress {
-  background: linear-gradient(90deg, var(--color-violet), var(--color-rose));
-}
-
 .fit {
   grid-template-columns: minmax(0, 0.7fr) minmax(0, 1.3fr);
   align-items: start;
@@ -1036,8 +1017,7 @@ picture img {
   [data-motion-card],
   [data-ticker-track],
   [data-motion-media-layer],
-  .page-progress,
-  .journey-progress {
+  .journey-path {
     opacity: 1;
     transform: none;
   }

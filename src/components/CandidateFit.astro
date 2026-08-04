@@ -7,7 +7,7 @@ interface Props {
 
 const { content } = Astro.props;
 ---
-<section id="candidate-fit" class="section fit">
+<section id="candidate-fit" class="section fit" data-reveal-group>
   <header><h2>{content.candidateFit.title}</h2><p>{content.candidateFit.intro}</p></header>
   <ol class="candidate-cards">
     {content.candidateFit.priorities.map((item) => (
