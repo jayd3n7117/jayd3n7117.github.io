@@ -31,6 +31,8 @@ for (const locale of ["en", "zh"] as const) {
       await expect(page.locator('link[rel="alternate"]')).toHaveCount(3);
       await expect(page.locator("nav[aria-label*=Breadcrumb]")).toHaveCount(1);
       expect(await page.locator("main article .content-section").count()).toBeGreaterThanOrEqual(3);
+      await expect(page.locator("main .trust-disclosure")).toHaveCount(1);
+      await expect(page.locator("main h1.trust-disclosure")).toHaveCount(0);
     });
   }
 }

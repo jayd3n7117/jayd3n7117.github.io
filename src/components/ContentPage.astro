@@ -1,6 +1,7 @@
 ---
 import Breadcrumbs from './Breadcrumbs.astro';
 import InternalLinks from './InternalLinks.astro';
+import TrustDisclosure from './TrustDisclosure.astro';
 import type {
   SupportingLocale,
   SupportingPageContent,
@@ -42,6 +43,8 @@ const faqHeading = locale === 'zh' ? '常见问题' : 'Frequently asked question
         </div>
       </section>
     ))}
+
+    <TrustDisclosure {locale} />
 
     {content.faq.length > 0 && (
       <section class="content-faq" data-reveal>

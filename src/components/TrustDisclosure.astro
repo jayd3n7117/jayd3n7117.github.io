@@ -1,0 +1,16 @@
+---
+import { recruitmentTrust, type TrustLocale } from '../content/trust';
+
+interface Props {
+  locale: TrustLocale;
+  compact?: boolean;
+}
+
+const { locale, compact = false } = Astro.props;
+const copy = recruitmentTrust[locale];
+---
+
+<aside class:list={['trust-disclosure', compact && 'trust-disclosure-compact', compact && 'site-disclosure']} aria-label={copy.disclosureLabel}>
+  {!compact && <p class="section-kicker">{copy.disclosureLabel}</p>}
+  <p>{copy.disclosure}</p>
+</aside>

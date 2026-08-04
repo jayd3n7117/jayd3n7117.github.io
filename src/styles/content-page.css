@@ -139,9 +139,24 @@
 
 .content-faq,
 .content-links,
-.content-cta {
+.content-cta,
+.content-body > .trust-disclosure {
   max-width: 70rem;
   margin: clamp(3rem, 8vw, 7rem) auto 0;
+}
+
+.content-body > .trust-disclosure {
+  padding: clamp(1.4rem, 4vw, 2.4rem);
+  border-left: 0.3rem solid var(--color-rose);
+  border-radius: 0 1.25rem 1.25rem 0;
+  background: var(--color-surface);
+}
+
+.content-body > .trust-disclosure p:last-child {
+  max-width: 58rem;
+  margin-bottom: 0;
+  color: var(--color-muted);
+  line-height: 1.7;
 }
 
 .content-faq-list {

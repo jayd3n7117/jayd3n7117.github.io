@@ -1,6 +1,7 @@
 ---
 import type { LandingContent, Locale } from '../content/locales';
 import { getSocialLinkAttributes, socialProfiles, type SocialProfile } from '../config/social';
+import TrustDisclosure from './TrustDisclosure.astro';
 
 interface Props {
   locale: Locale;
@@ -74,7 +75,7 @@ const languageLinks = [
   </div>
 
   <div class="shell footer-legal">
-    <p class="site-disclosure">{content.footer.disclaimer}</p>
+    <TrustDisclosure {locale} compact />
     <a href="#privacy-note">{content.footer.privacyLink}</a>
     <p id="privacy-note" tabindex="-1">{content.footer.privacy}</p>
   </div>

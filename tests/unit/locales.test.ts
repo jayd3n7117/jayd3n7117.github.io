@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { applicationContent } from '../../src/application/content';
 import { getContent, locales } from '../../src/content/locales';
 import { getSupportingPage, supportingPageKeys } from '../../src/content/pages';
+import { recruitmentTrust } from '../../src/content/trust';
 
 const requiredSections = [
   'chrome',
@@ -22,6 +23,16 @@ const requiredSections = [
 ] as const;
 
 describe('localized recruitment content', () => {
+  it('centralizes the independent sales-team disclosure and application reviewer copy', () => {
+    expect(recruitmentTrust.en.disclosure).toBe(
+      'Coway Sales Career is an independent recruitment website operated by a Coway sales team in Malaysia. It is not the official corporate website of Coway (Malaysia) Sdn. Bhd.',
+    );
+
+    for (const locale of ['en', 'bm', 'zh'] as const) {
+      expect(locales[locale].footer.disclaimer).toBe(recruitmentTrust[locale].disclosure);
+      expect(applicationContent[locale].reviewer).toBe(recruitmentTrust[locale].reviewer);
+    }
+  });
   it('defines five useful supporting pages in English and Chinese', () => {
     expect(supportingPageKeys).toEqual([
       'coway-sales-career',

@@ -1,3 +1,5 @@
+import { recruitmentTrust } from './trust';
+
 export type Locale = "en" | "bm" | "zh";
 
 export interface LandingContent {
@@ -281,8 +283,7 @@ const en: LandingContent = {
   footer: {
     socialHeading: 'Follow our journey',
     socialUnavailableLabel: 'link not available yet',
-    disclaimer:
-      "Coway Sales Career is an independent recruitment website operated by a Coway sales team in Malaysia. It is not the official corporate website of Coway (Malaysia) Sdn. Bhd.",
+    disclaimer: recruitmentTrust.en.disclosure,
     privacy:
       "Your information is used for recruitment follow-up and is processed and stored through Formspree, our configured third-party form service. With your permission, Google Analytics also measures website use; recruitment form answers are not intentionally sent to analytics.",
     privacyLink: "Privacy information",
@@ -470,8 +471,7 @@ const bm: LandingContent = {
   footer: {
     socialHeading: 'Ikuti perjalanan kami',
     socialUnavailableLabel: 'pautan belum tersedia',
-    disclaimer:
-      "Coway Sales Career ialah laman web pengambilan bebas yang dikendalikan oleh pasukan jualan Coway di Malaysia. Ia bukan laman web korporat rasmi Coway (Malaysia) Sdn. Bhd.",
+    disclaimer: recruitmentTrust.bm.disclosure,
     privacy:
       "Maklumat anda digunakan untuk tindakan susulan pengambilan dan diproses serta disimpan melalui Formspree, perkhidmatan borang pihak ketiga yang dikonfigurasikan. Dengan kebenaran anda, Google Analytics turut mengukur penggunaan laman; jawapan borang pengambilan tidak dihantar dengan sengaja kepada analitik.",
     privacyLink: "Maklumat privasi",
@@ -642,8 +642,7 @@ const zh: LandingContent = {
   footer: {
     socialHeading: '关注我们的成长旅程',
     socialUnavailableLabel: '链接暂未开放',
-    disclaimer:
-      "Coway Sales Career 是由马来西亚 Coway 销售团队运营的独立招聘网站。它不是 Coway (Malaysia) Sdn. Bhd. 的官方企业网站。",
+    disclaimer: recruitmentTrust.zh.disclosure,
     privacy: "你的资料用于招聘跟进，并通过我们配置的第三方表单服务 Formspree 处理和存储。 在获得你的许可后，Google Analytics 也会衡量网站使用情况；招聘申请表中的资料不会被刻意发送到分析服务。",
     privacyLink: "隐私信息",
     copyright: "Coway 马来西亚销售招募",
