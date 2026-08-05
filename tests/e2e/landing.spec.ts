@@ -911,6 +911,23 @@ test("provides a keyboard-operable mobile menu and privacy-information link", as
   await expect(privacy).toHaveAttribute("href", "#privacy-note");
 });
 
+test('renders the sticky header as a standalone glass island', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/en/');
+  await page.locator('#support').scrollIntoViewIfNeeded();
+
+  const wrapper = page.locator('.site-header');
+  const island = page.locator('.header-inner.glass-surface');
+  await expect(wrapper).toHaveCSS('position', 'sticky');
+  await expect(wrapper).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
+  await expect(island).not.toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
+
+  const bounds = await island.boundingBox();
+  expect(bounds).not.toBeNull();
+  expect(bounds!.x).toBeGreaterThan(0);
+  expect(bounds!.x + bounds!.width).toBeLessThan(390);
+});
+
 for (const width of [320, 390]) {
   test(`keeps all visible header controls on one row at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 844 });
