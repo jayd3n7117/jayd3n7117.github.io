@@ -16,7 +16,10 @@
 .content-hero-inner {
   position: relative;
   min-height: clamp(31rem, 70vh, 48rem);
-  padding-block: clamp(2rem, 6vw, 5.5rem);
+  padding:
+    calc(var(--site-header-offset) + clamp(2rem, 6vw, 5.5rem))
+    0
+    clamp(2rem, 6vw, 5.5rem);
 }
 
 .breadcrumbs ol {
@@ -228,7 +231,7 @@
 }
 
 @media (max-width: 42rem) {
-  .content-hero-inner { min-height: 37rem; }
+  .content-hero-inner { min-height: calc(37rem + var(--site-header-offset)); }
   .breadcrumbs ol { margin-bottom: 4.5rem; }
   .content-hero-orbit { right: 1.25rem; bottom: 1.5rem; left: 1.25rem; justify-content: center; }
   .content-section { grid-template-columns: 1fr; gap: 1rem; }

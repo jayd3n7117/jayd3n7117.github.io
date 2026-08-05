@@ -928,6 +928,40 @@ test('renders the sticky header as a standalone glass island', async ({ page }) 
   expect(bounds!.x + bounds!.width).toBeLessThan(390);
 });
 
+for (const scenario of [
+  { route: '/en/', hero: '[data-career-hero]', safeContent: 'h1' },
+  {
+    route: '/zh/sales-training-leadership/',
+    hero: '.content-hero',
+    safeContent: '.breadcrumbs',
+  },
+]) {
+  test(`places the header island over the hero on ${scenario.route}`, async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto(scenario.route);
+
+    const hero = page.locator(scenario.hero);
+    const island = page.locator('.header-inner.glass-surface');
+    const safeContent = hero.locator(scenario.safeContent).first();
+    const [heroBounds, islandBounds, safeBounds] = await Promise.all([
+      hero.boundingBox(),
+      island.boundingBox(),
+      safeContent.boundingBox(),
+    ]);
+
+    expect(heroBounds).not.toBeNull();
+    expect(islandBounds).not.toBeNull();
+    expect(safeBounds).not.toBeNull();
+    expect(heroBounds!.y).toBeLessThan(islandBounds!.y + islandBounds!.height);
+    expect(safeBounds!.y).toBeGreaterThanOrEqual(
+      islandBounds!.y + islandBounds!.height,
+    );
+    expect(
+      await page.evaluate(() => document.documentElement.scrollWidth),
+    ).toBe(390);
+  });
+}
+
 for (const width of [320, 390]) {
   test(`keeps all visible header controls on one row at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 844 });

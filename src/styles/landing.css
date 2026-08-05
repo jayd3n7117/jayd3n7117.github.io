@@ -43,7 +43,10 @@ h2 {
   width: 100%;
   max-width: none;
   margin: 0;
-  padding: clamp(3rem, 7vw, 5.5rem) var(--page-gutter) clamp(4rem, 8vw, 7rem);
+  padding:
+    calc(var(--site-header-offset) + clamp(3rem, 7vw, 5.5rem))
+    var(--page-gutter)
+    clamp(4rem, 8vw, 7rem);
   overflow: clip;
   background:
     radial-gradient(circle at 12% 28%, rgb(140 103 232 / 28%), transparent 32rem),
@@ -176,7 +179,7 @@ h2 {
 @media (max-width: 40rem) {
   .hero {
     gap: 2.5rem;
-    padding-top: 3rem;
+    padding-top: calc(var(--site-header-offset) + 3rem);
   }
 
   .career-hero h1 {

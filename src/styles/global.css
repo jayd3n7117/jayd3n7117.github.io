@@ -15,6 +15,7 @@
   --color-surface-cool: var(--color-lilac);
   --color-on-dark: #fbfaff;
   --page-gutter: clamp(1.25rem, 4vw, 5rem);
+  --site-header-offset: 5.25rem;
   --content-measure: 72rem;
   --color-white: #fbfaff;
   --color-coway-blue: #0067b9;
@@ -173,6 +174,10 @@ summary:focus-visible {
   padding: 0.75rem var(--page-gutter) 0;
   background: transparent;
   color: var(--color-on-dark);
+}
+
+.site-header + main {
+  margin-top: calc(-1 * var(--site-header-offset));
 }
 
 .header-inner,
